@@ -1,0 +1,26 @@
+# secrets
+ai-staff/.env
+.eenv
+*.env
+!*.env.example
+.env.local
+.env.*
+!*.env.example
+
+# logs & keys
+*.log
+*.key
+*.pem
+*.b64
+api-keys*.json
+keys/
+probe-all-keys.js
+probe-final.js
+
+# node
+node_modules/
+
+# local data
+ai-staff/data/
+ai-staff/*.db
+ai-staff/*.jsonl

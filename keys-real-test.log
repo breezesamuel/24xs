@@ -1,4 +1,0 @@
-deepseek: status=302 models=0 bytes=0
-moonshot: status=308 models=0 bytes=178
-nvidia: status=200 models=81 first=01-ai/yi-large bytes=7766
-agnes-hub: status=301 models=0 bytes=528

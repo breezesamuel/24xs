@@ -1,6 +1,0 @@
-﻿probe-start 2026-09-14T22:51:22.2263674+08:00
-[moonshot] status=200 bytes=1557 models=4 first=kimi-k2.6
-[agnes] status=200 bytes=1523 models=12 first=agnes-2.5-pro-alpha
-[deepseek] status=401 bytes=153
-[zhipu] status=200 bytes=3927
-DONE all=4
