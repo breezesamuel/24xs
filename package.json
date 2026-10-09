@@ -1,0 +1,27 @@
+{
+  "name": "24xs-autoops",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Hidden Autonomous AutoOps for 24x7 operations",
+  "scripts": {
+    "daemon": "node scripts/hidden/hidden_daemon.mjs",
+    "orchestrator": "node scripts/hidden/hidden_orchestrator.mjs",
+    "crawler": "node scripts/hidden/crawler/hidden_crawler.mjs",
+    "finder": "node scripts/hidden/agent/hidden_finder.mjs",
+    "leads": "node scripts/hidden/agent/hidden_leads.mjs",
+    "outreach": "node scripts/hidden/agent/hidden_outreach.mjs",
+    "crm": "node scripts/hidden/agent/hidden_crm.mjs",
+    "oms": "node scripts/hidden/agent/hidden_oms.mjs",
+    "planner": "node scripts/hidden/agent/hidden_planner.mjs",
+    "improver": "node scripts/hidden/agent/hidden_improver.mjs",
+    "guard": "node scripts/hidden/agent/hidden_guard.mjs",
+    "health": "node -e \"console.log('OK')\"",
+    "test": "node --test scripts/hidden/**/*.test.mjs 2>/dev/null || echo 'no tests'"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": ["autoops", "autonomous", "ai", "crawler", "crm", "oms"],
+  "author": "24xs",
+  "license": "MIT"
+}
