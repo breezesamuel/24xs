@@ -12,13 +12,13 @@ const PLAN = path.join(H, 'hidden_plan.json');
 
 function main(){
   const tasks=[
-    {id:'HP1', name:'鎰熺煡锛圙itHub+缃戦〉锛?, pri:10},
-    {id:'HP2', name:'绛涢€夆啋鑷姩鍏ュ簱锛堟矙绠憋級', pri:10},
-    {id:'HP3', name:'鍏ㄨ嚜鍔ㄥ瀹?, pri:10},
-    {id:'HP4', name:'鍏ㄨ嚜鍔ㄥ鍛?, pri:10},
-    {id:'HP5', name:'鍏ㄨ嚜鍔–RM鎺ㄨ繘', pri:10},
-    {id:'HP6', name:'鍏ㄨ嚜鍔∣MS灞ョ害+鍞悗', pri:10},
-    {id:'HP7', name:'鑷涔犺嚜杩涘寲', pri:9}
+    {id:'HP1', name:'感知（GitHub+网页）', pri:10},
+    {id:'HP2', name:'筛选→自动入库（沙箱）', pri:10},
+    {id:'HP3', name:'全自动寻客', pri:10},
+    {id:'HP4', name:'全自动外呼', pri:10},
+    {id:'HP5', name:'全自动CRM推进', pri:10},
+    {id:'HP6', name:'全自动OMS履约+售后', pri:10},
+    {id:'HP7', name:'自学习自进化', pri:9}
   ].sort((a,b)=>b.pri-a.pri);
   const plan={ ts:new Date().toISOString(), mode:'full_autonomous_hidden', focus:tasks[0].name, tasks };
   fs.writeFileSync(PLAN, JSON.stringify(plan,null,2));
