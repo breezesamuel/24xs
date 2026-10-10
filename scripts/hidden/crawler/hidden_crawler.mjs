@@ -15,7 +15,21 @@ const SAFE = path.join(H, 'crawl_safe.jsonl');
 
 const UA = '24XS-HiddenAutoOps/1.0 (+https://app.highkingflower.com)';
 const ALLOW = ['github.com','raw.githubusercontent.com','gist.github.com','github.io'];
-const KEYWORDS = ['data-asset','dataset','business-data','open-data','api-tools','data-api','scraper','automation','mcp','agent-toolkit','backend-tool'];
+
+// 关键词库：覆盖数据资产 / API 工具 / 自动化 / Agent 生态
+const KEYWORDS = [
+  'data-asset','dataset','business-data','open-data','api-tools','data-api',
+  'scraper','automation','mcp','agent-toolkit','backend-tool',
+  'data-pipeline','etl','web-scraping','crawler-framework','data-engineering',
+  'llm-tools','ai-agent','function-calling','tool-use','automation-framework',
+  'api-gateway','rest-api','graphql-api','data-catalog','metadata',
+];
+
+// 热门 Topic 发现（比关键词更精准的潜在客户聚集地）
+const TOPICS = ['mcp','ai-agent','automation','data-pipeline','web-scraping','llm-tools','api-tools','data-engineering'];
+
+// 近期创建（trending）：最近 30 天新建的高活跃项目，更可能是早期采用者
+const TRENDING_SINCE = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10); // YYYY-MM-DD
 
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 function h(s){ return crypto.createHash('sha256').update(String(s)).digest('hex').slice(0,14); }
@@ -74,30 +88,42 @@ function log(m){
   console.log(line);
 }
 
-async function github(){
+async function searchRepos(q){
   const token = process.env.GH_TOKEN||'';
+  const url = `https://api.github.com/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=15`;
+  const res = await fetchWithBackoff(url,{ headers:{'Accept':'application/vnd.github+json','User-Agent':UA,...(token?{'Authorization':`Bearer ${token}`}:{}),'X-GitHub-Api-Version':'2022-11-28'} });
+  if(!res.ok){
+    episodic('hidden_crawl_github_http',{q,status:res.status});
+    return [];
+  }
+  const data = await res.json();
+  episodic('hidden_crawl_github_ok',{q,count:(data.items||[]).length});
+  return data.items||[];
+}
+
+async function github(){
   const seen=new Set();
   let cnt=0;
-  for(const q of KEYWORDS){
+  // 三类发现：关键词 / Topic 聚集 / 近期趋势（早期采用者）
+  const queries = [
+    ...KEYWORDS.map(q => ({ q, kind:'keyword' })),
+    ...TOPICS.map(t => ({ q:`topic:${t}`, kind:'topic' })),
+    { q:`created:>${TRENDING_SINCE} automation data`, kind:'trending' },
+    { q:`created:>${TRENDING_SINCE} mcp agent`, kind:'trending' },
+    { q:`created:>${TRENDING_SINCE} scraper api`, kind:'trending' },
+  ];
+  for(const {q, kind} of queries){
     try{
-      const url = `https://api.github.com/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=15`;
-      const res = await fetchWithBackoff(url,{ headers:{'Accept':'application/vnd.github+json','User-Agent':UA,...(token?{'Authorization':`Bearer ${token}`}:{}),'X-GitHub-Api-Version':'2022-11-28'} });
-      if(!res.ok){
-        episodic('hidden_crawl_github_http',{q,status:res.status});
-        continue;
-      }
-      const data = await res.json();
-      for(const repo of (data.items||[])){
+      for(const repo of await searchRepos(q)){
         if(repo.fork||repo.archived) continue;
         const key=repo.html_url;
         if(seen.has(key)) continue; seen.add(key);
-        const rec={ id:h(key), source:'github', title:repo.full_name, url:key, desc:repo.description||'', lang:repo.language||'', stars:repo.stargazers_count||0, license:repo.license?.spdx_id||'', topics:repo.topics||[], updated_at:repo.updated_at, fetched_at:new Date().toISOString(), auto:true };
+        const rec={ id:h(key), source:'github', kind, title:repo.full_name, url:key, desc:repo.description||'', lang:repo.language||'', stars:repo.stargazers_count||0, license:repo.license?.spdx_id||'', topics:repo.topics||[], updated_at:repo.updated_at, fetched_at:new Date().toISOString(), auto:true };
         append(RAW,rec); cnt++;
-        profile(key,{source:'github',stars:rec.stars}); target({type:'repo', url:key, reason:'github_match'});
+        profile(key,{source:'github',stars:rec.stars,kind}); target({type:'repo', url:key, reason:`github_${kind}`});
       }
-      episodic('hidden_crawl_github_ok',{q,count:(data.items||[]).length});
     }catch(e){ episodic('hidden_crawl_github_err',{q,err:e.message}); }
-    await sleep(2000); // Increased delay
+    await sleep(2000); // 合规延迟，尊重 GitHub API 限速
   }
   // Incremental dedup: only add new URLs to candidates
   const existingCand = load(CAND);
