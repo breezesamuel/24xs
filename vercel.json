@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "crons": [
+    {
+      "path": "/api/internal/hidden/cron",
+      "schedule": "0 3 * * *"
+    }
+  ],
+  "functions": {
+    "api/internal/hidden/*.js": {
+      "runtime": "nodejs20.x",
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    {
+      "src": "/autoops_full.html",
+      "status": 404
+    },
+    {
+      "src": "/autoops.html",
+      "status": 404
+    },
+    {
+      "src": "/autoops_agent.html",
+      "status": 404
+    },
+    {
+      "src": "/autoops/.*",
+      "status": 404
+    }
+  ]
+}
