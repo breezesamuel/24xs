@@ -29,7 +29,7 @@ async function ai(prompt){
   try{
     const res = await fetch(base,{
       method:'POST', headers:{'Authorization':`Bearer ${key}`,'Content-Type':'application/json','HTTP-Referer':'https://app.highkingflower.com','X-Title':'24XS-Hidden-Outreach'},
-      body: JSON.stringify({ model, temperature:0.22, max_tokens:240, messages:[{role:'system',content:'浣犳槸鍏ㄨ嚜鍔ㄥ晢鍔″姪鐞嗐€傜敓鎴愭瀬绠€銆佸悎瑙勭殑棣栨娌熼€氳瘽鏈紙<=32瀛楋級銆備笉澶稿ぇ銆佷笉鎵胯銆佷笉鏁忔劅鐢ㄨ銆?},{role:'user',content:prompt}] })
+      body: JSON.stringify({ model, temperature:0.22, max_tokens:240, messages:[{role:'system',content:'你是全自动商务助理。生成极简、合规的首次沟通话术（<=32字）。不夸大、不承诺、不敏感用语。'},{role:'user',content:prompt}] })
     });
     if(!res.ok){
       const retryable = res.status === 429 || res.status >= 500;
@@ -58,7 +58,7 @@ async function main(){
   const allLeads = load(LEADS);
 
   for(const l of batch){
-    const prompt = `鍘嗗彶缁忛獙锛?{kn||'鏃?}\n绾跨储锛?{l.url}\n璇风敓鎴愪竴鏉″悎瑙勯娆¤瘽鏈紙<=32瀛楋級锛屼粎璋堝彲鑳戒环鍊笺€傚彧杩斿洖璇濇湳銆俙;
+    const prompt = `历史经验：${kn||'无'}\n线索：${l.url}\n请生成一条合规首次话术（<=32字），仅谈可能价值。只返回话术。`;
     const r = await ai(prompt);
     const ts = now();
 
@@ -79,7 +79,7 @@ async function main(){
           rec = { crm_id:`HCRM-${Date.now()}-${d}`, lead_id:l.id, url:l.url, stage:'contacted', owner:'hidden_auto', priority:'high', timeline:[], auto:true, created_at:ts, updated_at:ts };
           crm.push(rec);
         }
-        rec.stage = 'contacted'; rec.timeline.push({ts, act:'auto_contacted', note:'鍏ㄨ嚜鍔ㄥ鍛硷紙妯℃嫙锛?}); rec.updated_at = ts; save(CRM, crm);
+        rec.stage = 'contacted'; rec.timeline.push({ts, act:'auto_contacted', note:'全自动外呼（模拟）'}); rec.updated_at = ts; save(CRM, crm);
         allLeads[idx].contacted = true; allLeads[idx].stage = 'contacted';
         s++;
       }else{
