@@ -6,12 +6,6 @@
       "schedule": "0 3 * * *"
     }
   ],
-  "functions": {
-    "api/internal/hidden/*.js": {
-      "runtime": "nodejs20.x",
-      "maxDuration": 30
-    }
-  },
   "routes": [
     {
       "src": "/autoops_full.html",
