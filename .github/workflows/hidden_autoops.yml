@@ -37,6 +37,13 @@ jobs:
           AI_API_KEY: ${{ secrets.AI_API_KEY }}
           AI_BASE_URL: ${{ secrets.AI_BASE_URL }}
           AI_MODEL: ${{ secrets.AI_MODEL }}
+          AUTOOPS_SECRET: ${{ secrets.AUTOOPS_SECRET }}
+          STOREFRONT_BASE: ${{ secrets.STOREFRONT_BASE }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_AUTH: ${{ secrets.SMTP_AUTH }}
+          SMTP_TO: ${{ secrets.SMTP_TO }}
           HIDDEN_INT_MIN: '15'
         run: |
           echo "Starting orchestrator at $(date -u)"
@@ -73,6 +80,17 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule'
     steps:
-      - name: Check deployment health
+      - name: Ping Vercel cron endpoint
         run: |
-          echo "Health check placeholder - add curl to Vercel /api/internal/hidden/cron or custom health endpoint"
+          HTTP=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://deploy-full-nine.vercel.app/api/internal/hidden/cron || echo "000")
+          echo "cron endpoint HTTP: $HTTP"
+          if [ "$HTTP" != "200" ]; then
+            echo "::warning::Vercel cron endpoint returned $HTTP"
+          fi
+      - name: Ping real storefront
+        run: |
+          HTTP=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://tools.highkingflower.com/api/health || echo "000")
+          echo "storefront health HTTP: $HTTP"
+          if [ "$HTTP" != "200" ]; then
+            echo "::warning::Storefront health returned $HTTP"
+          fi
