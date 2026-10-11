@@ -32,6 +32,8 @@ async function main(){
   await run('agent/hidden_outreach.mjs');
   await run('agent/hidden_crm.mjs');
   await run('agent/hidden_oms.mjs');
+  await run('agent/hidden_pay.mjs');   // 支付网关状态监控 + 待支付处理
+  await run('agent/hidden_realops.mjs'); // 真实收银台桥接（订单/营收/健康/获客）
   await run('agent/hidden_planner.mjs');
 
   if(st.tick % 6 === 0){
