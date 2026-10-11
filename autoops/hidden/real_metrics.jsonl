@@ -1,2 +1,3 @@
 {"at":"2026-10-11T09:02:01.810Z","captured_at":"2026-10-11T09:02:01.668Z","store":"kv-rest","orders":{"total":2,"paid":0,"revenue_cny":0,"plan_dist":{}},"arcade":{"users":0,"total_balance_minutes":0,"invite_links":0},"auto":true}
 {"at":"2026-10-11T15:19:36.099Z","captured_at":"2026-10-11T15:19:35.971Z","store":"kv-rest","orders":{"total":2,"paid":0,"revenue_cny":0,"plan_dist":{}},"arcade":{"users":5,"total_balance_minutes":0,"invite_links":0},"auto":true}
+{"at":"2026-10-11T19:37:08.672Z","captured_at":"2026-10-11T19:37:08.561Z","store":"kv-rest","orders":{"total":2,"paid":0,"revenue_cny":0,"plan_dist":{}},"arcade":{"users":5,"total_balance_minutes":0,"invite_links":0},"auto":true}
