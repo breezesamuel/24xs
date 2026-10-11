@@ -1,0 +1,26 @@
+name: Keepalive (prevent cron disable)
+
+# GitHub 会在公开仓库 60 天无仓库活动时自动禁用 scheduled workflows。
+# 本工作流每 50 天做一次 trivial commit，保持仓库"活跃"。
+on:
+  schedule:
+    - cron: '0 3 */50 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trivial commit
+        run: |
+          git config user.name "autoops-bot"
+          git config user.email "autoops@local"
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > .autoops/keepalive 2>/dev/null || (mkdir -p .autoops && date -u +"%Y-%m-%dT%H:%M:%SZ" > .autoops/keepalive)
+          git add -A .autoops/ || true
+          git commit -m "autoops: keepalive $(date -u +%Y-%m-%d)" || echo "nothing to commit"
+          git push || echo "push failed (already up to date)"
