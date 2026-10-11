@@ -141,10 +141,28 @@ async function checkConversion(){
   return { ok:true };
 }
 
+async function checkAlertChannel(){
+  // 探测告警通道：SMTP 有效性 + KV 兜底可用性
+  try{
+    const res = await fetch(`${STOREFRONT}/api/alert?topic=watchdog-probe&msg=channel-probe`, { signal: AbortSignal.timeout(25000) });
+    const j = await res.json().catch(() => ({}));
+    const ch = j.channel || (j.ok ? 'smtp' : 'unknown');
+    if(ch === 'kv_fallback' || ch === 'none'){
+      await alert('smtp_broken', '[watchdog] SMTP 告警通道失效',
+        `SMTP 认证失败（${j.reason || 'unknown'}），告警已降级为 KV 兜底通道。\n`
+        + `修复：登录 QQ 邮箱 → 设置 → 账户 → 开启 SMTP 服务 → 生成新授权码 → 更新 SMTP_AUTH（16位）。`);
+      return { ok:false, channel: ch, smtp_reason: j.reason || '' };
+    }
+    return { ok:true, channel: ch };
+  }catch(e){
+    await alert('alert_channel_down', '[watchdog] 告警通道探测失败', String(e && e.message || e).slice(0, 200));
+    return { ok:false, error: String(e && e.message || e).slice(0, 120) };
+  }
+}
+
 async function checkPromoQueue(){
   const rows = load(path.join(H, 'real_acquisition.jsonl')).slice(-3);
-  const stuck = rows.length >= 2 && rows.every(r => r && r.cdp_online === false);
-  const pending = rows.length ? rows[rows.length - 1].pending : 0;
+  const stuck = rows.length >= 2 && rows.every(r => r && r.cdp_online === false);  const pending = rows.length ? rows[rows.length - 1].pending : 0;
   if(stuck && pending > 0){
     await alert('promo_queue_stuck', '[watchdog] 推广队列积压',
       `CDP 连续 ${rows.length} 次离线，${pending} 篇推广无法分发 → 零流量 → 零营收。请启动 CDP(:9223) 已登录浏览器。`);
@@ -179,17 +197,39 @@ function checkCredentials(){
 
 async function main(){
   if(!fs.existsSync(H)) fs.mkdirSync(H, { recursive: true });
-  const [hb, sf, conv, promo, files, creds] = await Promise.all([
-    checkHeartbeat(), checkStorefront(), checkConversion(), checkPromoQueue(), checkFiles(), checkCredentials()
+  const [hb, sf, conv, promo, files, creds, alertCh] = await Promise.all([
+    checkHeartbeat(), checkStorefront(), checkConversion(), checkPromoQueue(), checkFiles(), checkCredentials(), checkAlertChannel()
   ]);
-  const allOk = hb.ok && sf.ok && conv.ok && promo.ok && files.ok;
+
+  // 关键故障（会导致零营收/零数据）→ 非零退出码，GitHub Actions 自动发免费告警邮件
+  const critical = [];
+  if(!sf.ok) critical.push('storefront_unhealthy_or_unready');
+  if(!files.ok) critical.push('critical_files_missing');
+  if(hb.ok === false && hb.age_min !== null) critical.push('heartbeat_stale');
+  else if(hb.ok === false && hb.age_min === null) critical.push('heartbeat_absent');
+
+  // 降级项（不阻断，记录+追踪）
+  const degraded = [];
+  if(!conv.ok) degraded.push('zero_paid_streak');
+  if(!promo.ok) degraded.push('promo_queue_stuck');
+  if(!creds.ok) degraded.push('credentials_missing:' + creds.missing.join('+'));
+  if(!alertCh.ok) degraded.push('alert_channel:' + (alertCh.channel || 'error'));
+
   const report = {
     at: now(), heartbeat: hb, storefront: sf, conversion: conv, promo: promo, files: files, credentials: creds,
-    overall: allOk ? 'healthy' : 'degraded'
+    alert_channel: alertCh,
+    overall: critical.length ? 'critical' : (degraded.length ? 'degraded' : 'healthy'),
+    critical, degraded, exit_code: critical.length ? 1 : 0
   };
   append(path.join(H, 'watchdog.jsonl'), report);
-  episodic('hidden_watchdog', { overall: report.overall });
+  episodic('hidden_watchdog', { overall: report.overall, critical: critical.length, degraded: degraded.length });
   console.log(`[hidden_watchdog] ${report.overall} (hb=${hb.ok} storefront=${sf.ok} conv=${conv.ok} promo=${promo.ok} files=${files.ok} creds=${creds.ok})`);
+
+  // 关键故障：显式非零退出（GitHub Actions 免费邮件告警通道）
+  if(critical.length){
+    console.log(`[hidden_watchdog] CRITICAL (exit 1 -> Actions email): ${critical.join(', ')}`);
+    process.exitCode = 1;
+  }
 }
 
 main().catch(e => {
