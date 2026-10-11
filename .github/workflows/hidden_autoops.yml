@@ -14,6 +14,10 @@ permissions:
   contents: read
   actions: write
 
+concurrency:
+  group: hidden-autoops-state-writer
+  cancel-in-progress: false
+
 jobs:
   hidden-orchestrator:
     runs-on: ubuntu-latest
@@ -60,6 +64,7 @@ jobs:
             scripts/hidden/**/*.log
           retention-days: 30
           compression-level: 6
+          if-no-files-found: ignore
 
       - name: Upload Logs on Failure
         if: failure()
@@ -68,7 +73,45 @@ jobs:
           name: hidden-autoops-failure-logs
           path: |
             autoops/hidden/log/
+            autoops/hidden/watchdog.jsonl
           retention-days: 7
+          if-no-files-found: ignore
+
+  # 独立 watchdog 任务：关键故障时独立失败 → GitHub 免费告警邮件
+  watchdog:
+    runs-on: ubuntu-latest
+    needs: hidden-orchestrator
+    if: always()
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci --omit=dev 2>/dev/null || npm install --omit=dev
+      - name: Run Watchdog (exit 1 on critical -> free email alert)
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          AUTOOPS_SECRET: ${{ secrets.AUTOOPS_SECRET }}
+          STOREFRONT_BASE: ${{ secrets.STOREFRONT_BASE }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_AUTH: ${{ secrets.SMTP_AUTH }}
+          SMTP_TO: ${{ secrets.SMTP_TO }}
+        run: node scripts/hidden/agent/hidden_watchdog.mjs
+      - name: Upload watchdog report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hidden-autoops-watchdog
+          path: |
+            autoops/hidden/watchdog.jsonl
+            autoops/hidden/real_alerts.jsonl
+          retention-days: 14
+          if-no-files-found: ignore
 
       - name: Notify on Repeated Failures
         if: failure()
