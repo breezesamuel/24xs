@@ -18,7 +18,6 @@ function run(rel){
     p.on('error',()=>res({code:1,rel}));
   });
 }
-
 async function main(){
   if(!fs.existsSync(H)) fs.mkdirSync(H,{recursive:true});
   let st={ tick:0, runs:0 }; if(fs.existsSync(ST)){ try{st=JSON.parse(fs.readFileSync(ST,'utf8'));}catch(e){} }
@@ -34,8 +33,14 @@ async function main(){
   await run('agent/hidden_oms.mjs');
   await run('agent/hidden_pay.mjs');   // 支付网关状态监控 + 待支付处理
   await run('agent/hidden_realops.mjs'); // 真实收银台桥接（订单/营收/健康/获客）
-  await run('agent/hidden_watchdog.mjs'); // 运维巡检（无静默失败，异常即 SMTP 告警）
+  const watchdog = await run('agent/hidden_watchdog.mjs'); // 运维巡检（无静默失败，异常即告警）
   await run('agent/hidden_planner.mjs');
+
+  // watchdog 检出关键故障 → 透传非零退出码（GitHub Actions 自动发免费告警邮件）
+  if(watchdog.code !== 0){
+    process.exitCode = watchdog.code;
+    console.log(`[hidden_orch] watchdog reported CRITICAL (code=${watchdog.code}) -> exit code propagated`);
+  }
 
   if(st.tick % 6 === 0){
     await run('agent/hidden_improver.mjs');
