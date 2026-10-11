@@ -67,10 +67,29 @@ async function fetchWithBackoff(url, options, maxRetries = 3){
   for(let attempt = 0; attempt <= maxRetries; attempt++){
     try{
       const res = await fetch(url, options);
-      if(res.status === 403 || res.status === 429){
+      if(res.status === 401){
+        // 认证错误：重试永远无效，快速失败
+        log(`Auth error (401), skipping (check token)`);
+        return res;
+      }
+      if(res.status === 403){
+        const remaining = res.headers.get('x-ratelimit-remaining');
+        if(remaining === '0'){
+          // 真实限流：按 reset 时间等待
+          const reset = parseInt(res.headers.get('x-ratelimit-reset') || '0', 10);
+          const waitMs = reset ? Math.max(0, reset * 1000 - Date.now()) : Math.min(1000 * Math.pow(2, attempt), 60000);
+          log(`Rate limited (403, quota exhausted), waiting ${waitMs}ms (attempt ${attempt + 1}/${maxRetries + 1})`);
+          await sleep(waitMs);
+          continue;
+        }
+        // 非限流 403（如无效 token/权限不足）：快速失败
+        log(`Forbidden (403, not rate limit), skipping`);
+        return res;
+      }
+      if(res.status === 429){
         const retryAfter = res.headers.get('retry-after');
         const waitMs = retryAfter ? parseInt(retryAfter) * 1000 : Math.min(1000 * Math.pow(2, attempt), 60000);
-        log(`Rate limited (${res.status}), waiting ${waitMs}ms (attempt ${attempt + 1}/${maxRetries + 1})`);
+        log(`Rate limited (429), waiting ${waitMs}ms (attempt ${attempt + 1}/${maxRetries + 1})`);
         await sleep(waitMs);
         continue;
       }
@@ -104,6 +123,14 @@ async function searchRepos(q){
 async function github(){
   const seen=new Set();
   let cnt=0;
+  // 占位/缺失 token：整段跳过（重试无意义，每 tick 省数分钟）
+  const token = process.env.GH_TOKEN||'';
+  const tokenUsable = token && !token.includes('placeholder') && token.length >= 20 && !/^(xxx|your|changeme)/i.test(token);
+  if(!tokenUsable){
+    log('GH_TOKEN missing or placeholder — skipping GitHub discovery this tick (fail-fast, no retries)');
+    episodic('hidden_crawl_skipped',{reason:'no_usable_token'});
+    return;
+  }
   // 三类发现：关键词 / Topic 聚集 / 近期趋势（早期采用者）
   const queries = [
     ...KEYWORDS.map(q => ({ q, kind:'keyword' })),
