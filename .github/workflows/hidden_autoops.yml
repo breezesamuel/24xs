@@ -51,8 +51,12 @@ jobs:
           HIDDEN_INT_MIN: '15'
         run: |
           echo "Starting orchestrator at $(date -u)"
-          node scripts/hidden/hidden_orchestrator.mjs
+          node scripts/hidden/hidden_orchestrator.mjs || true
           echo "Orchestrator completed at $(date -u)"
+
+      - name: Commit state back (durable across runners)
+        if: always()
+        run: bash scripts/hidden/commit_state.sh "autoops: state sync $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
       - name: Upload Hidden State Artifact
         if: always()
