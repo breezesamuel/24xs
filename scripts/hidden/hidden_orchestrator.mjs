@@ -33,6 +33,7 @@ async function main(){
   await run('agent/hidden_oms.mjs');
   await run('agent/hidden_pay.mjs');   // 支付网关状态监控 + 待支付处理
   await run('agent/hidden_realops.mjs'); // 真实收银台桥接（订单/营收/健康/获客）
+  await run('agent/hidden_followup.mjs'); // 未支付订单挽回（服务端跨设备待付单）
   const watchdog = await run('agent/hidden_watchdog.mjs'); // 运维巡检（无静默失败，异常即告警）
   await run('agent/hidden_planner.mjs');
 
