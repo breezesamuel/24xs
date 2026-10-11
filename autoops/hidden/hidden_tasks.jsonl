@@ -1,3 +1,6 @@
 {"task_id":"HB2","name":"Arcade 零用户 → 分发推广内容","pri":98,"why":"零用户即零留存，内容分发是当前最高杠杆","ts":"2026-10-11T09:02:02.864Z","auto":true}
 {"task_id":"HB1","name":"跟进 2 笔未支付订单","pri":95,"why":"漏斗:2 单 / 0 已付","ts":"2026-10-11T09:02:02.864Z","auto":true}
 {"task_id":"HB6","name":"CRM→OMS 状态机推进","pri":82,"why":"自动流转","ts":"2026-10-11T09:02:02.864Z","auto":true}
+{"task_id":"HB1","name":"跟进 2 笔未支付订单","pri":95,"why":"漏斗:2 单 / 0 已付","ts":"2026-10-11T15:19:37.872Z","auto":true}
+{"task_id":"HB6","name":"CRM→OMS 状态机推进","pri":82,"why":"自动流转","ts":"2026-10-11T15:19:37.872Z","auto":true}
+{"task_id":"HB2","name":"监控 Arcade 活跃与留存","pri":80,"why":"用户 5，余额 0 分钟","ts":"2026-10-11T15:19:37.872Z","auto":true}

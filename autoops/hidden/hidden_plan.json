@@ -1,15 +1,8 @@
 {
-  "ts": "2026-10-11T09:02:02.864Z",
+  "ts": "2026-10-11T15:19:37.871Z",
   "mode": "full_autonomous_hidden",
-  "focus": "Arcade 零用户 → 分发推广内容",
+  "focus": "跟进 2 笔未支付订单",
   "tasks": [
-    {
-      "id": "HB2",
-      "name": "Arcade 零用户 → 分发推广内容",
-      "pri": 98,
-      "why": "零用户即零留存，内容分发是当前最高杠杆",
-      "auto": true
-    },
     {
       "id": "HB1",
       "name": "跟进 2 笔未支付订单",
@@ -22,6 +15,13 @@
       "name": "CRM→OMS 状态机推进",
       "pri": 82,
       "why": "自动流转",
+      "auto": true
+    },
+    {
+      "id": "HB2",
+      "name": "监控 Arcade 活跃与留存",
+      "pri": 80,
+      "why": "用户 5，余额 0 分钟",
       "auto": true
     },
     {
@@ -50,6 +50,6 @@
       "pending": 0,
       "cdp_known": null
     },
-    "arcade_users": 0
+    "arcade_users": 5
   }
 }
