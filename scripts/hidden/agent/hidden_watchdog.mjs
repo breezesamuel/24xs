@@ -33,16 +33,11 @@ function append(p,o){ fs.appendFileSync(p, JSON.stringify(o)+'\n'); }
 function now(){ return new Date().toISOString(); }
 function read(p){ try{ return fs.existsSync(p) ? JSON.parse(fs.readFileSync(p,'utf8')) : null; }catch(e){ return null; } }
 
-// 判断是否"首跑环境"：GitHub Actions / 新机器上 autoops/hidden 尚无任何历史数据。
-// 首跑缺文件/缺心跳属正常，不应判定为核心故障（否则每次运行都会误报告警）。
+// 判断是否"首跑环境"：state.json 是编排器完成一个 tick 后的自标记。
+// GitHub Actions / 新机器上它不存在 → 首跑，缺文件/缺心跳属正常，
+// 不应判定为核心故障（否则每次运行都会误报告警）。
 function isFreshEnv(){
-  const stExists = fs.existsSync(path.join(H, 'state.json'));
-  if(stExists) return false;
-  let jsonl = 0;
-  try{
-    jsonl = fs.readdirSync(H).filter(f => f.endsWith('.jsonl') && fs.statSync(path.join(H, f)).size > 0).length;
-  }catch(e){}
-  return jsonl < 3;
+  return !fs.existsSync(path.join(H, 'state.json'));
 }
 
 /* ---------- 告警：SMTP + 去重（同类告警 6 小时内不重复轰炸） ---------- */
