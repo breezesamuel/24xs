@@ -33,6 +33,18 @@ function append(p,o){ fs.appendFileSync(p, JSON.stringify(o)+'\n'); }
 function now(){ return new Date().toISOString(); }
 function read(p){ try{ return fs.existsSync(p) ? JSON.parse(fs.readFileSync(p,'utf8')) : null; }catch(e){ return null; } }
 
+// 判断是否"首跑环境"：GitHub Actions / 新机器上 autoops/hidden 尚无任何历史数据。
+// 首跑缺文件/缺心跳属正常，不应判定为核心故障（否则每次运行都会误报告警）。
+function isFreshEnv(){
+  const stExists = fs.existsSync(path.join(H, 'state.json'));
+  if(stExists) return false;
+  let jsonl = 0;
+  try{
+    jsonl = fs.readdirSync(H).filter(f => f.endsWith('.jsonl') && fs.statSync(path.join(H, f)).size > 0).length;
+  }catch(e){}
+  return jsonl < 3;
+}
+
 /* ---------- 告警：SMTP + 去重（同类告警 6 小时内不重复轰炸） ---------- */
 const COOLDOWN_MS = 6 * 60 * 60 * 1000;
 function recentAlert(kind){
@@ -96,6 +108,11 @@ async function checkHeartbeat(){
   const freshest = Math.max(hbAt || 0, stAt || 0);
   const ageMin = freshest ? (Date.now() - freshest) / 60000 : Infinity;
   if(!freshest){
+    // 首跑环境（Actions 全新 checkout / 新机器）：心跳缺失属正常，不算故障
+    if(isFreshEnv()){
+      record('heartbeat_absent', 'fresh environment: no prior tick yet', false, 'bootstrap');
+      return { ok:true, note: 'fresh_environment' };
+    }
     await alert('stale_heartbeat_none', '[watchdog] 编排器从未心跳', 'state/heartbeat.json 与 state.json 均缺失或无效');
     return { ok:false, age_min: null };
   }
@@ -178,6 +195,11 @@ async function checkFiles(){
   ];
   const missing = critical.filter(f => !fs.existsSync(path.join(H, f)) || fs.statSync(path.join(H, f)).size === 0);
   if(missing.length){
+    // 首跑环境：文件尚未生成属正常
+    if(isFreshEnv()){
+      record('files_missing', 'fresh environment: ' + missing.join(','), false, 'bootstrap');
+      return { ok:true, note: 'fresh_environment', missing };
+    }
     await alert('files_missing', '[watchdog] 关键数据文件异常', `缺失或为空: ${missing.join(', ')}`);
     return { ok:false, missing };
   }
