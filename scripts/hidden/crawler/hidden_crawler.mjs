@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import crypto from 'crypto';
 import { episodic, profile, target } from '../brain/hidden_brain.mjs';
+import { loadGuard } from '../agent/hidden_guard.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,7 +15,9 @@ const CAND = path.join(H, 'candidates.jsonl');
 const SAFE = path.join(H, 'crawl_safe.jsonl');
 
 const UA = '24XS-HiddenAutoOps/1.0 (+https://app.highkingflower.com)';
-const ALLOW = ['github.com','raw.githubusercontent.com','gist.github.com','github.io'];
+
+// guard 策略（hidden_guard.mjs 写出的策略文件，模块加载时读取，缺失则落默认）
+let GUARD = { enforce_robots:true, domain_allow:['github.com','raw.githubusercontent.com','gist.github.com','github.io'], min_delay_ms:1800, forbid_direct_write_verified:true };
 
 // 关键词库：覆盖数据资产 / API 工具 / 自动化 / Agent 生态
 const KEYWORDS = [
@@ -33,7 +36,16 @@ const TRENDING_SINCE = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOStri
 
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 function h(s){ return crypto.createHash('sha256').update(String(s)).digest('hex').slice(0,14); }
-function append(p,o){ fs.appendFileSync(p, JSON.stringify(o)+'\n'); }
+function append(p,o){
+  // forbid_direct_write_verified: 写入目标必须位于 autoops/hidden 内（策略真实生效，非装饰）
+  if(GUARD.forbid_direct_write_verified){
+    const rel = path.relative(H, p);
+    if(rel.startsWith('..') || path.isAbsolute(rel)){
+      throw new Error('guard: write outside autoops/hidden forbidden -> '+p);
+    }
+  }
+  fs.appendFileSync(p, JSON.stringify(o)+'\n');
+}
 function load(p){ if(!fs.existsSync(p)) return []; return fs.readFileSync(p,'utf8').trim().split('\n').map(l=>{try{return JSON.parse(l)}catch(e){return null}}).filter(Boolean); }
 
 function parseRobots(txt){
@@ -150,7 +162,7 @@ async function github(){
         profile(key,{source:'github',stars:rec.stars,kind}); target({type:'repo', url:key, reason:`github_${kind}`});
       }
     }catch(e){ episodic('hidden_crawl_github_err',{q,err:e.message}); }
-    await sleep(2000); // 合规延迟，尊重 GitHub API 限速
+    await sleep(GUARD.min_delay_ms); // 合规延迟（guard.min_delay_ms），尊重 GitHub API 限速
   }
   // Incremental dedup: only add new URLs to candidates
   const existingCand = load(CAND);
@@ -175,18 +187,26 @@ async function github(){
 }
 
 async function safe(){
-  for(const host of ALLOW){
-    const ok = await canCrawl(host);
-    append(SAFE, {ts:new Date().toISOString(),host,ok});
+  for(const host of GUARD.domain_allow){
+    let ok = true;
+    if(GUARD.enforce_robots){
+      ok = await canCrawl(host);
+    }else{
+      episodic('hidden_guard_robots_disabled',{host});
+    }
+    append(SAFE, {ts:new Date().toISOString(),host,ok,enforced:GUARD.enforce_robots});
     if(!ok) episodic('hidden_crawl_blocked',{host,reason:'robots'});
-    await sleep(1000);
+    await sleep(Math.max(GUARD.min_delay_ms, 1000));
   }
 }
 
 async function main(){
   if(!fs.existsSync(H)) fs.mkdirSync(H,{recursive:true});
+  GUARD = loadGuard();
+  episodic('hidden_guard_loaded',{mode:GUARD.mode, enforce_robots:GUARD.enforce_robots, min_delay_ms:GUARD.min_delay_ms});
   await safe();
   await github();
   episodic('hidden_crawler_cycle',{done:true});
 }
-main();
+
+import.meta.url === pathToFileURL(process.argv[1] || '').href ? main() : null;
