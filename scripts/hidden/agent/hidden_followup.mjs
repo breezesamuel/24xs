@@ -12,11 +12,17 @@
  *   - 已支付订单自动清除对应 ref 的待付单
  *   - 超过 24h 的未付单视为放弃，仍写一次（让用户最后一次看到后过期）
  *   - 需要 AUTOOPS_SECRET（fail-closed：无密钥则记录 deferred）
+ *
+ * 2026-10-12（方案B：AI Planner 执行闭环）：
+ *   - basicFollowupScan()      原有服务端待付单挽回逻辑（保留，作为回退基线）
+ *   - executePlannedFollowup() 链式执行：扫描未付单 → planner 生成计划 → executePlan 执行 → 记录结果
+ *   - main()                   先跑基础挽回，再跑 planner 链式执行（可用 --no-plan 跳过）
  */
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { episodic } from '../brain/hidden_brain.mjs';
+import { buildPlan, executePlan } from './hidden_planner.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -68,13 +74,14 @@ async function callApi(params){
   }
 }
 
-async function main(){
+// ===== 基础挽回（原有逻辑，保留为回退基线）=====
+async function basicFollowupScan(){
   if(!fs.existsSync(H)) fs.mkdirSync(H, { recursive:true });
   const secret = getSecret();
   if(!secret){
     append(path.join(H, 'followup.jsonl'), { at: now(), deferred:true, reason:'no_secret', auto:true });
     console.log('[hidden_followup] deferred: no AUTOOPS_SECRET');
-    return;
+    return { deferred:true, reason:'no_secret' };
   }
 
   const orders = load(REALORD);
@@ -106,9 +113,56 @@ async function main(){
   append(path.join(H, 'followup.jsonl'), rec);
   episodic('hidden_followup', { restored, cleared, skipped, unpaid: unpaid.length });
   console.log(`[hidden_followup] scanned=${unpaid.length} restored=${restored} cleared=${cleared} skipped=${skipped}`);
+  return { unpaid: unpaid.length, restored, cleared, skipped };
 }
 
-main().catch(e => {
-  console.log(`[hidden_followup] error: ${e.message}`);
-  episodic('hidden_followup_error', { error: String(e && e.message || e) });
-});
+// ===== 方案B：planner 计划链式执行 =====
+// 扫描未付单 → planner 生成计划 → executePlan(仅 followup 类型) 执行 → 记录结果
+async function executePlannedFollowup(){
+  const orders = load(REALORD);
+  const unpaid = orders.filter(o => o.status !== 'paid');
+
+  // 1) planner 基于真实状态生成计划
+  const plan = buildPlan();
+
+  // 2) 执行 followup 类动作（话术准备 + 记录；实际投递走服务端待付单渠道）
+  const summary = await executePlan(plan, { kinds: ['followup'] });
+
+  // 3) 记录链式执行结果
+  const result = {
+    at: now(),
+    chain: 'executePlannedFollowup',
+    focus: plan.focus,
+    unpaid_scanned: unpaid.length,
+    executed: summary.results,
+    auto: true
+  };
+  append(path.join(H, 'followup.jsonl'), result);
+  console.log(`[hidden_followup] planned chain: focus=${plan.focus} unpaid=${unpaid.length} kinds=${summary.results.length}`);
+  return result;
+}
+
+async function main(){
+  // 1) 基础服务端待付单挽回（回退基线，始终执行）
+  await basicFollowupScan();
+
+  // 2) 方案B：planner 计划链式执行（可用 --no-plan 跳过）
+  if(process.argv.includes('--no-plan')) return { planned:false };
+  try{
+    await executePlannedFollowup();
+    return { planned:true };
+  }catch(e){
+    console.log(`[hidden_followup] plan chain failed, base scan retained: ${e.message}`);
+    episodic('hidden_followup_plan_error', { error: String(e && e.message || e) });
+    return { planned:false, error: String(e && e.message || e) };
+  }
+}
+
+// 仅在被直接运行时执行（被 import 时不产生副作用）
+const _invokedDirectly = process.argv[1] && path.resolve(process.argv[1]).toLowerCase() === __filename.toLowerCase();
+if(_invokedDirectly){
+  main().catch(e => {
+    console.log(`[hidden_followup] error: ${e.message}`);
+    episodic('hidden_followup_error', { error: String(e && e.message || e) });
+  });
+}
