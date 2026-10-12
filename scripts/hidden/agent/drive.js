@@ -22,6 +22,7 @@ class CDP {
     this.targetId = null;
     this.lastHeartbeat = 0;
     this.heartbeatInterval = null;
+    this.heartbeatTimeout = null;
     this.maxHeartbeatAge = 60000;
     this.closing = false;
   }
