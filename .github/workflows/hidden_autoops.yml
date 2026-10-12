@@ -51,8 +51,13 @@ jobs:
           HIDDEN_INT_MIN: '15'
         run: |
           echo "Starting orchestrator at $(date -u)"
-          node scripts/hidden/hidden_orchestrator.mjs || true
-          echo "Orchestrator completed at $(date -u)"
+          set +e
+          node scripts/hidden/hidden_orchestrator.mjs
+          code=$?
+          echo "Orchestrator exited with code $code at $(date -u)"
+          # 不静默失败：非零退出令本 step 失败（触发 GitHub 免费告警邮件）；
+          # 后续 "if: always()" 步骤仍会回写状态，不会丢数据。
+          exit $code
 
       - name: Commit state back (durable across runners)
         if: always()
@@ -128,13 +133,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule'
     steps:
-      - name: Ping Vercel cron endpoint
-        run: |
-          HTTP=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://deploy-full-nine.vercel.app/api/internal/hidden/cron || echo "000")
-          echo "cron endpoint HTTP: $HTTP"
-          if [ "$HTTP" != "200" ]; then
-            echo "::warning::Vercel cron endpoint returned $HTTP"
-          fi
       - name: Ping real storefront
         run: |
           HTTP=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://tools.highkingflower.com/api/health || echo "000")
