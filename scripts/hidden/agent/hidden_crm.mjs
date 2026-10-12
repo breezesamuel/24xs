@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { episodic, fact } from '../brain/hidden_brain.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,10 +12,10 @@ const CRM = path.join(H, 'crm_auto.jsonl');
 const ORD = path.join(H, 'orders_auto.jsonl');
 
 const STAGE_DELAY_MS = {
-  contacted: 30 * 60 * 1000,      // 30 min to interested
-  interested: 45 * 60 * 1000,     // 45 min to quoted
-  quoted: 60 * 60 * 1000,         // 1 hour to negotiating
-  negotiating: 90 * 60 * 1000     // 1.5 hours to won
+  contacted: 30 * 60 * 1000,
+  interested: 45 * 60 * 1000,
+  quoted: 60 * 60 * 1000,
+  negotiating: 90 * 60 * 1000
 };
 
 function load(p){ if(!fs.existsSync(p)) return []; return fs.readFileSync(p,'utf8').trim().split('\n').map(l=>{try{return JSON.parse(l)}catch(e){return null}}).filter(Boolean); }
@@ -30,22 +30,25 @@ function canAdvance(c, stage, ts){
 
 function main(){
   const crm=load(CRM); const ts=now();
-  let mv=0, ord=0;
+  let mv=0;
   for(const c of crm){
+    // 仅推进阶段（标记为模拟），不自动生成订单
+    // 真实订单由 hidden_realops.ingestOrders 基于 real_storefront 数据写入 orders_auto.jsonl
     if(c.stage==='contacted' && canAdvance(c, 'contacted', ts)){
-      c.stage='interested'; c.timeline.push({ts,act:'auto_mark_interested'}); c.updated_at=ts; mv++;
+      c.stage='interested'; c.timeline.push({ts,act:'auto_mark_interested', note:'模拟推进'}); c.updated_at=ts; mv++;
     }else if(c.stage==='interested' && canAdvance(c, 'interested', ts)){
-      c.stage='quoted'; c.timeline.push({ts,act:'auto_quoted'}); c.updated_at=ts; mv++;
+      c.stage='quoted'; c.timeline.push({ts,act:'auto_quoted', note:'模拟推进'}); c.updated_at=ts; mv++;
     }else if(c.stage==='quoted' && canAdvance(c, 'quoted', ts)){
-      c.stage='negotiating'; c.timeline.push({ts,act:'auto_negotiating'}); c.updated_at=ts; mv++;
+      c.stage='negotiating'; c.timeline.push({ts,act:'auto_negotiating', note:'模拟推进'}); c.updated_at=ts; mv++;
     }else if(c.stage==='negotiating' && !c.won_auto && canAdvance(c, 'negotiating', ts)){
-      c.stage='won'; c.won_auto=true; c.timeline.push({ts,act:'auto_won'}); c.updated_at=ts; mv++;
-      const o={ order_id:`HORD-${Date.now()}-${ord}`, crm_id:c.crm_id, lead_id:c.lead_id, status:'processing', auto:true, auto_confirmed:true, logistics:{carrier:'auto', tracking_no:`HTN-${Date.now()}-${Math.random().toString(36).slice(2,6)}`, status:'processing', events:[]}, timeline:[{ts,act:'auto_created'}], created_at:ts, updated_at:ts };
-      append(ORD,o); fact(`horder_${o.order_id}`, {crm_id:c.crm_id}, 'hidden_oms'); ord++;
+      c.stage='won'; c.won_auto=true; c.timeline.push({ts,act:'auto_won', note:'模拟推进（无真实支付，不生成订单）'}); c.updated_at=ts; mv++;
+      // 不再自动生成 HORD- 订单（避免计时器造单）
+      // 真实订单仅来自 hidden_realops 基于 real_storefront paid 状态
     }
   }
   save(CRM,crm);
-  episodic('hidden_crm_auto',{moved:mv, orders:ord});
-  console.log(`[hidden_crm] mv=${mv} ord=${ord}`);
+  episodic('hidden_crm_auto',{moved:mv, orders:0, note:'no auto order creation'});
+  console.log(`[hidden_crm] mv=${mv} ord=0 (auto order creation disabled)`);
 }
-main();
+
+if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){ main(); }
