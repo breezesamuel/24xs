@@ -1,0 +1,63 @@
+{
+  "at": "2026-10-12T02:55:23.659Z",
+  "overall": "critical",
+  "exit_code": 1,
+  "checks": {
+    "heartbeat": {
+      "ok": false,
+      "age_min": 78,
+      "note": null
+    },
+    "storefront": {
+      "ok": true,
+      "env": {
+        "app": true,
+        "priv": true,
+        "pub": true,
+        "supabase": false,
+        "kv": true
+      },
+      "http": null,
+      "error": null
+    },
+    "conversion": {
+      "ok": false,
+      "streak": 3
+    },
+    "promo": {
+      "ok": false,
+      "pending": 6
+    },
+    "files": {
+      "ok": true,
+      "missing": [],
+      "note": null
+    },
+    "credentials": {
+      "ok": false,
+      "missing": [
+        "OPENROUTER_API_KEY"
+      ]
+    },
+    "alert_channel": {
+      "ok": false,
+      "channel": "kv_fallback",
+      "error": null
+    }
+  },
+  "critical": [
+    "heartbeat_stale"
+  ],
+  "degraded": [
+    "zero_paid_streak",
+    "promo_queue_stuck",
+    "credentials_missing:OPENROUTER_API_KEY",
+    "alert_channel:kv_fallback"
+  ],
+  "active_failures": [
+    "stale_heartbeat",
+    "zero_paid_streak",
+    "promo_queue_stuck",
+    "smtp_broken"
+  ]
+}
