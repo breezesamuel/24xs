@@ -19,6 +19,8 @@ FILES=(
   "autoops/hidden/state/heartbeat.json"
   "autoops/hidden/state/health.json"
   "autoops/hidden/watchdog.jsonl"
+  "autoops/hidden/health_status.json"
+  "autoops/hidden/alert_state.json"
   "autoops/hidden/real_metrics.jsonl"
   "autoops/hidden/hidden_plan.json"
   "autoops/hidden/hidden_tasks.jsonl"
