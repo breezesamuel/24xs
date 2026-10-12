@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -69,3 +69,24 @@ export function all(limit=12){
   return { episodic:load(EP,limit), knowledge:load(KN,limit), facts:load(FA,limit), profiles:load(PR,limit), conversations:load(CV,limit), targets:load(TG,limit) };
 }
 export default { episodic, knowledge, fact, profile, conversation, target, recall, all };
+
+function countLines(p){
+  if(!fs.existsSync(p)||!fs.statSync(p).size) return 0;
+  return fs.readFileSync(p,'utf8').trim().split('\n').filter(l=>l.trim()).length;
+}
+
+// 直接运行时执行一个大脑周期（供 verify_pipeline 阶段 13「自进化」/ 16「记忆」真实执行，
+// 此前无 CLI 入口 → spawn 后立即空退出，✅ 通过但什么都没做）。
+function brainCycle(){
+  ensure();
+  episodic('hidden_brain_epoch', { reason:'standalone_cycle' });
+  const stats = {
+    episodic:countLines(EP), knowledge:countLines(KN), facts:countLines(FA),
+    profiles:countLines(PR), conversations:countLines(CV), targets:countLines(TG)
+  };
+  console.log(`[hidden_brain] epoch recorded ${JSON.stringify(stats)}`);
+}
+
+if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){
+  brainCycle();
+}
