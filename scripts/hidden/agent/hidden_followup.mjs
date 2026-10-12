@@ -20,7 +20,7 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { episodic } from '../brain/hidden_brain.mjs';
 import { buildPlan, executePlan } from './hidden_planner.mjs';
 
@@ -159,8 +159,7 @@ async function main(){
 }
 
 // 仅在被直接运行时执行（被 import 时不产生副作用）
-const _invokedDirectly = process.argv[1] && path.resolve(process.argv[1]).toLowerCase() === __filename.toLowerCase();
-if(_invokedDirectly){
+if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){
   main().catch(e => {
     console.log(`[hidden_followup] error: ${e.message}`);
     episodic('hidden_followup_error', { error: String(e && e.message || e) });
