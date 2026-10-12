@@ -18,7 +18,7 @@
 import fs from 'fs';
 import path from 'path';
 import http from 'http';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import tls from 'tls';
 import { episodic } from '../brain/hidden_brain.mjs';
 
@@ -417,8 +417,7 @@ async function serve(port = 8787){
 }
 
 // 仅在被直接运行时执行（被 import 时不产生副作用）
-const _invokedDirectly = process.argv[1] && path.resolve(process.argv[1]).toLowerCase() === __filename.toLowerCase();
-if(_invokedDirectly){
+if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){
   if(process.argv.includes('--json')){
     // 只读输出健康 JSON；--strict 时以 exit_code 退出（便于脚本门禁）
     getHealthStatus({ alert: false, audit: false })
