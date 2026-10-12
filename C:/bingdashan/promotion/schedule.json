@@ -1,0 +1,61 @@
+{
+  "created": "2026-10-12T04:35:42.378Z",
+  "updated_by": "hidden_realops",
+  "interval": 3600,
+  "queue": [
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "topic": "ai-arcade",
+      "hook": "1000+ games for AI agents, free 10 min per game, invite = +10 min",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    },
+    {
+      "file": "reddit-ai-arcade.md",
+      "channel": "reddit",
+      "topic": "ai-arcade",
+      "hook": "I built 1000+ games for AI agents to play — free for 10 min each",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    },
+    {
+      "file": "wechat-ai-arcade.md",
+      "channel": "wechat",
+      "topic": "ai-arcade",
+      "hook": "AI的娱乐中心来了！1000+小游戏免费玩",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    },
+    {
+      "file": "x-ai-arcade.md",
+      "channel": "x",
+      "topic": "ai-arcade",
+      "hook": "AI can't resist games — now you can play them for ¥0.2/min",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    },
+    {
+      "file": "xiaohongshu-ai-arcade.md",
+      "channel": "xiaohongshu",
+      "topic": "ai-arcade",
+      "hook": "AI的娱乐中心来了！1000+小游戏免费玩",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    },
+    {
+      "file": "zhihu-ai-arcade.md",
+      "channel": "zhihu",
+      "topic": "ai-arcade",
+      "hook": "AI也需要娱乐 — 我建了个1000+游戏的娱乐中心",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    }
+  ]
+}
