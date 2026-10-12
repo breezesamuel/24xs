@@ -262,9 +262,16 @@ async function acquisition(){
   if(cdp && pending.length && fs.existsSync(DISTRIBUTOR)){
     const next = pending[0];
     const p = spawn('node', [DISTRIBUTOR, 'post', next.channel, next.file], { cwd: PROMO_DIR, stdio: 'ignore' });
-    await new Promise(res => { p.on('close', () => res()); p.on('error', () => res()); });
-    next.posted = true;
-    dispatched = 1;
+    const code = await new Promise(res => { p.on('close', c => res(c)); p.on('error', () => res(-1)); });
+    if(code === 0){
+      next.posted = true;
+      next.posted_at = now();
+      dispatched = 1;
+    }else{
+      // 分发失败：绝不假装已发帖（fail-closed）
+      next.last_error = 'distributor_exit_' + code + ' @ ' + now();
+      episodic('hidden_realops_post_failed', { file: next.file, channel: next.channel, exit: code });
+    }
     fs.writeFileSync(SCHEDULE, JSON.stringify(schedule, null, 2));
   }
 
