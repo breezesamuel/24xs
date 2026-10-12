@@ -25,6 +25,7 @@ import tls from 'tls';
 import { spawn } from 'child_process';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { episodic, fact, target } from '../brain/hidden_brain.mjs';
+import { settleCallback, verifyCallback } from './hidden_pay.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -140,6 +141,33 @@ async function ingestOrders(stats){
   if(paidAdded) save(ORD, orders);
   if(added) episodic('hidden_realops_orders', { ingested: added, paid: paidAdded });
   return { new_orders: added, new_paid: paidAdded };
+}
+
+/* ---- 2b. 支付回调处理（fail-closed：验签失败不落单） ---- */
+async function processPaymentCallbacks(){
+  // 从收银台拉取待确认的支付通知（需 AUTOOPS_SECRET）
+  const secret = getSecret();
+  if(!secret) return { processed: 0, reason: 'no_secret' };
+  try{
+    const r = await fetch(`${STOREFRONT}/api/pending?k=${encodeURIComponent(secret)}&op=list`, { signal: AbortSignal.timeout(15000) });
+    if(!r.ok) return { processed: 0, reason: `http_${r.status}` };
+    const data = await r.json();
+    const pending = data.pending || [];
+    let processed = 0;
+    for(const p of pending){
+      // p: { method, payment_id, payload, signature, out_trade_no }
+      const res = settleCallback({
+        payment_id: p.payment_id,
+        method: p.method || 'alipay',
+        payload: p.payload,
+        signature: p.signature
+      });
+      if(res.ok) processed++;
+    }
+    return { processed };
+  }catch(e){
+    return { processed: 0, reason: e.message };
+  }
 }
 
 /* ---- 3. 健康检查 + SMTP 告警 ---- */
@@ -291,6 +319,8 @@ async function main(){
   let ordersRes = { new_orders: 0, new_paid: 0 };
   if(statsRes.ok) ordersRes = await ingestOrders(statsRes.stats);
 
+  const payCb = await processPaymentCallbacks();
+
   const health = await healthCheck();
   const acq = await acquisition();
 
@@ -298,10 +328,11 @@ async function main(){
     at: t0,
     stats: statsRes.ok ? 'ok' : `deferred:${statsRes.reason}`,
     orders: ordersRes,
+    pay_callbacks: payCb,
     health: { ok: health.ok, ready: health.ready },
     acquisition: { posts: acq.posts || 0, pending: acq.pending || 0, cdp: acq.cdp_online, dispatched: acq.dispatched || 0 },
   };
-  console.log(`[hidden_realops] stats=${summary.stats} orders=+${ordersRes.new_orders}(paid+${ordersRes.new_paid}) health=${health.ok ? 'ok' : 'DOWN'} acq=${acq.pending || 0} pending cdp=${acq.cdp_online ? 'online' : 'offline'}`);
+  console.log(`[hidden_realops] stats=${summary.stats} orders=+${ordersRes.new_orders}(paid+${ordersRes.new_paid}) pay_cb=${payCb.processed || 0} health=${health.ok ? 'ok' : 'DOWN'} acq=${acq.pending || 0} pending cdp=${acq.cdp_online ? 'online' : 'offline'}`);
   episodic('hidden_realops_tick', summary);
 }
 
