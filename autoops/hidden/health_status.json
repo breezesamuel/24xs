@@ -1,11 +1,11 @@
 {
-  "at": "2026-10-12T02:55:23.659Z",
-  "overall": "critical",
-  "exit_code": 1,
+  "at": "2026-10-12T03:19:06.106Z",
+  "overall": "degraded",
+  "exit_code": 0,
   "checks": {
     "heartbeat": {
-      "ok": false,
-      "age_min": 78,
+      "ok": true,
+      "age_min": 24,
       "note": null
     },
     "storefront": {
@@ -45,9 +45,7 @@
       "error": null
     }
   },
-  "critical": [
-    "heartbeat_stale"
-  ],
+  "critical": [],
   "degraded": [
     "zero_paid_streak",
     "promo_queue_stuck",
@@ -55,7 +53,6 @@
     "alert_channel:kv_fallback"
   ],
   "active_failures": [
-    "stale_heartbeat",
     "zero_paid_streak",
     "promo_queue_stuck",
     "smtp_broken"
