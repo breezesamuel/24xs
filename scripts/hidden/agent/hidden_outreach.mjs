@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { episodic, recall, conversation } from '../brain/hidden_brain.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -72,16 +72,17 @@ async function main(){
 
       if(r.ok){
         conversation(l.id, 'auto_outreach', dr.text);
-        append(SENT, { sid:`HS-${Date.now()}-${s++}`, lead_id:l.id, text:dr.text, channel:'auto_sim', status:'sent', auto:true, sent_at:ts });
+        // 诚实记录：无真实投递渠道（CDP/邮件/API 均未接入），仅生成话术草稿
+        append(SENT, { sid:`HS-${Date.now()}-${s++}`, lead_id:l.id, text:dr.text, channel:'none', status:'drafted', auto:true, drafted_at:ts, note:'无真实投递渠道，仅生成草稿' });
         const crm = load(CRM);
         let rec = crm.find(x => x.lead_id === l.id);
         if(!rec){
-          rec = { crm_id:`HCRM-${Date.now()}-${d}`, lead_id:l.id, url:l.url, stage:'contacted', owner:'hidden_auto', priority:'high', timeline:[], auto:true, created_at:ts, updated_at:ts };
+          rec = { crm_id:`HCRM-${Date.now()}-${d}`, lead_id:l.id, url:l.url, stage:'drafted', owner:'hidden_auto', priority:'high', timeline:[], auto:true, created_at:ts, updated_at:ts };
           crm.push(rec);
         }
-        rec.stage = 'contacted'; rec.timeline.push({ts, act:'auto_contacted', note:'全自动外呼（模拟）'}); rec.updated_at = ts; save(CRM, crm);
-        allLeads[idx].contacted = true; allLeads[idx].stage = 'contacted';
-        s++;
+        rec.stage = 'drafted'; rec.timeline.push({ts, act:'auto_drafted', note:'生成外呼草稿（无真实投递渠道）'}); rec.updated_at = ts; save(CRM, crm);
+        // 不标记 contacted（无真实触达）
+        d++; s++;
       }else{
         // Defer - don't mark as contacted, will retry next tick if retryable
         if(r.retryable && allLeads[idx].outreach_attempts < 5){
@@ -97,7 +98,7 @@ async function main(){
   }
 
   save(LEADS, allLeads);
-  episodic('hidden_outreach_auto', {drafted: d, sent: s, deferred, total_pending: leads.length});
-  console.log(`[hidden_outreach] ${d} processed, ${s} sent, ${deferred} deferred`);
+  episodic('hidden_outreach_auto', {drafted: d, sent: 0, deferred, total_pending: leads.length, note:'sent=0 因无真实投递渠道'});
+  console.log(`[hidden_outreach] ${d} processed, 0 sent (no delivery channel), ${deferred} deferred`);
 }
-main();
+if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){ main(); }
