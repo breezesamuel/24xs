@@ -40,6 +40,16 @@ function append(p,o){ fs.appendFileSync(p, JSON.stringify(o)+'\n'); }
 function save(p,arr){ fs.writeFileSync(p, arr.map(x=>JSON.stringify(x)).join('\n')+(arr.length?'\n':'')); }
 function now(){ return new Date().toISOString(); }
 function h(s){ return crypto.createHash('sha256').update(String(s)).digest('hex').slice(0,14); }
+function amountOf(v){ const n = parseFloat(v); return Number.isFinite(n) ? Math.round(n * 100) / 100 : null; }
+
+const REJECT = path.join(H, 'payments_reject.jsonl');
+/** 记录被拒回调（fail-closed 的可观测性：绝不静默拒绝） */
+function reject(method, payment_id, reason, extra){
+  const rec = { at: now(), method, payment_id: payment_id || null, reason, auto: true, ...(extra || {}) };
+  try{ append(REJECT, rec); }catch(e){}
+  episodic('hidden_pay_rejected', { method, payment_id: payment_id || null, reason });
+  return rec;
+}
 
 /** 网关配置状态（只报告缺失项，不打印任何密钥值） */
 export function gatewayStatus(method){
@@ -118,36 +128,42 @@ export function verifyCallback(method, payload, signature){
 
 /* ---- 支付宝 RSA2 验签（真实实现，凭据齐全时生效） ---- */
 function verifyAlipay(payload, signature){
-  const priv = process.env.ALIPAY_PRIVATE_KEY || '';
   const pub  = process.env.ALIPAY_PUBLIC_KEY  || '';
+  if(!pub) return { valid: false, reason: 'alipay public key missing' };
   // 支付宝回调：用支付宝公钥验签 sign
   const signStr = canonicalQueryString(payload);
-  const ok = rsaVerify(signStr, signature, pub);
-  return ok
-    ? { valid: true, order_id: payload.out_trade_no || payload.outTradeNo, amount: parseFloat(payload.total_amount || payload.totalAmount) }
-    : { valid: false, reason: 'alipay signature mismatch' };
+  if(!rsaVerify(signStr, signature, pub)) return { valid: false, reason: 'alipay signature mismatch' };
+  const amount = amountOf(payload.total_amount || payload.totalAmount);
+  if(amount === null) return { valid: false, reason: 'alipay amount missing/invalid' };
+  return { valid: true, order_id: payload.out_trade_no || payload.outTradeNo, amount, seller: payload.seller_id || '' };
 }
 
 /* ---- MoltsPay HMAC 验签 ---- */
 function verifyMoltspay(payload, signature){
   const secret = process.env.MOLTSPAY_WEBHOOK_SECRET || '';
+  if(!secret) return { valid: false, reason: 'moltspay secret missing' };
+  const obj = (typeof payload === 'string') ? (() => { try{ return JSON.parse(payload); }catch(e){ return null; } })() : payload;
+  if(!obj) return { valid: false, reason: 'moltspay payload not JSON' };
   const body = typeof payload === 'string' ? payload : JSON.stringify(payload);
   const expect = crypto.createHmac('sha256', secret).update(body).digest('hex');
-  const ok = timingSafeEqual(expect, String(signature || ''));
-  return ok
-    ? { valid: true, order_id: payload.order_id || payload.orderId, amount: parseFloat(payload.amount) }
-    : { valid: false, reason: 'moltspay hmac mismatch' };
+  if(!timingSafeEqual(expect, String(signature || ''))) return { valid: false, reason: 'moltspay hmac mismatch' };
+  const amount = amountOf(obj.amount);
+  if(amount === null) return { valid: false, reason: 'moltspay amount missing/invalid' };
+  return { valid: true, order_id: obj.order_id || obj.orderId, amount };
 }
 
 /* ---- x402 验签 ---- */
 function verifyX402(payload, signature){
   const secret = process.env.X402_SECRET || '';
+  if(!secret) return { valid: false, reason: 'x402 secret missing' };
+  const obj = (typeof payload === 'string') ? (() => { try{ return JSON.parse(payload); }catch(e){ return null; } })() : payload;
+  if(!obj) return { valid: false, reason: 'x402 payload not JSON' };
   const body = typeof payload === 'string' ? payload : JSON.stringify(payload);
   const expect = crypto.createHmac('sha256', secret).update(body).digest('hex');
-  const ok = timingSafeEqual(expect, String(signature || ''));
-  return ok
-    ? { valid: true, order_id: payload.order_id, amount: parseFloat(payload.amount) }
-    : { valid: false, reason: 'x402 hmac mismatch' };
+  if(!timingSafeEqual(expect, String(signature || ''))) return { valid: false, reason: 'x402 hmac mismatch' };
+  const amount = amountOf(obj.amount);
+  if(amount === null) return { valid: false, reason: 'x402 amount missing/invalid' };
+  return { valid: true, order_id: obj.order_id, amount };
 }
 
 function rsaVerify(data, signature, publicKeyPem){
@@ -175,14 +191,40 @@ function canonicalQueryString(params){
 }
 
 /**
+ * fail-closed 回调结算：验签 → 定位支付单 → 交叉校验订单号/金额 → 确认。
+ * 任一步失败 → 拒绝并写 payments_reject.jsonl（绝不静默）。
+ */
+export function settleCallback({ payment_id, method, payload, signature }){
+  const v = verifyCallback(method, payload, signature);
+  if(!v.valid){ reject(method, payment_id, 'verify_failed: ' + (v.reason || '')); return { ok: false, reason: v.reason }; }
+  const pay = load(PAY).find(p => p.payment_id === payment_id);
+  if(!pay){ reject(method, payment_id, 'payment_not_found', { order_id: v.order_id }); return { ok: false, reason: 'payment not found' }; }
+  return confirmOrder(payment_id, v);
+}
+
+/**
  * 支付成功后确认订单：把订单从 pending 推进到 processing（待发货）。
- * 由 webhook 调用，验签通过后才执行。
+ * 由 webhook 调用，验签通过后才执行。fail-closed：金额/订单号不符一律拒绝。
  */
 export function confirmOrder(paymentId, verifyResult){
   const pays = load(PAY);
   const pay = pays.find(p => p.payment_id === paymentId);
   if(!pay) return { ok: false, reason: 'payment not found' };
+  if(verifyResult && verifyResult.valid === false) return { ok: false, reason: 'verifyResult invalid: ' + (verifyResult.reason || '') };
   if(pay.status === 'paid') return { ok: true, already: true, order_id: pay.order_id };
+
+  // 金额校验（防篡改/错单）：期望金额必须合法，回调金额（若有）必须一致（±0.01）
+  const expected = amountOf(pay.amount);
+  if(expected === null){ reject(pay.method, pay.payment_id, 'stored_amount_invalid', { amount: pay.amount }); return { ok: false, reason: 'stored amount invalid' }; }
+  if(verifyResult && verifyResult.amount !== undefined && verifyResult.amount !== null && Math.abs(expected - verifyResult.amount) > 0.01){
+    reject(pay.method, pay.payment_id, 'amount_mismatch', { expected, got: verifyResult.amount });
+    return { ok: false, reason: `amount mismatch (expected ${expected}, got ${verifyResult.amount})` };
+  }
+  // 订单号交叉校验
+  if(verifyResult && verifyResult.order_id && pay.order_id && verifyResult.order_id !== pay.order_id){
+    reject(pay.method, pay.payment_id, 'order_id_mismatch', { expected: pay.order_id, got: verifyResult.order_id });
+    return { ok: false, reason: 'order_id mismatch' };
+  }
 
   pay.status = 'paid';
   pay.paid_at = now();
@@ -216,5 +258,7 @@ if(process.argv[1] && process.argv[1].endsWith('hidden_pay.mjs')){
     console.log(`  ${g.method.padEnd(9)} ${g.configured ? 'CONFIGURED' : 'NOT CONFIGURED (missing: ' + g.missing.join(', ') + ')'}`);
   }
   const pays = load(PAY);
+  // 确保支付流水文件存在（首笔支付前为空文件），避免 watchdog 误判“关键文件缺失”
+  if(!fs.existsSync(PAY)){ try{ fs.writeFileSync(PAY, ''); }catch(e){} }
   console.log(`[hidden_pay] total payment records: ${pays.length}`);
 }
