@@ -45,7 +45,7 @@ const STAGES = [
   ['12-自学习',    A + 'hidden_improver.mjs'],
   ['13-自进化',    'scripts/hidden/brain/hidden_brain.mjs'],
   ['14-内容官',    A + 'hidden_planner.mjs'],
-  ['15-巡检',      A + 'hidden_watchdog.mjs'],
+  ['15-巡检',      A + 'hidden_watchdog.mjs --json'],
   ['16-记忆',      'scripts/hidden/brain/hidden_brain.mjs'],
 ];
 
