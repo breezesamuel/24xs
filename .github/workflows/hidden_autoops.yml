@@ -28,7 +28,7 @@ jobs:
       - name: Checkout (pinned)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Run zizmor (static analysis for GitHub Actions)
-        uses: zizmor-core/zizmor-action@main
+        uses: zizmorcore/zizmor-action@main
       - name: Run actionlint
         run: |
           curl -sSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download_actionlint.bash | bash
@@ -48,7 +48,6 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --omit=dev 2>/dev/null || npm install --omit=dev
