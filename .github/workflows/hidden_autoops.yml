@@ -10,26 +10,45 @@ on:
         required: false
         type: boolean
 
-permissions:
-  contents: write
-  actions: write
+# Default permissions denied; each job declares minimum needed
+permissions: {}
 
 concurrency:
   group: hidden-autoops-state-writer
   cancel-in-progress: false
 
 jobs:
+  # Security lint (zizmor + actionlint) — runs fast, blocks known bad patterns
+  security-lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout (pinned)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Run zizmor (static analysis for GitHub Actions)
+        uses: zizmor-core/zizmor-action@main
+      - name: Run actionlint
+        run: |
+          curl -sSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download_actionlint.bash | bash
+          ./actionlint -color
+
   hidden-orchestrator:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Minimal: read repo, write only for commit step
+    permissions:
+      contents: read
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout repository (pinned)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js (pinned)
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --omit=dev 2>/dev/null || npm install --omit=dev
@@ -61,12 +80,15 @@ jobs:
 
       - name: Commit state back (durable across runners)
         if: always()
+        # Need write for push; escalate only for this step
+        permissions:
+          contents: write
         run: |
           bash scripts/hidden/commit_state.sh "autoops: state sync $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
       - name: Upload Hidden State Artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: hidden-autoops-state
           path: |
@@ -78,7 +100,7 @@ jobs:
 
       - name: Upload Logs on Failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: hidden-autoops-failure-logs
           path: |
@@ -93,10 +115,13 @@ jobs:
     needs: hidden-orchestrator
     if: always()
     timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Checkout (pinned)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup Node.js (pinned)
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '20'
       - name: Install dependencies
@@ -114,7 +139,7 @@ jobs:
         run: node scripts/hidden/agent/hidden_watchdog.mjs
       - name: Upload watchdog report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: hidden-autoops-watchdog
           path: |
@@ -132,6 +157,9 @@ jobs:
   health-check:
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule'
+    timeout-minutes: 5
+    permissions:
+      contents: read
     steps:
       - name: Ping real storefront
         run: |
