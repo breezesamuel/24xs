@@ -31,29 +31,29 @@ const ROOT = path.resolve(__dirname, '../..');
 const A = 'scripts/hidden/agent/';
 
 const STAGES = [
-  ['01-采集',      'scripts/hidden/crawler/hidden_crawler.mjs'],
-  ['02-入库',      'scripts/hidden/crawler/hidden_crawler.mjs'],
-  ['03-上架',      A + 'hidden_finder.mjs'],
-  ['04-定价',      A + 'hidden_pay.mjs'],
-  ['05-订单路由',  A + 'hidden_crm.mjs'],
-  ['06-物流',      A + 'hidden_oms.mjs'],
-  ['07-售后',      A + 'hidden_oms.mjs'],
-  ['08-外联',      A + 'hidden_outreach.mjs'],
-  ['09-跟进',      A + 'hidden_followup.mjs'],
-  ['10-数据闭环',  A + 'hidden_realops.mjs'],
-  ['11-蜘蛛发现',  A + 'hidden_leads.mjs'],
-  ['12-自学习',    A + 'hidden_improver.mjs'],
-  ['13-自进化',    'scripts/hidden/brain/hidden_brain.mjs'],
-  ['14-内容官',    A + 'hidden_planner.mjs'],
-  ['15-巡检',      A + 'hidden_watchdog.mjs --json'],
-  ['16-记忆',      'scripts/hidden/brain/hidden_brain.mjs'],
+  ['01-采集',      ['scripts/hidden/crawler/hidden_crawler.mjs']],
+  ['02-入库',      ['scripts/hidden/crawler/hidden_crawler.mjs']],
+  ['03-上架',      [A + 'hidden_finder.mjs']],
+  ['04-定价',      [A + 'hidden_pay.mjs']],
+  ['05-订单路由',  [A + 'hidden_crm.mjs']],
+  ['06-物流',      [A + 'hidden_oms.mjs']],
+  ['07-售后',      [A + 'hidden_oms.mjs']],
+  ['08-外联',      [A + 'hidden_outreach.mjs']],
+  ['09-跟进',      [A + 'hidden_followup.mjs']],
+  ['10-数据闭环',  [A + 'hidden_realops.mjs']],
+  ['11-蜘蛛发现',  [A + 'hidden_leads.mjs']],
+  ['12-自学习',    [A + 'hidden_improver.mjs']],
+  ['13-自进化',    ['scripts/hidden/brain/hidden_brain.mjs']],
+  ['14-内容官',    [A + 'hidden_planner.mjs']],
+  ['15-巡检',      [A + 'hidden_watchdog.mjs', '--json']],
+  ['16-记忆',      ['scripts/hidden/brain/hidden_brain.mjs']],
 ];
 
-function runOnce(rel, timeoutMs) {
+function runOnce(args, timeoutMs) {
   return new Promise(resolve => {
-    const abs = path.join(ROOT, rel);
     const t0 = Date.now();
-    const p = spawn('node', [abs], { cwd: ROOT });
+    // 显式传递父进程环境（含 GH_TOKEN），确保子进程可读远程状态
+    const p = spawn('node', args, { cwd: ROOT, env: process.env });
     let out = '';
     p.stdout.on('data', d => { out += d.toString(); });
     p.stderr.on('data', d => { out += d.toString(); });
@@ -69,8 +69,8 @@ function runOnce(rel, timeoutMs) {
 
   console.log(`\n=== 16 工作流阶段验收（阈值 ${LIMIT / 1000}s） ===\n`);
   const rows = [];
-  for (const [name, rel] of STAGES) {
-    const r = await runOnce(rel, LIMIT);
+  for (const [name, args] of STAGES) {
+    const r = await runOnce(args, LIMIT);
     const ok = !r.timedOut && r.code === 0;
     const ms = (r.ms / 1000).toFixed(1);
     const lines = r.out.trim().split('\n');
