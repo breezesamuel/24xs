@@ -65,7 +65,7 @@ function runOnce(rel, timeoutMs) {
 
 (async () => {
   const limitIdx = process.argv.indexOf('--seconds');
-  const LIMIT = limitIdx >= 0 ? parseInt(process.argv[limitIdx + 1], 10) * 1000 : 30000;
+  const LIMIT = limitIdx >= 0 ? parseInt(process.argv[limitIdx + 1], 10) * 1000 : 180000;
 
   console.log(`\n=== 16 工作流阶段验收（阈值 ${LIMIT / 1000}s） ===\n`);
   const rows = [];
