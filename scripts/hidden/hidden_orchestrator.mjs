@@ -22,6 +22,11 @@ async function main(){
   if(!fs.existsSync(H)) fs.mkdirSync(H,{recursive:true});
   let st={ tick:0, runs:0 }; if(fs.existsSync(ST)){ try{st=JSON.parse(fs.readFileSync(ST,'utf8'));}catch(e){} }
   st.tick=(st.tick||0)+1; st.runs=(st.runs||0)+1; st.mode='full_autonomous_hidden';
+  // 心跳 = tick 开始即写。watchdog 在本 tick 中途运行，若只在 tick 末写入，
+  // 它读到的永远是上一轮时间戳；GitHub Actions 调度延迟数小时时会被误判 heartbeat_stale。
+  // 语义：tick 不启动 = 编排器死亡；tick 中途挂起 = 下次巡检 age 超阈值 → 正确告警。
+  st.last_tick=new Date().toISOString();
+  try{ fs.writeFileSync(ST, JSON.stringify(st,null,2)); }catch(e){}
   episodic('hidden_orch_start',{tick:st.tick});
 
   await run('agent/hidden_guard.mjs');
