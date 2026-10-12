@@ -1,11 +1,11 @@
 {
-  "at": "2026-10-12T03:38:14.859Z",
+  "at": "2026-10-12T03:56:34.872Z",
   "overall": "degraded",
   "exit_code": 0,
   "checks": {
     "heartbeat": {
       "ok": true,
-      "age_min": 19,
+      "age_min": 1,
       "note": null
     },
     "storefront": {
