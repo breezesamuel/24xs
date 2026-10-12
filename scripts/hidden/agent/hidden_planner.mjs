@@ -69,19 +69,11 @@ function leadGrades(){
 }
 
 function pendingPromos(){
-  // 存在两份 schedule.json（仓库内 promotion/ 与 C:/bingdashan/promotion/，被不同模块写入）
-  // 取并集口径：pending/posts 取最大值，cdp_known 取任一明确值
-  const sources = [ path.join(ROOT, 'promotion/schedule.json'), SCHEDULE ];
-  let pending = 0, posts = 0, cdp = null;
-  for(const p of sources){
-    const s = read(p);
-    if(!s || !Array.isArray(s.queue)) continue;
-    posts = Math.max(posts, s.queue.length);
-    pending = Math.max(pending, s.queue.filter(q => !q.posted).length);
-    if(s.cdp_known === true) cdp = true;
-    else if(s.cdp_known === false && cdp === null) cdp = false;
-  }
-  return { posts, pending, cdp_known: cdp };
+  // 单一数据源：C:/bingdashan/promotion/schedule.json（hidden_realops 写入、content-distributor 读取、planner 读取）
+  // 仓库内 promotion/schedule.json 由同步脚本单向同步，不作为运行时数据源
+  const s = read(SCHEDULE);
+  if(!s || !Array.isArray(s.queue)) return { posts: 0, pending: 0, cdp_known: null };
+  return { posts: s.queue.length, pending: s.queue.filter(q => !q.posted).length, cdp_known: s.cdp_known ?? null };
 }
 
 // ===== 方案B：执行器 =====
