@@ -1,11 +1,11 @@
 {
-  "at": "2026-10-12T05:10:55.725Z",
-  "overall": "critical",
-  "exit_code": 1,
+  "at": "2026-10-12T11:32:45.451Z",
+  "overall": "degraded",
+  "exit_code": 0,
   "checks": {
     "heartbeat": {
-      "ok": false,
-      "age_min": 74,
+      "ok": true,
+      "age_min": 0,
       "note": null
     },
     "storefront": {
@@ -25,8 +25,8 @@
       "streak": 3
     },
     "promo": {
-      "ok": false,
-      "pending": 6
+      "ok": true,
+      "pending": 0
     },
     "files": {
       "ok": true,
@@ -36,7 +36,7 @@
     "credentials": {
       "ok": false,
       "missing": [
-        "OPENROUTER_API_KEY"
+        "GH_TOKEN"
       ]
     },
     "alert_channel": {
@@ -45,19 +45,14 @@
       "error": null
     }
   },
-  "critical": [
-    "heartbeat_stale"
-  ],
+  "critical": [],
   "degraded": [
     "zero_paid_streak",
-    "promo_queue_stuck",
-    "credentials_missing:OPENROUTER_API_KEY",
+    "credentials_missing:GH_TOKEN",
     "alert_channel:kv_fallback"
   ],
   "active_failures": [
-    "stale_heartbeat",
     "zero_paid_streak",
-    "promo_queue_stuck",
     "smtp_broken"
   ]
 }
