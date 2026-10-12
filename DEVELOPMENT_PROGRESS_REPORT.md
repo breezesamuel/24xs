@@ -255,6 +255,51 @@ console.log('已发布:', j.queue.filter(q=>q.posted).length, '/', j.queue.lengt
 | **域名探测超时** | `tools.highkingflower.com` 直连正常 | 使用自定义域名即可 |
 | **`alipay.js` 邀请奖励重复入账** | **已修复（§10）** | 改 `arcade_billing.js` 增量并入+水位账本，10/10 单测+线上冒烟通过 |
 | **`hidden_pay` 接入真实网关** | 待接线 | 已具备 fail-closed 语义，需 realops/webhook 调用 |
+| **`restore_from_github.mjs` 硬编码/无守卫** | **已修复（§11）** | 动态 ROOT、移除模块加载 execSync、加 isMain 守卫 |
+| **outreach `status:'sent'` 虚假** | **已修复（§11）** | `channel:'none', status:'drafted'` + CRM stage='drafted'，不假装投递 |
+| **crm/oms 计时器造单** | **已修复（§11）** | 移除自动生成 HORD- 订单/物流；仅处理 real_storefront 真实订单 |
+| **schedule.json 双源** | **已修复（§11）** | 单一数据源 `C:/bingdashan/promotion/schedule.json`，planner 读单源 |
+
+---
+
+## 11. 继续深挖（二）：诚实化修复 + 数据源统一 + 恢复脚本加固
+
+### 11.1 诚实化修复（audit 指出的"注释≠事实"项）
+
+| 模块 | 原问题 | 修复 |
+|---|---|---|
+| `hidden_outreach` | `channel:'auto_sim', status:'sent'` → 实际无投递渠道 | `channel:'none', status:'drafted'`；`drafted_at` 记录生成时间；note 说明"无真实投递渠道"；CRM stage=`drafted` 而非 `contacted`；输出日志 `0 sent (no delivery channel)` |
+| `hidden_crm` | negotiating→won 时自动生成 HORD- 订单、tracking_no、logistics（计时器造单） | 移除自动订单生成逻辑；仅推进阶段标记为模拟（`note:'模拟推进'`）；真实订单仅来自 `hidden_realops.ingestOrders` 基于 real_storefront paid 状态 |
+| `hidden_oms` | 对所有订单（含模拟）自动推进 shipped/delivered/completed | 仅处理 `source==='real_storefront' || fulfillment==='digital'` 的真实订单；模拟订单直接跳过；aftersale 仅为真实订单开启 |
+
+### 11.2 数据源统一
+
+| 问题 | 修复 |
+|---|---|
+| `schedule.json` 双源：`promotion/schedule.json`（仓库）vs `C:/bingdashan/promotion/schedule.json`（运行时） | 单一数据源：`C:/bingdashan/promotion/schedule.json`（hidden_realops 写入、content-distributor 读取、planner 读取）；仓库内文件仅同步不作为运行时源 |
+| `pendingPromos()` 并集逻辑 | 简化为单源读取，`cdp_known` 直接读取 |
+
+### 11.3 恢复脚本加固
+
+| 问题 | 修复 |
+|---|---|
+| `ROOT = 'F:/2026/24xs'` 硬编码 | `fileURLToPath(import.meta.url)` 动态解析 |
+| 模块加载即 `execSync('gh auth token')`（副作用） | 延迟到 `main()` 内执行 |
+| 无 isMain 守卫 | 统一 `import.meta.url === pathToFileURL(process.argv[1]).href` |
+
+### 11.4 验证结果
+
+```
+verify_pipeline (180s):   运行中（上轮 16/16 通过）
+hidden_outreach:          processed=3, sent=0, deferred=0 (honest)
+hidden_crm:               mv=0 ord=0 (auto order creation disabled)
+hidden_oms:               sh=0 dl=0 cp=0 af=0 (simulated orders skipped)
+planner pendingPromos:    单源读取正常
+restore_from_github:      语法通过、isMain 守卫就绪
+远程同步:                 schedule.json 新增成功
+```
+
+---
 
 ---
 
