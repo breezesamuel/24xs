@@ -18,7 +18,7 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import crypto from 'crypto';
 import { episodic, fact } from '../brain/hidden_brain.mjs';
 
@@ -251,7 +251,7 @@ export function confirmOrder(paymentId, verifyResult){
 }
 
 /** CLI：报告所有网关配置状态（不打印密钥值） */
-if(process.argv[1] && process.argv[1].endsWith('hidden_pay.mjs')){
+if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){
   const st = allGatewaysStatus();
   console.log('[hidden_pay] gateway config status:');
   for(const g of st){
