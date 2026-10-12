@@ -237,8 +237,8 @@ console.log('已发布:', j.queue.filter(q=>q.posted).length, '/', j.queue.lengt
 - `standards/wheel_selection_report.json` — 选型机读报告（含安全等级）。
 
 ### 9.7 待人工确认的剩余 P0
-- `alipay.js` L310-311：**邀请奖励在每次扣费 tick 被重复加回** → 有邀请额度的用户可被反复充值（计费正确性，无法本地端到端验证，需人工确认后修）。
-- `hidden_guard.mjs`：`enforce_robots` 等声明无任何读取方（空声明）→ 需接入爬虫强制或改措辞。
+- ~~`alipay.js` L310-311：邀请奖励在每次扣费 tick 被重复加回~~ → **已修复，见 §10.3**
+- ~~`hidden_guard.mjs`：`enforce_robots` 等声明无任何读取方（空声明）~~ → **已修复，见 §10.2**
 
 ---
 
@@ -253,8 +253,36 @@ console.log('已发布:', j.queue.filter(q=>q.posted).length, '/', j.queue.lengt
 | **SMTP 授权码** | KV 兜底就绪 | `/api/alert` 已修并部署，QQ 邮箱 SMTP 需人工配置 |
 | **真实支付凭据** | Alipay key-pair 在 Vercel（已配置） | `/api/health` 返回 true |
 | **域名探测超时** | `tools.highkingflower.com` 直连正常 | 使用自定义域名即可 |
-| **`alipay.js` 邀请奖励重复入账** | **P0 待人工确认** | 每次 tick 重复加 bonus → 可被刷时长 |
+| **`alipay.js` 邀请奖励重复入账** | **已修复（§10）** | 改 `arcade_billing.js` 增量并入+水位账本，10/10 单测+线上冒烟通过 |
 | **`hidden_pay` 接入真实网关** | 待接线 | 已具备 fail-closed 语义，需 realops/webhook 调用 |
+
+---
+
+## 10. 继续深挖：孤立历史死结解开 + 交付物全量上远程 + 计费 P0 修复
+
+### 10.1 推送死结的真实根因（本轮最大发现）
+- 本地 main 是 **orphan 历史**（root `88d6ee7`），远程 root 是 `9646a0d`：两段历史**无共同祖先**，此前计划的 `rebase/push` 从未可行（“推送被网络阻断”只是表象，实质是历史断裂）。
+- 远程 autoops 代码由 Actions "realops bridge" 工作流逐文件同步；`sync_github.mjs`（gh token → GitHub Contents API）才是与本地历史无关的推送通道。
+- **远程此前跑的是旧版 autoops**：drive.js CDP 修复、hidden_pay/watchdog fail-closed、select_wheel、commit_state.sh 回写清单全部 DIFFERS/MISSING；`autoops/hidden/` 下全部状态文件 MISSING（health_status.json 从未成功回写 → 线上大屏无数据源）。
+
+### 10.2 本轮执行清单
+
+| 动作 | 结果 |
+|---|---|
+| `sync_deliverables.mjs`（Contents API，21 项） | **21/21 OK**：14 个代码文件 + health_status/alert_state + 4 份报告 + workflow |
+| 远程验证 health_status.json | 已在 remote main，sha `4fa1842f` 与本地一致（大屏数据源打通） |
+| 线上 `/api/autoops.js?a=watchdog` | 路由澄清：端点须带 `.js`；返回 **403 = fail-closed 鉴权生效**（需 `k=SECRET`），端点在线正常 |
+| `hidden_brain.mjs` 增加 CLI 入口 | verify 阶段 13/16 真实执行（此前 spawn 后空跑退 0，"通过"但什么都没做） |
+| `hidden_guard.mjs` 空声明 → 策略模块 | 导出 `loadGuard()`；`hidden_crawler` 真实消费 enforce_robots/domain_allow/min_delay_ms/写入域校验，`crawl_safe.jsonl` 带 `enforced:true` 实证 |
+| `verify_pipeline.cjs` 阶段 13 映射修正 | planner → hidden_brain（与注释及漏斗语义一致），顺手清理死代码表达式 |
+| `arcade_billing.js` 新纯函数 + `alipay.js` 计费修复 | **P0「邀请奖励每 tick 重复加回 → 可无限刷时长」已修复**，10/10 单测，`vercel --prod` 上线 |
+| 线上冒烟（真实 KV） | 新 ref 免费 600s 一次性入账；两次 tick 后 600→597（服务器权威扣费），余额逻辑正确 |
+
+### 10.3 计费修复语义（`arcade_billing.applyTick`）
+- 免费额度优先扣 → 邀请奖励**只并入增量**（水位账本 `arc_bapp_` 记录已并入额度）→ 付费/奖励余额只扣不加。
+- 20 次 tick 不变量：`bal(20) == 3000 - 20×30 == 2400`（旧逻辑每 tick `bal+3000-30`，余额爆炸式增长）。
+- 存量用户保护：`arc_bapp_` 缺失时按当前 target 视为已并入，老余额只扣不暴涨（商务上不追回已发出的时长）。
+- notify 回调（`/api/notify`）本身已 fail-closed（`if(r.ok)` 门禁，验签失败 400 fail），金额交叉校验降级为 P2 审计项（签名已覆盖 total_amount）。
 
 ---
 
