@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Security lint (zizmor + actionlint) — runs fast, blocks known bad patterns
+  # Security lint (zizmor + actionlint) -- runs fast, blocks known bad patterns
   security-lint:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -73,8 +73,8 @@ jobs:
           node scripts/hidden/hidden_orchestrator.mjs
           code=$?
           echo "Orchestrator exited with code $code at $(date -u)"
-          # 不静默失败：非零退出令本 step 失败（触发 GitHub 免费告警邮件）；
-          # 后续 "if: always()" 步骤仍会回写状态，不会丢数据。
+          # Do not silently fail: non-zero exit makes step fail (triggers GitHub free alert email);
+          # subsequent "if: always()" steps still write back state, no data loss.
           exit $code
 
       - name: Commit state back (durable across runners)
@@ -105,7 +105,7 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
-  # 独立 watchdog 任务：关键故障时独立失败 → GitHub 免费告警邮件
+  # Independent watchdog job: critical failure triggers separate failure -> GitHub free alert email
   watchdog:
     runs-on: ubuntu-latest
     needs: hidden-orchestrator
