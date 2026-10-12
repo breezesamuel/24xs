@@ -23,7 +23,7 @@ import fs from 'fs';
 import path from 'path';
 import tls from 'tls';
 import { spawn } from 'child_process';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { episodic, fact, target } from '../brain/hidden_brain.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -305,7 +305,10 @@ async function main(){
   episodic('hidden_realops_tick', summary);
 }
 
-main().catch(e => {
-  console.log(`[hidden_realops] error: ${e.message}`);
-  episodic('hidden_realops_error', { error: String(e && e.message || e) });
-});
+// 仅在被直接运行时执行 main()（被 import 时不产生副作用）
+if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){
+  main().catch(e => {
+    console.log(`[hidden_realops] error: ${e.message}`);
+    episodic('hidden_realops_error', { error: String(e && e.message || e) });
+  });
+}
