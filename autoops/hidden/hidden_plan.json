@@ -1,13 +1,13 @@
 {
-  "ts": "2026-10-13T02:11:06.893Z",
+  "ts": "2026-10-13T09:25:39.368Z",
   "mode": "full_autonomous_hidden",
-  "focus": "跟进 3 笔未支付订单",
+  "focus": "跟进 8 笔未支付订单",
   "tasks": [
     {
       "id": "HB1",
-      "name": "跟进 3 笔未支付订单",
+      "name": "跟进 8 笔未支付订单",
       "pri": 95,
-      "why": "漏斗:3 单 / 0 已付",
+      "why": "漏斗:8 单 / 0 已付",
       "auto": true
     },
     {
@@ -42,9 +42,9 @@
   "snapshot": {
     "revenue_cny": 0,
     "orders": {
-      "total": 3,
+      "total": 8,
       "paid": 0,
-      "unpaid": 3
+      "unpaid": 8
     },
     "leads": {
       "hot": 0,
