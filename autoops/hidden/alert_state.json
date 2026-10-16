@@ -7,10 +7,10 @@
     "recovered_at": "2026-10-12T01:53:48.809Z"
   },
   "zero_paid_streak": {
-    "count": 42,
+    "count": 43,
     "active": true,
-    "last_fail_at": "2026-10-16T15:00:47.084Z",
-    "last_escalated_at": "2026-10-16T15:00:48.963Z"
+    "last_fail_at": "2026-10-16T18:49:01.182Z",
+    "last_escalated_at": "2026-10-16T18:49:03.149Z"
   },
   "promo_queue_stuck": {
     "count": 0,
@@ -20,10 +20,10 @@
     "recovered_at": "2026-10-12T11:32:51.466Z"
   },
   "smtp_broken": {
-    "count": 41,
+    "count": 42,
     "active": true,
-    "last_fail_at": "2026-10-16T15:00:48.963Z",
-    "last_escalated_at": "2026-10-16T15:00:50.828Z"
+    "last_fail_at": "2026-10-16T18:49:03.149Z",
+    "last_escalated_at": "2026-10-16T18:49:05.129Z"
   },
   "stale_heartbeat": {
     "count": 0,
