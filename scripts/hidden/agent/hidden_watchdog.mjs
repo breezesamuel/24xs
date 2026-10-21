@@ -101,6 +101,22 @@ function smtp(subject, body){
   });
 }
 
+/* Webhook 中继告警通道：SMTP 被机房 IP 拒(535)时，把告警转发到本机(家宽 IP)代发邮件。
+ *  URL 由本机守护进程动态写入仓库变量 vars.ALERT_WEBHOOK_URL（隧道换域名也不会失效）。*/
+async function webhookRelay(subject, body){
+  try{
+    const url = process.env.ALERT_WEBHOOK_URL || '';
+    if(!url) return { ok:false, channel:'none', reason:'no_webhook_url' };
+    const headers = { 'content-type':'application/json' };
+    if(process.env.ALERT_WEBHOOK_TOKEN) headers['x-alert-token'] = process.env.ALERT_WEBHOOK_TOKEN;
+    const r = await fetch(url, { method:'POST', headers,
+      body: JSON.stringify({ subject, message: String(body).slice(0, 2000) }),
+      signal: AbortSignal.timeout(20000) });
+    const j = await r.json().catch(() => ({}));
+    return { ok: r.ok && (j.ok === true || j.status === 'ok'), channel:'webhook', reason: j.reason || ('http_' + r.status) };
+  }catch(e){ return { ok:false, channel:'error', reason: String(e && e.message || e) }; }
+}
+
 /* KV 兜底告警通道：SMTP 失败时 POST 到收银台 /api/alert（内部写 KV，供 autoops.js?a=alerts 读取） */
 async function kvFallback(subject, body){
   try{
@@ -115,6 +131,8 @@ async function kvFallback(subject, body){
 async function notify(subject, body){
   const r = await smtp(subject, body);
   if(r.ok) return { ok: true, channel: 'smtp' };
+  const wh = await webhookRelay(subject, body);   // 中继优先于 KV：人真的能看到邮件
+  if(wh.ok) return { ok: true, channel: 'webhook', smtp: r.reason || r.info || '' };
   const kv = await kvFallback(subject, body);
   return { ok: kv.ok, channel: kv.ok ? 'kv_fallback' : 'none', smtp: r.reason || r.info || '', reason: kv.reason || '' };
 }
