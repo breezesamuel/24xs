@@ -1,0 +1,6 @@
+{"at":"2026-10-21T14:21:25.658Z","kind":"files_empty","msg":"[watchdog] 数据文件空置: payments_auto.jsonl","alerted":false,"reason":"transition","auto":true}
+{"at":"2026-10-21T14:21:25.658Z","kind":"credentials_missing","msg":"","alerted":false,"reason":"ok","auto":true}
+{"at":"2026-10-21T14:21:30.195Z","kind":"smtp_broken","msg":"SMTP 认证失败（smtp_535），告警已降级为 KV 兜底通道。\n修复：登录 QQ 邮箱 → 设置 → 账户 → 开启 SMTP 服务 → 生成新授权码 → 更新 SMTP_AUTH（16位）。","alerted":true,"reason":"webhook_sent","auto":true}
+{"at":"2026-10-21T14:21:30.212Z","kind":"zero_paid_streak","msg":"最近 3 次拉取：订单 12 笔但 paid=0。需检查支付流程/获客质量。","alerted":true,"reason":"webhook_sent","auto":true}
+{"at":"2026-10-21T14:21:31.465Z","kind":"zero_paid_streak","msg":"escalated ×79 CRITICAL","alerted":true,"reason":"webhook_sent","auto":true}
+{"at":"2026-10-21T14:21:32.642Z","kind":"smtp_broken","msg":"escalated ×78 CRITICAL","alerted":true,"reason":"webhook_sent","auto":true}
