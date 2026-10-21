@@ -1,11 +1,11 @@
 {
-  "at": "2026-10-21T08:47:29.920Z",
+  "at": "2026-10-21T08:58:31.149Z",
   "overall": "degraded",
   "exit_code": 0,
   "checks": {
     "heartbeat": {
       "ok": true,
-      "age_min": 0,
+      "age_min": 2,
       "note": null
     },
     "storefront": {
@@ -34,10 +34,8 @@
       "note": null
     },
     "credentials": {
-      "ok": false,
-      "missing": [
-        "GH_TOKEN"
-      ]
+      "ok": true,
+      "missing": []
     },
     "alert_channel": {
       "ok": false,
@@ -48,7 +46,6 @@
   "critical": [],
   "degraded": [
     "zero_paid_streak",
-    "credentials_missing:GH_TOKEN",
     "alert_channel:kv_fallback"
   ],
   "active_failures": [
