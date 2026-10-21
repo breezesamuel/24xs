@@ -4,3 +4,8 @@
 {"at":"2026-10-21T14:21:30.212Z","kind":"zero_paid_streak","msg":"最近 3 次拉取：订单 12 笔但 paid=0。需检查支付流程/获客质量。","alerted":true,"reason":"webhook_sent","auto":true}
 {"at":"2026-10-21T14:21:31.465Z","kind":"zero_paid_streak","msg":"escalated ×79 CRITICAL","alerted":true,"reason":"webhook_sent","auto":true}
 {"at":"2026-10-21T14:21:32.642Z","kind":"smtp_broken","msg":"escalated ×78 CRITICAL","alerted":true,"reason":"webhook_sent","auto":true}
+{"at":"2026-10-21T18:50:30.186Z","kind":"zero_paid_streak","msg":"最近 3 次拉取：订单 15 笔但 paid=0。需检查支付流程/获客质量。","alerted":false,"reason":"cooldown_suppressed","auto":true}
+{"at":"2026-10-21T18:50:30.187Z","kind":"files_empty","msg":"[watchdog] 数据文件空置: payments_auto.jsonl","alerted":false,"reason":"transition","auto":true}
+{"at":"2026-10-21T18:50:30.187Z","kind":"credentials_missing","msg":"","alerted":false,"reason":"ok","auto":true}
+{"at":"2026-10-21T18:50:37.811Z","kind":"zero_paid_streak","msg":"escalated ×80 CRITICAL","alerted":true,"reason":"kv_fallback_sent","auto":true}
+{"at":"2026-10-21T18:50:41.103Z","kind":"smtp_broken","msg":"recovered after 78 fails","alerted":true,"reason":"kv_fallback_sent","auto":true}

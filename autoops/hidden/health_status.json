@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-21T14:21:30.212Z",
+  "at": "2026-10-21T18:50:33.981Z",
   "overall": "degraded",
   "exit_code": 0,
   "checks": {
@@ -38,18 +38,16 @@
       "missing": []
     },
     "alert_channel": {
-      "ok": false,
-      "channel": "kv_fallback",
+      "ok": true,
+      "channel": "smtp",
       "error": null
     }
   },
   "critical": [],
   "degraded": [
-    "zero_paid_streak",
-    "alert_channel:kv_fallback"
+    "zero_paid_streak"
   ],
   "active_failures": [
-    "zero_paid_streak",
-    "smtp_broken"
+    "zero_paid_streak"
   ]
 }
