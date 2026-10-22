@@ -223,3 +223,6 @@
 {"task_id":"HB1","name":"跟进 16 笔未支付订单","pri":95,"why":"漏斗:16 单 / 0 已付","ts":"2026-10-22T10:27:01.878Z","auto":true}
 {"task_id":"HB4","name":"外呼 10 个 hot 线索","pri":88,"why":"hot=196 warm=511 cold=51","ts":"2026-10-22T10:27:01.878Z","auto":true}
 {"task_id":"HB3","name":"分发 6 篇推广（CDP 在线时）","pri":86,"why":"等待 CDP 浏览器在线","ts":"2026-10-22T10:27:01.878Z","auto":true}
+{"task_id":"HB1","name":"跟进 16 笔未支付订单","pri":95,"why":"漏斗:16 单 / 0 已付","ts":"2026-10-22T15:29:58.754Z","auto":true}
+{"task_id":"HB4","name":"外呼 10 个 hot 线索","pri":88,"why":"hot=172 warm=447 cold=34","ts":"2026-10-22T15:29:58.755Z","auto":true}
+{"task_id":"HB3","name":"分发 6 篇推广（CDP 在线时）","pri":86,"why":"等待 CDP 浏览器在线","ts":"2026-10-22T15:29:58.755Z","auto":true}
