@@ -67,3 +67,7 @@
 {"at":"2026-10-23T22:40:29.534Z","kind":"files_empty","msg":"[watchdog] 数据文件空置: payments_auto.jsonl","alerted":false,"reason":"transition","auto":true}
 {"at":"2026-10-23T22:40:29.534Z","kind":"credentials_missing","msg":"","alerted":false,"reason":"ok","auto":true}
 {"at":"2026-10-23T22:40:37.216Z","kind":"zero_paid_streak","msg":"escalated ×95 CRITICAL","alerted":true,"reason":"kv_fallback_sent","auto":true}
+{"at":"2026-10-24T01:09:07.486Z","kind":"zero_paid_streak","msg":"最近 3 次拉取：订单 19 笔但 paid=0。需检查支付流程/获客质量。","alerted":false,"reason":"cooldown_suppressed","auto":true}
+{"at":"2026-10-24T01:09:07.487Z","kind":"files_empty","msg":"[watchdog] 数据文件空置: payments_auto.jsonl","alerted":false,"reason":"transition","auto":true}
+{"at":"2026-10-24T01:09:07.487Z","kind":"credentials_missing","msg":"","alerted":false,"reason":"ok","auto":true}
+{"at":"2026-10-24T01:09:15.162Z","kind":"zero_paid_streak","msg":"escalated ×96 CRITICAL","alerted":true,"reason":"kv_fallback_sent","auto":true}
