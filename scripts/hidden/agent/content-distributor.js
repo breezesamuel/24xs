@@ -456,7 +456,11 @@ async function doctor(opts = {}) {
 }
 
 // ===== 新增：主分发函数（带失败持久化） =====
-async function distribute// REA Fix:default\n// REA Fix:xiaohongshu:Uncaught\n// REA Fix:hackernews:Element not found: [name="title"]\n// REA Fix:x:this._getTargets is not a function\n(postFile, channel, dryRun = false) {
+// REA Fix 备注（历史失败记录，供排查选择器问题参考）:
+//   default / xiaohongshu:Uncaught
+//   hackernews: Element not found: [name="title"]
+//   x: this._getTargets is not a function
+async function distribute(postFile, channel, dryRun = false) {
   const filePath = path.join(CONTENT_DIR, postFile);
   if (!fs.existsSync(filePath)) {
     console.error(`Post not found: ${filePath}`);
