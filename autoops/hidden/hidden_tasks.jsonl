@@ -256,3 +256,6 @@
 {"task_id":"HB1","name":"跟进 19 笔未支付订单","pri":95,"why":"漏斗:19 单 / 0 已付","ts":"2026-10-24T05:53:50.660Z","auto":true}
 {"task_id":"HB4","name":"外呼 10 个 hot 线索","pri":88,"why":"hot=196 warm=505 cold=47","ts":"2026-10-24T05:53:50.660Z","auto":true}
 {"task_id":"HB3","name":"分发 6 篇推广（CDP 在线时）","pri":86,"why":"等待 CDP 浏览器在线","ts":"2026-10-24T05:53:50.660Z","auto":true}
+{"task_id":"HB1","name":"跟进 20 笔未支付订单","pri":95,"why":"漏斗:20 单 / 0 已付","ts":"2026-10-24T10:17:34.321Z","auto":true}
+{"task_id":"HB4","name":"外呼 10 个 hot 线索","pri":88,"why":"hot=82 warm=621 cold=99","ts":"2026-10-24T10:17:34.322Z","auto":true}
+{"task_id":"HB6","name":"CRM→OMS 状态机推进","pri":82,"why":"自动流转","ts":"2026-10-24T10:17:34.322Z","auto":true}

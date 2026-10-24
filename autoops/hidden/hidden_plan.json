@@ -1,27 +1,20 @@
 {
-  "ts": "2026-10-24T05:53:50.660Z",
+  "ts": "2026-10-24T10:17:34.321Z",
   "mode": "full_autonomous_hidden",
-  "focus": "跟进 19 笔未支付订单",
+  "focus": "跟进 20 笔未支付订单",
   "tasks": [
     {
       "id": "HB1",
-      "name": "跟进 19 笔未支付订单",
+      "name": "跟进 20 笔未支付订单",
       "pri": 95,
-      "why": "漏斗:19 单 / 0 已付",
+      "why": "漏斗:20 单 / 0 已付",
       "auto": true
     },
     {
       "id": "HB4",
       "name": "外呼 10 个 hot 线索",
       "pri": 88,
-      "why": "hot=196 warm=505 cold=47",
-      "auto": true
-    },
-    {
-      "id": "HB3",
-      "name": "分发 6 篇推广（CDP 在线时）",
-      "pri": 86,
-      "why": "等待 CDP 浏览器在线",
+      "why": "hot=82 warm=621 cold=99",
       "auto": true
     },
     {
@@ -42,26 +35,26 @@
       "id": "HB7",
       "name": "自学习：从真实转化提炼规则",
       "pri": 70,
-      "why": "知识库:空",
+      "why": "知识库:已有",
       "auto": true
     }
   ],
   "snapshot": {
     "revenue_cny": 0,
     "orders": {
-      "total": 19,
+      "total": 20,
       "paid": 0,
-      "unpaid": 19
+      "unpaid": 20
     },
     "leads": {
-      "hot": 196,
-      "warm": 505,
-      "cold": 47,
+      "hot": 82,
+      "warm": 621,
+      "cold": 99,
       "none": 0
     },
     "promos": {
-      "posts": 6,
-      "pending": 6,
+      "posts": 0,
+      "pending": 0,
       "cdp_known": null
     },
     "arcade_users": 6,
