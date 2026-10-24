@@ -1,0 +1,93 @@
+[
+  {
+    "name": "全国公共资源交易-工程建设",
+    "url": "https://www.ggzy.gov.cn/information/html/a/0000000000000000.html",
+    "http": -1,
+    "bytes": 0,
+    "links_found": 0,
+    "error": "HTTPError: HTTP Error 404: Not Found"
+  },
+  {
+    "name": "浙江省公共资源交易",
+    "url": "https://ggzy.zj.gov.cn/notice.html",
+    "http": -1,
+    "bytes": 0,
+    "links_found": 0,
+    "error": "HTTPError: HTTP Error 404: Not Found"
+  },
+  {
+    "name": "广东省公共资源交易",
+    "url": "https://ygp.gdzwfw.gov.cn/#/44/index",
+    "http": 200,
+    "bytes": 21933,
+    "links_found": 0,
+    "is_json": false,
+    "need_js": false,
+    "anti": [],
+    "sec": 0.2
+  },
+  {
+    "name": "江苏公共资源交易",
+    "url": "https://jsggzy.jszwfw.gov.cn/inteligentsearch/rest/inteligentSearch/getFullTextDataNew",
+    "http": -1,
+    "bytes": 0,
+    "links_found": 0,
+    "error": "HTTPError: HTTP Error 404: Not Found"
+  },
+  {
+    "name": "山东省公共资源交易中心",
+    "url": "http://ggzyjy.shandong.gov.cn/information/html/a/0000000000000000.html",
+    "http": -1,
+    "bytes": 0,
+    "links_found": 0,
+    "error": "HTTPError: HTTP Error 502: Bad Gateway"
+  },
+  {
+    "name": "中国招标投标公共服务平台",
+    "url": "https://bulletin.cebpubservice.com/xxfbcmses/search/bulletinlist.html",
+    "http": -1,
+    "bytes": 0,
+    "links_found": 0,
+    "error": "HTTPError: HTTP Error 405: Not Allowed"
+  },
+  {
+    "name": "中国政府采购网-中标结果",
+    "url": "http://search.ccgp.gov.cn/bxsearch?searchtype=2&page_index=1&dbselect=zbj&kw=%E5%8C%BB%E9%99%A2",
+    "http": 200,
+    "bytes": 2922,
+    "links_found": 0,
+    "is_json": false,
+    "need_js": false,
+    "anti": [
+      "稍后"
+    ],
+    "sec": 0.1
+  },
+  {
+    "name": "顺企网-上海公司",
+    "url": "https://www.11467.com/shanghai/dir1.htm",
+    "http": -1,
+    "bytes": 0,
+    "links_found": 0,
+    "error": "HTTPError: HTTP Error 429: Too Many Requests"
+  },
+  {
+    "name": "阿里巴巴供应商",
+    "url": "https://www.1688.com/",
+    "http": 200,
+    "bytes": 124073,
+    "links_found": 27,
+    "is_json": false,
+    "need_js": false,
+    "anti": [],
+    "sec": 0.2
+  },
+  {
+    "name": "猪八戒网服务市场",
+    "url": "https://zbj.com/xhr/search",
+    "http": -1,
+    "bytes": 0,
+    "links_found": 0,
+    "error": "HTTPError: HTTP Error 404: Not Found"
+  }
+]

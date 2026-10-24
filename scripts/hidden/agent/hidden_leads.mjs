@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import crypto from 'crypto';
 import { episodic, profile, target } from '../brain/hidden_brain.mjs';
 
@@ -115,4 +115,4 @@ function main(){
   episodic('hidden_leads_auto', {added: add, scanned_candidates: cands.length});
   console.log(`[hidden_leads] ${add} new leads from ${cands.length} candidates`);
 }
-main();
+if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){ main(); }

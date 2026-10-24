@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-13T11:02:50.749Z",
+  "ready_count": 0,
+  "total": 6,
+  "channels": {
+    "x": {
+      "ok": false,
+      "reason": "unreachable",
+      "url": "chrome-error://chromewebdata/"
+    },
+    "reddit": {
+      "ok": false,
+      "reason": "unreachable",
+      "url": "chrome-error://chromewebdata/"
+    },
+    "hackernews": {
+      "ok": false,
+      "reason": "unreachable",
+      "url": "chrome-error://chromewebdata/"
+    },
+    "xiaohongshu": {
+      "ok": false,
+      "reason": "not_logged_in",
+      "url": "https://creator.xiaohongshu.com/login?source=&redirectReason=401&lastUrl=%252Fpublish%252Fpublish"
+    },
+    "zhihu": {
+      "ok": false,
+      "reason": "not_logged_in",
+      "url": "https://www.zhihu.com/signin?next=http%3A%2F%2Fzhuanlan.zhihu.com%2Fwrite"
+    },
+    "wechat": {
+      "ok": false,
+      "reason": "editor_not_found",
+      "url": "https://mp.weixin.qq.com/"
+    }
+  }
+}

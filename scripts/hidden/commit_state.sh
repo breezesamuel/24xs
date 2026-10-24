@@ -22,7 +22,6 @@ FILES=(
   "autoops/hidden/health_status.json"
   "autoops/hidden/alert_state.json"
   "autoops/hidden/real_metrics.jsonl"
-  "autoops/hidden/real_alerts.jsonl"
   "autoops/hidden/hidden_plan.json"
   "autoops/hidden/hidden_tasks.jsonl"
 )
@@ -30,8 +29,8 @@ FILES=(
 git config user.name  "autoops-bot" 2>/dev/null || true
 git config user.email "autoops@local" 2>/dev/null || true
 
-# 限制 real_metrics.jsonl / watchdog.jsonl / real_alerts.jsonl 体积（只保留末 200 行）
-for f in autoops/hidden/real_metrics.jsonl autoops/hidden/watchdog.jsonl autoops/hidden/real_alerts.jsonl; do
+# 限制 real_metrics.jsonl 与 watchdog.jsonl 体积（只保留末 200 行）
+for f in autoops/hidden/real_metrics.jsonl autoops/hidden/watchdog.jsonl; do
   if [ -f "$f" ]; then
     tmp="$(mktemp)"
     tail -n 200 "$f" > "$tmp" && mv "$tmp" "$f"

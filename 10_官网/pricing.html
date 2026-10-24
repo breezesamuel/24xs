@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丙大山·定价方案</title>
+<style>
+:root{--bg:#0a0f1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--warn:#f59e0b;--danger:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:1000px;margin:0 auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.logo{font-weight:700;font-size:1.25rem;color:var(--accent)}
+h1{font-size:2rem;margin-bottom:8px}
+.subtitle{color:var(--muted);margin-bottom:24px}
+.billing-toggle{display:flex;gap:12px;margin-bottom:24px}
+.toggle-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:.85rem;transition:.2s}
+.toggle-btn.active{border-color:var(--accent);color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center;transition:.2s;position:relative}
+.plan-card:hover{border-color:var(--accent);transform:translateY(-4px)}
+.plan-card.featured{border-color:var(--accent);box-shadow:0 0 24px rgba(34,197,94,.15)}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--bg);padding:4px 12px;border-radius:20px;font-size:.7rem;font-weight:700}
+.plan-name{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.plan-price{font-size:2rem;font-weight:700;color:var(--accent);margin-bottom:4px}
+.plan-cycle{font-size:.8rem;color:var(--muted);margin-bottom:16px}
+.plan-features{list-style:none;text-align:left;margin-bottom:20px}
+.plan-features li{padding:6px 0;font-size:.85rem;color:var(--muted)}
+.plan-features li::before{content:"✓ ";color:var(--accent);font-weight:700}
+.btn{display:inline-block;padding:10px 20px;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;border:none;background:var(--accent);color:var(--bg);text-decoration:none}
+.btn:hover{opacity:.9}
+</style>
+</head>
+<body>
+<div class="container">
+<header><div class="logo">丙大山·定价方案</div><a href="/" style="color:var(--muted);text-decoration:none">返回商城</a></header>
+<h1>选择订阅方案</h1>
+<p class="subtitle">按月或按年订阅，年付享 8 折优惠</p>
+<div class="billing-toggle">
+<button class="toggle-btn active" id="cycle-monthly" onclick="setCycle('monthly')">按月付费</button>
+<button class="toggle-btn" id="cycle-yearly" onclick="setCycle('yearly')">按年付费 <span style="color:var(--accent);font-size:.75rem">省 20%</span></button>
+</div>
+<div class="grid" id="plans-grid"></div>
+</div>
+<script>
+let currentCycle = "monthly";
+
+function setCycle(c) {
+  currentCycle = c;
+  document.getElementById("cycle-monthly").classList.toggle("active", c === "monthly");
+  document.getElementById("cycle-yearly").classList.toggle("active", c === "yearly");
+  renderPlans();
+}
+
+async function renderPlans() {
+  const grid = document.getElementById("plans-grid");
+  try {
+    const res = await fetch("/api/pricing?action=compare");
+    const data = await res.json();
+    if (!data.ok) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--muted)">加载失败</div>'; return; }
+    const plans = data.data;
+    grid.innerHTML = plans.map((p, i) => {
+      const price = currentCycle === "monthly" ? p.monthly_price : p.yearly_price;
+      const cycleLabel = currentCycle === "monthly" ? "/月" : "/年";
+      const featured = i === 1 ? " featured" : "";
+      const badge = i === 1 ? '<div class="plan-badge">推荐</div>' : "";
+      return '<div class="plan-card' + featured + '">' + badge +
+        '<div class="plan-name">' + p.name + '</div>' +
+        '<div class="plan-price">¥' + price.toLocaleString() + '</div>' +
+        '<div class="plan-cycle">' + cycleLabel + '</div>' +
+        '<ul class="plan-features">' +
+        '<li>积分额度: ' + (p.included_credits || 0).toLocaleString() + ' 积分/月</li>' +
+        (p.features || []).map(f => '<li>' + f + '</li>').join("") +
+        '</ul>' +
+        '<a class="btn" href="/portal.html">立即订阅</a>' +
+        '</div>';
+    }).join("");
+  } catch (e) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--muted)">加载失败</div>';
+  }
+}
+
+renderPlans();
+</script>
+</body>
+</html>

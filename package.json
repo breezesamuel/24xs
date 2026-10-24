@@ -1,7 +1,6 @@
 {
   "name": "24xs-autoops",
   "version": "1.0.0",
-  "type": "module",
   "description": "Hidden Autonomous AutoOps for 24x7 operations",
   "scripts": {
     "daemon": "node scripts/hidden/hidden_daemon.mjs",

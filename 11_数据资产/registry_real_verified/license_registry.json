@@ -1,0 +1,110 @@
+{
+  "version": "1.0",
+  "licenses": {
+    "internal-use-license-v1": {
+      "name": "内部使用许可",
+      "scope": "internal",
+      "allowed": [
+        "view",
+        "analyze",
+        "internal_report"
+      ],
+      "forbidden": [
+        "resell",
+        "redistribute",
+        "public_display",
+        "training_ai"
+      ],
+      "attribution_required": true,
+      "warranty": "none",
+      "liability_cap": 0
+    },
+    "commercial-single-v1": {
+      "name": "商业单次使用许可",
+      "scope": "commercial_single",
+      "allowed": [
+        "view",
+        "analyze",
+        "internal_report",
+        "client_deliverable"
+      ],
+      "forbidden": [
+        "resell",
+        "redistribute",
+        "public_display",
+        "training_ai",
+        "saas_embedding"
+      ],
+      "attribution_required": true,
+      "warranty": "data_accuracy_best_effort",
+      "liability_cap": "purchase_price"
+    },
+    "commercial-multi-v1": {
+      "name": "商业多次使用许可",
+      "scope": "commercial_multi",
+      "allowed": [
+        "view",
+        "analyze",
+        "internal_report",
+        "client_deliverable",
+        "team_sharing"
+      ],
+      "forbidden": [
+        "resell",
+        "redistribute",
+        "public_display",
+        "training_ai",
+        "saas_embedding"
+      ],
+      "attribution_required": true,
+      "warranty": "data_accuracy_best_effort",
+      "liability_cap": "5x_purchase_price"
+    },
+    "enterprise-redistribution-v1": {
+      "name": "企业再分发许可",
+      "scope": "enterprise_redistribution",
+      "allowed": [
+        "view",
+        "analyze",
+        "internal_report",
+        "client_deliverable",
+        "team_sharing",
+        "saas_embedding",
+        "derived_products"
+      ],
+      "forbidden": [
+        "raw_resell",
+        "public_display"
+      ],
+      "attribution_required": true,
+      "warranty": "data_accuracy_sla",
+      "liability_cap": "contractual",
+      "requires_negotiation": true
+    }
+  },
+  "asset_license_map": {
+    "招采公告": "commercial-single-v1",
+    "招采明细行": "commercial-single-v1",
+    "采购方画像": "commercial-multi-v1",
+    "品类市场分析": "commercial-multi-v1",
+    "区域市场分析": "commercial-multi-v1",
+    "项目全周期分析": "commercial-multi-v1",
+    "代理机构情报": "commercial-multi-v1",
+    "关键词市场分析": "commercial-multi-v1",
+    "GEO客户端审计报告": "commercial-multi-v1",
+    "GEO平台分析": "commercial-multi-v1",
+    "GEO探测": "commercial-single-v1",
+    "商业线索档案": "commercial-multi-v1",
+    "销售话术模板": "commercial-multi-v1",
+    "内容资产": "commercial-single-v1",
+    "数据源分析": "commercial-multi-v1",
+    "结构化提取记录": "commercial-single-v1",
+    "企业全维档案": "commercial-multi-v1",
+    "行业企业图谱": "commercial-multi-v1",
+    "网页证据快照": "commercial-single-v1",
+    "实体关联确证": "commercial-multi-v1",
+    "default": "commercial-single-v1"
+  },
+  "issued_licenses": [],
+  "revoked_licenses": []
+}

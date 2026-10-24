@@ -1,0 +1,11 @@
+{
+  "_comment": "纳税主体信息模板。复制为 entity_profile.json 后填入真实信息。entity_profile.json 已被 .gitignore 排除，不得提交真实税号。",
+  "company_name": "<公司全称>",
+  "tax_id": "<统一社会信用代码/纳税人识别号>",
+  "tax_office": "<主管税务机关>",
+  "legal_representative": "<法定代表人>",
+  "registered_capital_cny": "0.00",
+  "accounting_method": "小企业会计准则",
+  "vat_rate_pct": "6",
+  "notes": "本文件仅用于生成申报预览草稿；正式申报须由持证会计或授权代理人在电子税务局完成。"
+}

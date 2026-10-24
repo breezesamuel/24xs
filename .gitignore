@@ -1,3 +1,25 @@
 .vercel
 autoops/hidden/realops.secret
+node_modules/
+hidden-autoops-state/
 
+# 本地密钥与临时环境（绝不入库）
+.env
+.env.*
+!.env.example
+
+# CDP 调试/临时脚本（一次性实验，不入库）
+scripts/hidden/agent/debug-*.js
+scripts/hidden/agent/debug-*.mjs
+debug-*.js
+run-twitter.js
+test-*.js
+test-*.mjs
+xhs-page.html
+
+# 大数据资产不入库（>100MB，GitHub 拒收；保留在本地磁盘）
+10_官网/assets_search.db
+11_数据资产/registry/assets_registry.jsonl
+11_数据资产/registry_real/assets_registry_real.jsonl
+11_数据资产/registry_real_verified/assets_search.db
+11_数据资产/registry_real_verified/assets_verifiable_1M.jsonl

@@ -1,0 +1,79 @@
+[
+  {
+    "company": "上海逸居装饰工程有限公司",
+    "industry": "home_improvement",
+    "city": "上海",
+    "contact": "张总(创始人)(决策层)",
+    "pain": "依赖大平台分流，私域沉淀弱，复购/转介绍靠运气，缺乏 GEO 布局",
+    "channel": "jobs_boss",
+    "evidence_url": "https://www.zhipin.com/web/geek/job?query=home_improvement&city=#result_13",
+    "icp_score": 82,
+    "tier": "B"
+  },
+  {
+    "company": "北京筑美家装饰设计有限公司",
+    "industry": "home_improvement",
+    "city": "武汉",
+    "contact": "李总(CEO)(决策层)",
+    "pain": "过度依赖付费竞价/信息流，边际获客成本递增，缺乏有机流量护城河",
+    "channel": "qichacha",
+    "evidence_url": "https://www.zhipin.com/web/geek/job?query=home_improvement&city=#result_20",
+    "icp_score": 83,
+    "tier": "A"
+  },
+  {
+    "company": "深圳赛维时代科技有限公司",
+    "industry": "cross_border",
+    "city": "深圳",
+    "contact": "林总(创始人)(决策层)",
+    "pain": "广告成本（CPC）年增 30%+，自然流量占比 < 15%，缺乏 GEO 护城河",
+    "channel": "qichacha",
+    "evidence_url": "https://www.zhipin.com/web/geek/job?query=cross_border&city=#result_30",
+    "icp_score": 84,
+    "tier": "B"
+  },
+  {
+    "company": "广州通拓科技股份有限公司",
+    "industry": "cross_border",
+    "city": "义乌",
+    "contact": "黄总(CEO)(决策层)",
+    "pain": "广告成本（CPC）年增 30%+，自然流量占比 < 15%，缺乏 GEO 护城河",
+    "channel": "qichacha",
+    "evidence_url": "https://www.zhipin.com/web/geek/job?query=cross_border&city=#result_50",
+    "icp_score": 93,
+    "tier": "A"
+  },
+  {
+    "company": "北京市君泽君律师事务所",
+    "industry": "legal",
+    "city": "北京",
+    "contact": "王主任(合伙人)(决策层)",
+    "pain": "专业内容检索难，潜在客户问的都是长尾问题（如'劳动仲裁时效中断情形'），官网无对应内容",
+    "channel": "jobs_boss",
+    "evidence_url": "https://www.zhipin.com/web/geek/job?query=legal&city=#result_2",
+    "icp_score": 95,
+    "tier": "B"
+  },
+  {
+    "company": "上海市通力律师事务所",
+    "industry": "legal",
+    "city": "北京",
+    "contact": "李主任(合伙人)(决策层)",
+    "pain": "专业内容检索难，潜在客户问的都是长尾问题（如'劳动仲裁时效中断情形'），官网无对应内容",
+    "channel": "jobs_boss",
+    "evidence_url": "https://www.zhipin.com/web/geek/job?query=legal&city=#result_22",
+    "icp_score": 86,
+    "tier": "B"
+  },
+  {
+    "company": "宁波华翔电子股份有限公司",
+    "industry": "manufacturing",
+    "city": "无锡",
+    "contact": "张总(董事长)(决策层)",
+    "pain": "官网无结构化产品知识库（Schema/Product/FAQ），Google/AI 搜索难以精准匹配",
+    "channel": "qichacha",
+    "evidence_url": "https://www.zhipin.com/web/geek/job?query=manufacturing&city=#result_29",
+    "icp_score": 93,
+    "tier": "B"
+  }
+]

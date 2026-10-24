@@ -344,8 +344,119 @@ const POSTERS = {
   wechat: postToWechat
 };
 
+// ===== 诊断：渠道可达性 + 登录态探测（fail-closed，发帖前先体检） =====
+// 每个渠道声明：入口 URL、就绪选择器、登录页 URL 特征。
+// 探测结果三态：unreachable（网络/错误页）/ not_logged_in（重定向到登录）/ editor_not_found（已登录但编辑器未渲染）。
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, rej) => setTimeout(() => rej(new Error(label)), ms))
+  ]);
+}
+
+const PROBES = {
+  x: {
+    url: 'https://twitter.com/compose/tweet',
+    ready: `!!document.querySelector('[data-testid="tweetTextarea_0"], textarea[aria-label="Post text"], div[role="textbox"]')`,
+    loginUrl: /\/login|i\/flow\/login/i
+  },
+  reddit: {
+    url: 'https://www.reddit.com/submit',
+    ready: `!!document.querySelector('[name="title"]')`,
+    loginUrl: /\/login/i
+  },
+  hackernews: {
+    url: 'https://news.ycombinator.com/submit',
+    ready: `!!document.querySelector('[name="title"]')`,
+    loginUrl: /\/login|\/user/i
+  },
+  xiaohongshu: {
+    url: 'https://creator.xiaohongshu.com/publish/publish',
+    ready: `!!document.querySelector('input, textarea, [contenteditable="true"]')`,
+    loginUrl: /\/login|\/sso|passport/i
+  },
+  zhihu: {
+    url: 'https://zhuanlan.zhihu.com/write',
+    ready: `!!document.querySelector('.ProseMirror, [contenteditable="true"], .Post-TitleInput')`,
+    loginUrl: /signin|\/login/i
+  },
+  wechat: {
+    url: 'https://mp.weixin.qq.com/',
+    ready: `!!document.querySelector('#js_editor, .rich_media_editor, [contenteditable="true"]')`,
+    loginUrl: /cgi-bin\/login|bizlogin/i
+  }
+};
+
+async function probeChannel(cdp, channel, timeoutMs = 25000) {
+  const spec = PROBES[channel];
+  if (!spec) return { channel, ok: false, error: 'unsupported' };
+  try {
+    await withTimeout(cdp.nav(spec.url), timeoutMs, 'nav_timeout');
+    await cdp.wait(2500);
+    const info = await cdp.js(`(() => ({ url: location.href, title: document.title, ready: ${spec.ready} }))()`);
+    const url = String(info && info.url || '');
+    const title = String(info && info.title || '');
+    const reachable = !/^chrome-error:|^about:/.test(url) && !/ERR_(CONNECTION|NAME|NETWORK|TIMED)/.test(title);
+    const loggedIn = spec.loginUrl ? !spec.loginUrl.test(url) : true;
+    const ready = !!(info && info.ready);
+    const ok = reachable && loggedIn && ready;
+    const reason = ok ? '' : (!reachable ? 'unreachable' : (!loggedIn ? 'not_logged_in' : 'editor_not_found'));
+    return { channel, ok, reachable, loggedIn, ready, reason, url: url.slice(0, 100), title: title.slice(0, 80) };
+  } catch (e) {
+    return { channel, ok: false, reason: 'probe_error', error: String(e && e.message || e).slice(0, 120) };
+  }
+}
+
+async function doctor(opts = {}) {
+  const channels = Object.keys(POSTERS);
+  const results = await withCDP(async (cdp) => {
+    console.log('\n=== Channel Doctor: reachability + login probe ===\n');
+    const rows = [];
+    for (const ch of channels) {
+      const r = await probeChannel(cdp, ch);
+      rows.push(r);
+      const tag = r.ok ? '[OK]  ' : '[FAIL]';
+      const detail = r.ok
+        ? `ready  (${r.title || r.url})`
+        : `reason=${r.reason || 'unknown'}${r.error ? ' error=' + r.error : ''}`;
+      console.log(`${tag} ${ch.padEnd(13)} ${detail}`);
+    }
+    return rows;
+  }, { port: 9223 });
+
+  const okCount = results.filter(r => r.ok).length;
+  console.log(`\nSummary: ${okCount}/${channels.length} channels ready to post.`);
+  if (okCount === 0) {
+    console.log('No channel is postable. Check browser login state / network access before scheduling.');
+  }
+
+  // 持久化渠道就绪度快照，供 AutoOps 健康看板 / 编排器消费（fail-closed：探测失败写入 ok=false）
+  let snapshot = { at: new Date().toISOString(), ready_count: okCount, total: channels.length, channels: {} };
+  try {
+    const snapshotOut = {
+      at: new Date().toISOString(),
+      ready_count: okCount,
+      total: channels.length,
+      channels: results.reduce((acc, r) => {
+        acc[r.channel] = { ok: !!r.ok, reason: r.reason || '', url: r.url || '' };
+        return acc;
+      }, {})
+    };
+    const outDir = path.join(process.cwd(), 'autoops', 'hidden');
+    fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(path.join(outDir, 'channel_ready.json'), JSON.stringify(snapshotOut, null, 2));
+    snapshot = snapshotOut;
+    console.log(`Snapshot written: autoops/hidden/channel_ready.json (ready=${okCount}/${channels.length})`);
+  } catch (e) {
+    console.log('Snapshot write failed: ' + e.message);
+  }
+
+  if (okCount === 0) process.exitCode = 2;
+  return snapshot;
+}
+
 // ===== 新增：主分发函数（带失败持久化） =====
-async function distribute(postFile, channel, dryRun = false) {
+async function distribute// REA Fix:default\n// REA Fix:xiaohongshu:Uncaught\n// REA Fix:hackernews:Element not found: [name="title"]\n// REA Fix:x:this._getTargets is not a function\n(postFile, channel, dryRun = false) {
   const filePath = path.join(CONTENT_DIR, postFile);
   if (!fs.existsSync(filePath)) {
     console.error(`Post not found: ${filePath}`);
@@ -545,6 +656,9 @@ if (cmd === 'post') {
   const maxPosts = parseInt(args[1]) || 1;
   runSchedule(maxPosts).catch(console.error);
   
+} else if (cmd === 'doctor') {
+  doctor().catch(e => { console.error('doctor error:', e.message); process.exitCode = 1; });
+
 } else if (cmd === 'list') {
   const posts = fs.readdirSync('C:/bingdashan/promotion/content')
     .filter(f => f.endsWith('.md') && f !== '.gitkeep')
@@ -560,6 +674,7 @@ Content Distributor — 推广内容分发调度器（真实 CDP 版）
 
 Commands:
   list                    列出所有内容库帖子
+  doctor                  体检：探测各渠道可达性 + 登录态（发帖前先跑）
   post <channel> <file>   真实发帖到指定渠道
   post <channel> <file> --dry-run  试运行
   schedule [interval]     创建/更新定时分发计划 (默认 3600s)

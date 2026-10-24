@@ -1,0 +1,257 @@
+{
+  "version": "1.0",
+  "tables": {
+    "customers": {
+      "fields": {
+        "customer_id": "string (CUST-YYYYMMDD-XXXXXX)",
+        "email": "string (unique)",
+        "company_name": "string",
+        "contact_name": "string",
+        "phone": "string",
+        "tier": "string (starter/professional/enterprise)",
+        "status": "string (active/suspended/cancelled)",
+        "created_at": "iso8601",
+        "billing_cycle": "string (monthly/quarterly/annual)",
+        "payment_method": "string (moltspay/alipay/wechat/bank)",
+        "moltspay_customer_id": "string",
+        "credit_balance": "integer",
+        "total_spent": "number",
+        "total_assets_purchased": "integer"
+      },
+      "indexes": [
+        "email",
+        "customer_id",
+        "status"
+      ]
+    },
+    "purchases": {
+      "fields": {
+        "purchase_id": "string (PUR-YYYYMMDD-XXXXXX)",
+        "customer_id": "string",
+        "asset_ids": "array[string]",
+        "bundle_id": "string|null",
+        "license_type": "string",
+        "amount_cny": "number",
+        "credits_used": "integer",
+        "status": "string (pending/completed/refunded/failed)",
+        "payment_txn_id": "string",
+        "created_at": "iso8601",
+        "completed_at": "iso8601|null",
+        "delivery_status": "string (pending/delivered/expired)",
+        "delivery_url": "string|null",
+        "delivery_expires_at": "iso8601|null"
+      },
+      "indexes": [
+        "customer_id",
+        "purchase_id",
+        "status",
+        "payment_txn_id"
+      ]
+    },
+    "usage_logs": {
+      "fields": {
+        "log_id": "string",
+        "customer_id": "string",
+        "asset_id": "string",
+        "action": "string (view/download/api_call/verify)",
+        "timestamp": "iso8601",
+        "ip": "string",
+        "user_agent": "string",
+        "credits_consumed": "integer"
+      },
+      "indexes": [
+        "customer_id",
+        "asset_id",
+        "timestamp"
+      ]
+    },
+    "api_keys": {
+      "fields": {
+        "key_id": "string (KEY-XXXXXX)",
+        "customer_id": "string",
+        "key_hash": "string (sha256)",
+        "name": "string",
+        "permissions": "array[string]",
+        "rate_limit": "integer (req/min)",
+        "status": "string (active/revoked)",
+        "created_at": "iso8601",
+        "last_used_at": "iso8601|null",
+        "expires_at": "iso8601|null"
+      },
+      "indexes": [
+        "customer_id",
+        "key_id",
+        "key_hash"
+      ]
+    }
+  },
+  "customers": [
+    {
+      "customer_id": "TEST-CUSTOMER-001",
+      "email": "test@example.com",
+      "tier": "professional",
+      "status": "active",
+      "billing_cycle": "monthly",
+      "included_credits": 100,
+      "used_this_month": 3,
+      "credit_balance": 100,
+      "renews_at": "2026-11-06T11:07:19.241Z",
+      "last_active_at": "2026-10-08T01:06:59.352Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-002",
+      "email": "test2@example.com",
+      "tier": "starter",
+      "status": "active",
+      "billing_cycle": "monthly",
+      "included_credits": 10,
+      "used_this_month": 10,
+      "credit_balance": 10,
+      "renews_at": "2026-11-06T11:07:19.288Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-003",
+      "email": "test3@example.com",
+      "tier": "professional",
+      "status": "expired",
+      "billing_cycle": "monthly",
+      "included_credits": 100,
+      "used_this_month": 0,
+      "credit_balance": 100,
+      "renews_at": "2026-11-06T11:07:19.295Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-004",
+      "email": "test4@example.com",
+      "tier": "professional",
+      "status": "active",
+      "billing_cycle": "monthly",
+      "included_credits": 100,
+      "used_this_month": 0,
+      "credit_balance": 100,
+      "renews_at": "2026-11-06T11:07:19.304Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-001",
+      "email": "test@example.com",
+      "tier": "professional",
+      "status": "active",
+      "billing_cycle": "monthly",
+      "included_credits": 100,
+      "used_this_month": 0,
+      "credit_balance": 100,
+      "renews_at": "2026-11-07T00:40:40.755Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-002",
+      "email": "test2@example.com",
+      "tier": "starter",
+      "status": "active",
+      "billing_cycle": "monthly",
+      "included_credits": 10,
+      "used_this_month": 10,
+      "credit_balance": 10,
+      "renews_at": "2026-11-07T00:40:40.793Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-003",
+      "email": "test3@example.com",
+      "tier": "professional",
+      "status": "expired",
+      "billing_cycle": "monthly",
+      "included_credits": 100,
+      "used_this_month": 0,
+      "credit_balance": 100,
+      "renews_at": "2026-10-07T00:40:40.799Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-004",
+      "email": "test4@example.com",
+      "tier": "professional",
+      "status": "active",
+      "billing_cycle": "monthly",
+      "included_credits": 100,
+      "used_this_month": 50,
+      "credit_balance": 100,
+      "renews_at": "2026-10-07T00:40:40.805Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-001",
+      "email": "test@example.com",
+      "tier": "professional",
+      "status": "active",
+      "billing_cycle": "monthly",
+      "included_credits": 100,
+      "used_this_month": 0,
+      "credit_balance": 100,
+      "renews_at": "2026-11-07T01:06:59.284Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-002",
+      "email": "test2@example.com",
+      "tier": "starter",
+      "status": "active",
+      "billing_cycle": "monthly",
+      "included_credits": 10,
+      "used_this_month": 10,
+      "credit_balance": 10,
+      "renews_at": "2026-11-07T01:06:59.357Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-003",
+      "email": "test3@example.com",
+      "tier": "professional",
+      "status": "expired",
+      "billing_cycle": "monthly",
+      "included_credits": 100,
+      "used_this_month": 0,
+      "credit_balance": 100,
+      "renews_at": "2026-10-07T01:06:59.362Z"
+    },
+    {
+      "customer_id": "TEST-CUSTOMER-004",
+      "email": "test4@example.com",
+      "tier": "professional",
+      "status": "active",
+      "billing_cycle": "monthly",
+      "included_credits": 100,
+      "used_this_month": 50,
+      "credit_balance": 100,
+      "renews_at": "2026-10-07T01:06:59.371Z"
+    }
+  ],
+  "purchases": [],
+  "orders": [],
+  "api_keys": [],
+  "credits_ledger": [],
+  "usage_records": [
+    {
+      "id": "U-muy06mic-82xb",
+      "customer_id": "TEST-CUSTOMER-001",
+      "action": "search",
+      "cost": 1,
+      "metadata": {},
+      "ts": "2026-10-07T11:07:19.284Z",
+      "date": "2026-10-07"
+    },
+    {
+      "id": "U-muyt8lzn-4f82",
+      "customer_id": "TEST-CUSTOMER-001",
+      "action": "search",
+      "cost": 1,
+      "metadata": {},
+      "ts": "2026-10-08T00:40:40.787Z",
+      "date": "2026-10-08"
+    },
+    {
+      "id": "U-muyu6g0o-xtl0",
+      "customer_id": "TEST-CUSTOMER-001",
+      "action": "search",
+      "cost": 1,
+      "metadata": {},
+      "ts": "2026-10-08T01:06:59.352Z",
+      "date": "2026-10-08"
+    }
+  ],
+  "invoices": []
+}

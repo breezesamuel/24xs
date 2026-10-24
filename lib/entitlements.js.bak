@@ -1,0 +1,151 @@
+﻿const fs = require("fs");
+const path = require("path");
+
+const DB_PATH = path.resolve(__dirname, "../11_鏁版嵁璧勪骇/registry_real_verified/customer_schema.json");
+const PRICING_PATH = path.resolve(__dirname, "../11_鏁版嵁璧勪骇/registry_real_verified/pricing_engine.json");
+
+function loadDb() {
+  try {
+    const raw = fs.readFileSync(DB_PATH, "utf8");
+    const data = JSON.parse(raw);
+    if (!data.customers) data.customers = [];
+    if (!data.purchases) data.purchases = [];
+    if (!data.orders) data.orders = [];
+    if (!data.api_keys) data.api_keys = [];
+    if (!data.credits_ledger) data.credits_ledger = [];
+    if (!data.usage_records) data.usage_records = [];
+    if (!data.invoices) data.invoices = [];
+    return data;
+  } catch (e) {
+    return { customers: [], purchases: [], orders: [], api_keys: [], credits_ledger: [], usage_records: [], invoices: [] };
+  }
+}
+
+function saveDb(db) {
+  fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
+}
+
+function loadPricing() {
+  try {
+    const raw = fs.readFileSync(PRICING_PATH, "utf8");
+    return JSON.parse(raw);
+  } catch (e) {
+    return { tiers: {} };
+  }
+}
+
+function addMonths(date, months) {
+  const d = new Date(date);
+  d.setMonth(d.getMonth() + months);
+  return d.toISOString();
+}
+
+function addDays(date, days) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d.toISOString();
+}
+
+async function getCustomer(customerId) {
+  if (!customerId) return null;
+  const db = loadDb();
+  return db.customers.find((c) => c.customer_id === customerId) || null;
+}
+
+async function saveCustomer(customer) {
+  const db = loadDb();
+  const idx = db.customers.findIndex((c) => c.customer_id === customer.customer_id);
+  if (idx >= 0) {
+    db.customers[idx] = { ...db.customers[idx], ...customer };
+  } else {
+    db.customers.push(customer);
+  }
+  saveDb(db);
+  return db.customers[idx >= 0 ? idx : db.customers.length - 1];
+}
+
+async function checkEntitlement({ customerId, action, cost = 1, requireActive = true, allowOverage = false }) {
+  const customer = await getCustomer(customerId);
+  if (!customer) {
+    return { allowed: false, code: 401, reason: "customer_not_found", error: "鏈壘鍒板鎴锋。妗? };
+  }
+  const now = new Date();
+  const pricing = loadPricing();
+  const tierConfig = pricing.tiers && pricing.tiers[customer.tier] ? pricing.tiers[customer.tier] : null;
+
+  if (customer.billing_cycle === "monthly") {
+    const renewsAt = customer.renews_at ? new Date(customer.renews_at) : null;
+    if (renewsAt && now >= renewsAt) {
+      const resetCredits = tierConfig && typeof tierConfig.included_credits === "number" ? tierConfig.included_credits : (customer.included_credits || 0);
+      customer.included_credits = resetCredits;
+      customer.used_this_month = 0;
+      customer.credit_balance = resetCredits;
+      customer.renews_at = addMonths(customer.renews_at, 1);
+      await saveCustomer(customer);
+    }
+  } else if (customer.billing_cycle === "yearly") {
+    const renewsAt = customer.renews_at ? new Date(customer.renews_at) : null;
+    if (renewsAt && now >= renewsAt) {
+      const resetCredits = tierConfig && typeof tierConfig.included_credits === "number" ? tierConfig.included_credits : (customer.included_credits || 0);
+      customer.included_credits = resetCredits;
+      customer.used_this_month = 0;
+      customer.credit_balance = resetCredits;
+      customer.renews_at = addMonths(customer.renews_at, 12);
+      await saveCustomer(customer);
+    }
+  }
+
+  if (requireActive) {
+    const status = customer.status || "inactive";
+    if (status === "expired" || status === "suspended") {
+      return { allowed: false, code: 403, reason: "subscription_inactive", error: "璁㈤槄鏈縺娲绘垨宸插け鏁? };
+    }
+    if (status === "canceled") {
+      if (customer.ends_at) {
+        const endsAt = new Date(customer.ends_at);
+        if (now > endsAt) return { allowed: false, code: 403, reason: "subscription_expired", error: "璁㈤槄宸插埌鏈? };
+      } else {
+        return { allowed: false, code: 403, reason: "subscription_canceled", error: "璁㈤槄宸插彇娑? };
+      }
+    }
+    if (status === "past_due") {
+      return { allowed: false, code: 402, reason: "subscription_past_due", error: "璁㈤槄璐﹀崟閫炬湡锛岃鏇存柊鏀粯鏂瑰紡" };
+    }
+    const endsAt = customer.ends_at ? new Date(customer.ends_at) : null;
+    if (endsAt && now > endsAt && status !== "canceled") {
+      return { allowed: false, code: 403, reason: "subscription_expired", error: "璁㈤槄宸茶繃鏈? };
+    }
+  }
+
+  const creditBal = typeof customer.credit_balance === "number" ? customer.credit_balance : (customer.included_credits || 0);
+  const used = typeof customer.used_this_month === "number" ? customer.used_this_month : 0;
+  const effectiveRemaining = creditBal - used;
+  if (cost > 0 && effectiveRemaining < cost && !allowOverage) {
+    return { allowed: false, code: 402, reason: "insufficient_credits", error: "棰濆害涓嶈冻锛岃鍗囩骇璁㈤槄", meta: { remaining: effectiveRemaining, required: cost, allowOverage } };
+  }
+  return { allowed: true, customer, tierConfig };
+}
+
+async function consumeEntitlement({ customerId, action, cost = 1, metadata = {} }) {
+  const check = await checkEntitlement({ customerId, action, cost, requireActive: true, allowOverage: false });
+  if (!check.allowed) return check;
+  const db = loadDb();
+  const c = db.customers.find((x) => x.customer_id === customerId);
+  if (!c) return { allowed: false, code: 404, reason: "not_found" };
+  c.used_this_month = (c.used_this_month || 0) + cost;
+  if (action === "deliver") c.total_assets_purchased = (c.total_assets_purchased || 0) + 1;
+  c.last_active_at = new Date().toISOString();
+  db.usage_records.push({
+    id: "U-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6),
+    customer_id: customerId,
+    action,
+    cost,
+    metadata,
+    ts: new Date().toISOString(),
+    date: new Date().toISOString().slice(0, 10)
+  });
+  saveDb(db);
+  return { allowed: true, consumed: cost, used_this_month: c.used_this_month, credit_balance: c.credit_balance };
+}
+
+module.exports = { getCustomer, saveCustomer, checkEntitlement, consumeEntitlement, loadDb, saveDb, addMonths, addDays };

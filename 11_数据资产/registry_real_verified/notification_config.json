@@ -1,0 +1,11 @@
+{
+  "provider": "mock",
+  "from_email": "noreply@geo-audit-24xs.vercel.app",
+  "from_name": "丙大山数字资产平台",
+  "smtp_host": "smtp.example.com",
+  "smtp_port": 587,
+  "smtp_user": "",
+  "smtp_pass": "",
+  "sendgrid_api_key": "",
+  "ses_region": "ap-shanghai"
+}

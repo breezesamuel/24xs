@@ -1,0 +1,125 @@
+[2026-09-30 14:55:32] ============================================================
+[2026-09-30 14:55:32] watchdog 启动（7x24 常驻）
+[2026-09-30 14:55:32] 站点目录: F:\2026\24xs\10_官网
+[2026-09-30 14:55:32] 流水线间隔: 21600s
+[2026-09-30 14:55:32] [start] site_server pid=11792 argv=C:\Users\46012\AppData\Local\Programs\Python\Python312\python.exe -X utf8
+[2026-09-30 14:55:32] [site] 本地站点就绪 http://127.0.0.1:8788
+[2026-09-30 14:55:32] [start] cloudflared pid=16908 argv=C:\Users\46012\AppData\Local\cloudflared\cloudflared.exe tunnel --url
+[2026-09-30 14:55:44] [tunnel] 公网地址就绪 https://profits-restore-hayes-bibliography.trycloudflare.com (HTTP 200)
+[2026-09-30 14:55:44] [pipeline] 开始每日流水线
+[2026-09-30 14:55:55] [pipeline] engine: OK
+[2026-09-30 14:55:56] [pipeline] security: OK
+[2026-09-30 14:57:33] [pipeline] intel: OK
+[2026-09-30 15:03:51] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+[2026-09-30 15:03:51] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 15:05:53] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+[2026-09-30 15:05:53] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 15:06:53] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+[2026-09-30 15:06:53] [health] 公网站点异常 HTTP=0 (连续 2 次)
+[2026-09-30 15:46:09] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+[2026-09-30 15:46:09] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 15:48:16] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: HTTP Error 530: <none>
+[2026-09-30 15:48:16] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 16:00:45] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+[2026-09-30 16:00:45] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 16:04:47] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+[2026-09-30 16:04:47] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 16:15:15] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: HTTP Error 530: <none>
+[2026-09-30 16:15:15] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 17:04:52] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: The read operation timed out
+[2026-09-30 17:04:52] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 17:56:09] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+[2026-09-30 17:56:09] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 18:02:18] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+[2026-09-30 18:02:18] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 18:04:23] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+[2026-09-30 18:04:23] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 18:07:27] [http] https://profits-restore-hayes-bibliography.trycloudflare.com 失败: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+[2026-09-30 18:07:27] [health] 公网站点异常 HTTP=0 (连续 1 次)
+[2026-09-30 18:48:41] ============================================================
+[2026-09-30 18:48:42] watchdog 启动（7x24 常驻）
+[2026-09-30 18:48:42] 站点目录: F:\2026\24xs\10_官网
+[2026-09-30 18:48:42] 流水线间隔: 21600s
+[2026-09-30 18:48:42] [start] site_server pid=9156 argv=C:\Users\46012\AppData\Local\Programs\Python\Python312\python.exe -X utf8
+[2026-09-30 18:48:43] [site] 本地站点就绪 http://127.0.0.1:8788
+[2026-09-30 18:48:44] [start] cloudflared pid=9340 argv=C:\Users\46012\AppData\Local\cloudflared\cloudflared.exe tunnel --url
+[2026-09-30 18:49:12] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:15] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:18] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:21] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:24] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:27] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:30] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:33] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:36] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:39] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:42] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:45] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:48] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:51] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:55] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:49:58] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:01] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:04] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:07] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:10] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:13] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:16] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:19] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:22] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:25] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:28] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:31] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:34] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:37] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:41] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:44] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:47] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:50] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:53] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:56] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:50:59] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:02] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:05] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:08] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:11] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:14] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:17] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:20] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:23] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:26] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:29] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:32] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:35] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:38] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:41] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:44] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:47] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:50] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:54] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:51:57] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:00] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:03] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:06] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:09] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:12] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:15] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:18] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:21] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:24] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:27] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:30] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:33] [http] https://api.trycloudflare.com 失败: <urlopen error [WinError 10061] 由于目标计算机积极拒绝，无法连接。>
+[2026-09-30 18:52:34] [tunnel] 90s 内未取得可用公网地址
+[2026-09-30 18:52:34] [pipeline] 开始每日流水线
+[2026-09-30 18:52:46] [pipeline] engine: OK
+[2026-09-30 18:52:49] [pipeline] security: OK
+[2026-09-30 18:53:37] [pipeline] intel: OK
+[2026-09-30 18:53:37] [start] cloudflared pid=11136 argv=C:\Users\46012\AppData\Local\cloudflared\cloudflared.exe tunnel --url
+[2026-09-30 18:53:37] [restart] cloudflared 第 1 次
+[2026-09-30 18:53:57] [start] cloudflared pid=2076 argv=C:\Users\46012\AppData\Local\cloudflared\cloudflared.exe tunnel --url
+[2026-09-30 18:53:57] [restart] cloudflared 第 2 次
+[2026-09-30 18:54:12] [start] cloudflared pid=4580 argv=C:\Users\46012\AppData\Local\cloudflared\cloudflared.exe tunnel --url
+[2026-09-30 18:54:12] [restart] cloudflared 第 3 次
+[2026-09-30 18:54:22] [start] cloudflared pid=10384 argv=C:\Users\46012\AppData\Local\cloudflared\cloudflared.exe tunnel --url
+[2026-09-30 18:54:22] [restart] cloudflared 第 4 次

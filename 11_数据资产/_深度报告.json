@@ -1,0 +1,62 @@
+[
+  {
+    "kw": "医院",
+    "max_page": 50,
+    "per_page": 20,
+    "est_total": 1000
+  },
+  {
+    "kw": "学校",
+    "max_page": 50,
+    "per_page": 13,
+    "est_total": 650
+  },
+  {
+    "kw": "软件",
+    "max_page": 50,
+    "per_page": 10,
+    "est_total": 500
+  },
+  {
+    "kw": "电梯",
+    "max_page": 50,
+    "per_page": 8,
+    "est_total": 400
+  },
+  {
+    "db": "bidx",
+    "label": "公开招标",
+    "max_page": 10,
+    "est_total": 200
+  },
+  {
+    "db": "yixb",
+    "label": "邀请招标",
+    "max_page": 10,
+    "est_total": 200
+  },
+  {
+    "db": "jztp",
+    "label": "竞争性谈判",
+    "max_page": 10,
+    "est_total": 200
+  },
+  {
+    "db": "jzcs",
+    "label": "竞争性磋商",
+    "max_page": 10,
+    "est_total": 200
+  },
+  {
+    "db": "xunjia",
+    "label": "询价",
+    "max_page": 10,
+    "est_total": 200
+  },
+  {
+    "db": "dyly",
+    "label": "单一来源",
+    "max_page": 10,
+    "est_total": 200
+  }
+]

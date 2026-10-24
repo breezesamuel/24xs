@@ -1,0 +1,9 @@
+﻿公司,官网,联系人,电话,邮箱,微信,行业,城市,痛点,来源,备注
+上海千州装饰设计工程有限公司,http://www.shqianzhou.com/,官网客服,13636465941,,,home_improvement,上海,官网无任何 JSON-LD，AI 无法解析为实体；无问答块,公开官网实测 geo_real_audit.py,实测缺口3项 | ICP=沪ICP备2025142200号-1
+上海心越装潢设计有限公司,http://www.xinyuezh.com/,陈经理,13524575110,,,home_improvement,上海,官网无结构化数据；主推20年装修但AI搜『崇明装修公司』不被引用,公开官网实测 geo_real_audit.py,实测缺口3项 | ICP=沪ICP备18029511号-1 | 备用号码 19808140546
+上海兜欢喜装饰,https://www.douhuanxi.com/,官网客服,18321321105,2776855362@qq.com,,home_improvement,上海,无 FAQPage schema；靠吉美装饰背书但AI检索不到品牌实体,公开官网实测 geo_real_audit.py,实测缺口3项 | ICP=沪ICP备2023026410号-2 | 备用号码 400-861-7911
+上海高吉建筑装饰工程有限公司,http://shgaoji.com/,官网客服,02159552790,,,home_improvement,上海,腾云建站模板站，零结构化数据，纯视觉稿，AI完全不可读,公开官网实测 geo_real_audit.py,实测缺口3项 | ICP=沪ICP备2024071602号-1
+上海市室内装饰行业协会,https://www.snzsxh.com/,官网客服,02153060510,,,home_improvement,上海,协会官网无结构化数据；会员单位批量缺AI可读信息,公开官网实测 geo_real_audit.py,实测缺口3项 | ICP=沪ICP备17052917号-2 | 备用号码 02160191137
+上海百姓装潢有限公司,https://shbx.com.cn/,官网客服,02154080234,,,home_improvement,上海,国企背景但无结构化数据；『上海装修公司推荐』类问题不被AI引用,公开官网实测 geo_real_audit.py,实测缺口2项 | ICP=沪ICP备15021202号 | 备用号码 13896943918
+上海知贤装饰设计有限公司,https://www.zhixianzs.com/,任经理,19121907527,,,home_improvement,上海,结构化已到位，作为标杆对照组（AI可解析）,公开官网实测 geo_real_audit.py,对照组-结构化已达标 | ICP=-
+上海紫业装饰设计工程有限公司,https://www.ziyehk.cn/,Perry,13795207682,,,home_improvement,上海,结构化已到位，作为标杆对照组（AI可解析）,公开官网实测 geo_real_audit.py,对照组-结构化已达标 | ICP=沪ICP备10021400号-3

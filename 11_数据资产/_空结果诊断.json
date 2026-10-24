@@ -1,0 +1,86 @@
+[
+  {
+    "kw": "医院",
+    "dbselect": "bidx",
+    "year": 2020,
+    "bytes": 28625,
+    "items": 4,
+    "total": "4",
+    "features": [
+      "验证码",
+      "交互验证"
+    ],
+    "note": "已知应该有大量数据",
+    "head": " 采购公告搜索_中国政府采购网 var path = \"/\"; var basePath = \"//search.ccgp.gov.cn/\"; var staticPath = path + \"static/\"; var dateTy = '6'; var bidType = '0'; var bidSort = '0'; var pinMu = '0'; var searchtype = '1'; var kw = '医院'; var buyerName = ''; var projectId = ''; var zoneId = ''; var displayZone = ''; var "
+  },
+  {
+    "kw": "医院",
+    "dbselect": "bidx",
+    "year": 2015,
+    "bytes": 28625,
+    "items": 4,
+    "total": "4",
+    "features": [
+      "验证码",
+      "交互验证"
+    ],
+    "note": "应该有数据",
+    "head": " 采购公告搜索_中国政府采购网 var path = \"/\"; var basePath = \"//search.ccgp.gov.cn/\"; var staticPath = path + \"static/\"; var dateTy = '6'; var bidType = '0'; var bidSort = '0'; var pinMu = '0'; var searchtype = '1'; var kw = '医院'; var buyerName = ''; var projectId = ''; var zoneId = ''; var displayZone = ''; var "
+  },
+  {
+    "kw": "医院",
+    "dbselect": "yixb",
+    "year": 2020,
+    "bytes": 28625,
+    "items": 4,
+    "total": "4",
+    "features": [
+      "验证码",
+      "交互验证"
+    ],
+    "note": "邀请招标-可能有",
+    "head": " 采购公告搜索_中国政府采购网 var path = \"/\"; var basePath = \"//search.ccgp.gov.cn/\"; var staticPath = path + \"static/\"; var dateTy = '6'; var bidType = '0'; var bidSort = '0'; var pinMu = '0'; var searchtype = '1'; var kw = '医院'; var buyerName = ''; var projectId = ''; var zoneId = ''; var displayZone = ''; var "
+  },
+  {
+    "kw": "医院",
+    "dbselect": "zbj",
+    "year": 2020,
+    "bytes": 28625,
+    "items": 4,
+    "total": "4",
+    "features": [
+      "验证码",
+      "交互验证"
+    ],
+    "note": "中标结果-应该有",
+    "head": " 采购公告搜索_中国政府采购网 var path = \"/\"; var basePath = \"//search.ccgp.gov.cn/\"; var staticPath = path + \"static/\"; var dateTy = '6'; var bidType = '0'; var bidSort = '0'; var pinMu = '0'; var searchtype = '1'; var kw = '医院'; var buyerName = ''; var projectId = ''; var zoneId = ''; var displayZone = ''; var "
+  },
+  {
+    "kw": "学校",
+    "dbselect": "bidx",
+    "year": 2020,
+    "bytes": 22217,
+    "items": 0,
+    "total": "0",
+    "features": [
+      "验证码",
+      "交互验证"
+    ],
+    "note": "应该有数据",
+    "head": " 采购公告搜索_中国政府采购网 var path = \"/\"; var basePath = \"//search.ccgp.gov.cn/\"; var staticPath = path + \"static/\"; var dateTy = '6'; var bidType = '0'; var bidSort = '0'; var pinMu = '0'; var searchtype = '1'; var kw = '学校'; var buyerName = ''; var projectId = ''; var zoneId = ''; var displayZone = ''; var "
+  },
+  {
+    "kw": "医院",
+    "dbselect": "bidx",
+    "year": 2026,
+    "bytes": 51075,
+    "items": 20,
+    "total": "169851",
+    "features": [
+      "验证码",
+      "交互验证"
+    ],
+    "note": "最新年",
+    "head": " 采购公告搜索_中国政府采购网 var path = \"/\"; var basePath = \"//search.ccgp.gov.cn/\"; var staticPath = path + \"static/\"; var dateTy = '6'; var bidType = '0'; var bidSort = '0'; var pinMu = '0'; var searchtype = '1'; var kw = '医院'; var buyerName = ''; var projectId = ''; var zoneId = ''; var displayZone = ''; var "
+  }
+]

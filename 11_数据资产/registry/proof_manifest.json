@@ -1,0 +1,18 @@
+{
+  "title": "数字虚拟资产平台 - 经济价值证明",
+  "total_assets": 1000000,
+  "format": "jsonl",
+  "registry": "11_数据资产/registry/assets_registry.jsonl",
+  "manifest": "11_数据资产/registry/manifest.json",
+  "endpoints": {
+    "assets": "/api/assets",
+    "verify": "/api/verify"
+  },
+  "pricing_ref_cny": {
+    "min": 0.1,
+    "max": 5.0
+  },
+  "unit_econ": "1 CNY * 1,000,000 = 1,000,000 CNY (long-tail validation)",
+  "path_6m": "compound + vertical expansion to reach >= CNY 1,000,000",
+  "timestamp": "2026-10-02T05:00:01.706508Z"
+}

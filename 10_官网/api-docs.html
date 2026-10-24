@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丙大山·API 文档</title>
+<style>
+:root{--bg:#0a0f1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--warn:#f59e0b;--danger:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.logo{font-weight:700;font-size:1.25rem;color:var(--accent)}
+h1{font-size:2rem;margin-bottom:8px}
+h2{font-size:1.5rem;margin:32px 0 16px;color:var(--accent)}
+h3{font-size:1.1rem;margin:24px 0 12px}
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
+.endpoint{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px}
+.endpoint-method{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.75rem;font-weight:700;margin-right:8px}
+.endpoint-method.get{background:var(--accent);color:var(--bg)}
+.endpoint-method.post{background:var(--warn);color:var(--bg)}
+.endpoint-path{font-family:monospace;font-size:.9rem;margin-bottom:8px}
+.endpoint-desc{font-size:.85rem;color:var(--muted);margin-bottom:12px}
+.code-block{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0;overflow-x:auto}
+.code-block pre{font-family:monospace;font-size:.8rem;color:var(--muted);margin:0}
+.code-block code{font-family:monospace;font-size:.8rem}
+.param-table{width:100%;border-collapse:collapse;margin:12px 0}
+.param-table th,.param-table td{padding:8px;text-align:left;border-bottom:1px solid var(--border);font-size:.85rem}
+.param-table th{color:var(--muted);font-weight:600}
+.param-required{color:var(--danger);font-size:.75rem}
+</style>
+</head>
+<body>
+<div class="container">
+<header><div class="logo">丙大山·API 文档</div><a href="/" style="color:var(--muted);text-decoration:none">返回商城</a></header>
+<h1>API 使用文档</h1>
+<p style="color:var(--muted);margin-bottom:24px">基础 URL: https://geo-audit-24xs.vercel.app</p>
+
+<h2>认证</h2>
+<div class="section">
+<p>所有 API 请求需要在 Header 中携带客户 ID：</p>
+<div class="code-block"><pre>x-customer-id: your_customer_id</pre></div>
+</div>
+
+<h2>资产 API</h2>
+<div class="section">
+<div class="endpoint">
+<span class="endpoint-method get">GET</span>
+<div class="endpoint-path">/api/assets</div>
+<div class="endpoint-desc">获取资产列表</div>
+<table class="param-table">
+<tr><th>参数</th><th>类型</th><th>必填</th><th>描述</th></tr>
+<tr><td>limit</td><td>number</td><td>否</td><td>返回数量，默认 100</td></tr>
+<tr><td>offset</td><td>number</td><td>否</td><td>偏移量，默认 0</td></tr>
+</table>
+<div class="code-block"><pre><code>{
+  "ok": true,
+  "total": 1056693,
+  "data": [...]
+}</code></pre></div>
+</div>
+
+<div class="endpoint">
+<span class="endpoint-method get">GET</span>
+<div class="endpoint-path">/api/search</div>
+<div class="endpoint-desc">全文搜索资产</div>
+<table class="param-table">
+<tr><th>参数</th><th>类型</th><th>必填</th><th>描述</th></tr>
+<tr><td>q</td><td>string</td><td>是</td><td>搜索关键词</td></tr>
+<tr><td>type</td><td>string</td><td>否</td><td>资产类型过滤</td></tr>
+<tr><td>limit</td><td>number</td><td>否</td><td>返回数量，默认 50</td></tr>
+</table>
+</div>
+</div>
+
+<h2>验证 API</h2>
+<div class="section">
+<div class="endpoint">
+<span class="endpoint-method post">POST</span>
+<div class="endpoint-path">/api/verify</div>
+<div class="endpoint-desc">验证资产 Proof</div>
+<div class="code-block"><pre><code>{
+  "proof": "sha256_hash",
+  "data": { ... }
+}</code></pre></div>
+<div class="code-block"><pre><code>{
+  "ok": true,
+  "data": {
+    "match": true,
+    "type": "direct",
+    "computed": "sha256_hash"
+  }
+}</code></pre></div>
+</div>
+</div>
+
+<h2>定价 API</h2>
+<div class="section">
+<div class="endpoint">
+<span class="endpoint-method get">GET</span>
+<div class="endpoint-path">/api/pricing</div>
+<div class="endpoint-desc">获取定价信息</div>
+<table class="param-table">
+<tr><th>参数</th><th>类型</th><th>必填</th><th>描述</th></tr>
+<tr><td>action</td><td>string</td><td>否</td><td>calculate/compare/estimate</td></tr>
+<tr><td>tier</td><td>string</td><td>否</td><td>套餐层级</td></tr>
+<tr><td>qty</td><td>number</td><td>否</td><td>数量</td></tr>
+</table>
+</div>
+</div>
+
+<h2>购买 API</h2>
+<div class="section">
+<div class="endpoint">
+<span class="endpoint-method post">POST</span>
+<div class="endpoint-path">/api/purchase</div>
+<div class="endpoint-desc">发起购买</div>
+<div class="code-block"><pre><code>{
+  "asset_id": "V-20261003-001234",
+  "amount_cny": 500.00
+}</code></pre></div>
+<div class="code-block"><pre><code>{
+  "ok": true,
+  "data": {
+    "checkout_url": "https://...",
+    "purchase_id": "P-xxx"
+  }
+}</code></pre></div>
+</div>
+</div>
+
+<h2>客户门户 API</h2>
+<div class="section">
+<div class="endpoint">
+<span class="endpoint-method get">GET</span>
+<div class="endpoint-path">/api/portal/profile</div>
+<div class="endpoint-desc">获取客户档案</div>
+</div>
+
+<div class="endpoint">
+<span class="endpoint-method get">GET</span>
+<div class="endpoint-path">/api/portal/credits</div>
+<div class="endpoint-desc">获取积分信息</div>
+</div>
+
+<div class="endpoint">
+<span class="endpoint-method get">GET</span>
+<div class="endpoint-path">/api/portal/purchases</div>
+<div class="endpoint-desc">获取购买记录</div>
+</div>
+
+<div class="endpoint">
+<span class="endpoint-method get">GET</span>
+<div class="endpoint-path">/api/portal/subscription</div>
+<div class="endpoint-desc">获取订阅状态</div>
+</div>
+</div>
+
+<h2>管理 API</h2>
+<div class="section">
+<div class="endpoint">
+<span class="endpoint-method get">GET</span>
+<div class="endpoint-path">/api/admin/dashboard</div>
+<div class="endpoint-desc">管理仪表盘</div>
+</div>
+
+<div class="endpoint">
+<span class="endpoint-method get">GET</span>
+<div class="endpoint-path">/api/monitoring</div>
+<div class="endpoint-desc">系统监控</div>
+</div>
+</div>
+
+<h2>错误码</h2>
+<div class="section">
+<table class="param-table">
+<tr><th>状态码</th><th>描述</th></tr>
+<tr><td>200</td><td>成功</td></tr>
+<tr><td>400</td><td>请求参数错误</td></tr>
+<tr><td>401</td><td>未授权</td></tr>
+<tr><td>402</td><td>需要支付（积分不足）</td></tr>
+<tr><td>403</td><td>禁止访问（订阅过期）</td></tr>
+<tr><td>404</td><td>资源不存在</td></tr>
+<tr><td>429</td><td>请求过于频繁</td></tr>
+<tr><td>500</td><td>服务器错误</td></tr>
+</table>
+</div>
+</div>
+</body>
+</html>

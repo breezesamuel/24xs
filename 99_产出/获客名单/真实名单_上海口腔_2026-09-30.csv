@@ -1,0 +1,6 @@
+﻿公司,官网,联系人,电话,邮箱,微信,行业,城市,痛点,来源,备注
+上海摩尔口腔医院集团,http://www.moreck.com/,官网客服/预约组,400-654-9969,,,dental_clinic,上海,连锁大牌但官网零结构化，搜『上海种植牙哪家好』AI 不提摩尔,公开官网实测 geo_dental_audit.py,实测缺口3项 | ICP=沪ICP备18034568号
+上海夕阳红口腔门诊部,http://xyhkq.com.cn/,前台/预约组,02162495105,xiyanghong@xyhkq.com.cn,,dental_clinic,上海,专注中老年修复 5 万+ 例，官网纯文本，AI 无法解析实体,公开官网实测 geo_dental_audit.py,实测缺口3项 | ICP=沪ICP备14003103号-1 | 备用号码 02162498957
+上海市同济口腔医院,https://kouqiang.tongji.edu.cn/,预约中心,02166313680,,,dental_clinic,上海,三甲公立、权威背书，官网却无任何结构化数据，极大浪费品牌资产,公开官网实测 geo_dental_audit.py,实测缺口3项 | ICP=-
+上海汇尚口腔,http://m.huishangdental.com/,预约专员,02152981020,huishangkouqiang@163.com,,dental_clinic,上海,静安核心区、多电话多邮箱，官网无 FAQPage，『静安种植牙』问法不被引用,公开官网实测 geo_dental_audit.py,实测缺口3项 | ICP=沪ICP备18040473号-1 | 备用号码 13916477412 / 18764441012
+齐白雅口腔,https://qbykq.com/,官网客服/预约组,02131901340,,,dental_clinic,上海,结构化已到位（含 Dentist/FAQPage/GeoCoordinates），作为对照组,公开官网实测 geo_dental_audit.py,对照组-结构化已达标 | ICP=沪ICP备2025113664号-1 | 备用号码 15301786050

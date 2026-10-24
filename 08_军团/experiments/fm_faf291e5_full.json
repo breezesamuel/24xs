@@ -1,0 +1,179 @@
+{
+  "id": "fm_faf291e5",
+  "name": "First Money: GEO Audit First Sale (Pure Factory)",
+  "budget_cny": "500",
+  "spent_cny": "250",
+  "revenue_cny": "0",
+  "target_leads": 7,
+  "target_revenue_cny": "8000",
+  "deadline_days": 3,
+  "status": "ready_for_outreach",
+  "leads": [
+    {
+      "company": "上海逸居装饰工程有限公司",
+      "industry": "home_improvement",
+      "city": "深圳",
+      "contact": "张总(创始人)(决策层)",
+      "pain": "获客高度依赖大平台（土巴兔/齐家网），CAC 持续走高，自有品牌词在 AI 搜索中不可见",
+      "channel": "qichacha",
+      "evidence_url": "https://www.zhipin.com/web/geek/job?query=home_improvement&city=#result_41",
+      "icp_score": 88,
+      "tier": "B"
+    },
+    {
+      "company": "北京筑美家装饰设计有限公司",
+      "industry": "home_improvement",
+      "city": "深圳",
+      "contact": "李总(CEO)(决策层)",
+      "pain": "过度依赖付费竞价/信息流，边际获客成本递增，缺乏有机流量护城河",
+      "channel": "jobs_boss",
+      "evidence_url": "https://www.zhipin.com/web/geek/job?query=home_improvement&city=#result_38",
+      "icp_score": 77,
+      "tier": "B"
+    },
+    {
+      "company": "深圳赛维时代科技有限公司",
+      "industry": "cross_border",
+      "city": "宁波",
+      "contact": "林总(创始人)(决策层)",
+      "pain": "内容营销靠运营手写博客/视频脚本，周期长、难批量，缺乏 AI 内容工厂",
+      "channel": "qichacha",
+      "evidence_url": "https://www.zhipin.com/web/geek/job?query=cross_border&city=#result_32",
+      "icp_score": 75,
+      "tier": "B"
+    },
+    {
+      "company": "广州通拓科技股份有限公司",
+      "industry": "cross_border",
+      "city": "厦门",
+      "contact": "黄总(CEO)(决策层)",
+      "pain": "品牌词在 AI 搜索（Perplexity/ChatGPT/豆包）中不可见，竞品抢占了答案位",
+      "channel": "jobs_boss",
+      "evidence_url": "https://www.zhipin.com/web/geek/job?query=cross_border&city=#result_45",
+      "icp_score": 81,
+      "tier": "B"
+    },
+    {
+      "company": "北京市君泽君律师事务所",
+      "industry": "legal",
+      "city": "北京",
+      "contact": "王主任(合伙人)(决策层)",
+      "pain": "案例/文章库无结构化数据，搜索引擎/AI 难抓取专业观点，长尾流量流失",
+      "channel": "qichacha",
+      "evidence_url": "https://www.zhipin.com/web/geek/job?query=legal&city=#result_41",
+      "icp_score": 75,
+      "tier": "B"
+    },
+    {
+      "company": "上海市通力律师事务所",
+      "industry": "legal",
+      "city": "深圳",
+      "contact": "李主任(合伙人)(决策层)",
+      "pain": "律所品牌词在 AI 搜索中不可见，竞品律所通过内容营销抢占了专业问答入口",
+      "channel": "jobs_boss",
+      "evidence_url": "https://www.zhipin.com/web/geek/job?query=legal&city=#result_19",
+      "icp_score": 75,
+      "tier": "A"
+    },
+    {
+      "company": "宁波华翔电子股份有限公司",
+      "industry": "manufacturing",
+      "city": "宁波",
+      "contact": "张总(董事长)(决策层)",
+      "pain": "缺乏 GEO 布局，竞品通过技术白皮书/选型工具抢占了 AI 推荐入口",
+      "channel": "website",
+      "evidence_url": "https://www.zhipin.com/web/geek/job?query=manufacturing&city=#result_49",
+      "icp_score": 78,
+      "tier": "B"
+    }
+  ],
+  "touches": [
+    {
+      "lead_id": "上海逸居装饰工程有限公司",
+      "company": "上海逸居装饰工程有限公司",
+      "channel": "pending_manual_outreach",
+      "template_used": "GEO诊断三步法",
+      "sent_at": "2026-09-30T15:03:33.528220",
+      "replied": false,
+      "replied_at": null,
+      "meeting_booked": false,
+      "deal_stage": "queued_not_sent",
+      "revenue_cny": "0"
+    },
+    {
+      "lead_id": "北京筑美家装饰设计有限公司",
+      "company": "北京筑美家装饰设计有限公司",
+      "channel": "pending_manual_outreach",
+      "template_used": "GEO诊断三步法",
+      "sent_at": "2026-09-30T15:03:33.528220",
+      "replied": false,
+      "replied_at": null,
+      "meeting_booked": false,
+      "deal_stage": "queued_not_sent",
+      "revenue_cny": "0"
+    },
+    {
+      "lead_id": "深圳赛维时代科技有限公司",
+      "company": "深圳赛维时代科技有限公司",
+      "channel": "pending_manual_outreach",
+      "template_used": "GEO诊断三步法",
+      "sent_at": "2026-09-30T15:03:33.528220",
+      "replied": false,
+      "replied_at": null,
+      "meeting_booked": false,
+      "deal_stage": "queued_not_sent",
+      "revenue_cny": "0"
+    },
+    {
+      "lead_id": "广州通拓科技股份有限公司",
+      "company": "广州通拓科技股份有限公司",
+      "channel": "pending_manual_outreach",
+      "template_used": "GEO诊断三步法",
+      "sent_at": "2026-09-30T15:03:33.528220",
+      "replied": false,
+      "replied_at": null,
+      "meeting_booked": false,
+      "deal_stage": "queued_not_sent",
+      "revenue_cny": "0"
+    },
+    {
+      "lead_id": "北京市君泽君律师事务所",
+      "company": "北京市君泽君律师事务所",
+      "channel": "pending_manual_outreach",
+      "template_used": "GEO诊断三步法",
+      "sent_at": "2026-09-30T15:03:33.528220",
+      "replied": false,
+      "replied_at": null,
+      "meeting_booked": false,
+      "deal_stage": "queued_not_sent",
+      "revenue_cny": "0"
+    },
+    {
+      "lead_id": "上海市通力律师事务所",
+      "company": "上海市通力律师事务所",
+      "channel": "pending_manual_outreach",
+      "template_used": "GEO诊断三步法",
+      "sent_at": "2026-09-30T15:03:33.528220",
+      "replied": false,
+      "replied_at": null,
+      "meeting_booked": false,
+      "deal_stage": "queued_not_sent",
+      "revenue_cny": "0"
+    },
+    {
+      "lead_id": "宁波华翔电子股份有限公司",
+      "company": "宁波华翔电子股份有限公司",
+      "channel": "pending_manual_outreach",
+      "template_used": "GEO诊断三步法",
+      "sent_at": "2026-09-30T15:03:33.528220",
+      "replied": false,
+      "replied_at": null,
+      "meeting_booked": false,
+      "deal_stage": "queued_not_sent",
+      "revenue_cny": "0"
+    }
+  ],
+  "created_at": "2026-09-30T15:03:32.230716",
+  "deadline_at": "2026-10-03T15:03:32.230716",
+  "closed_at": null
+}

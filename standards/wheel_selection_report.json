@@ -1,0 +1,343 @@
+{
+  "generated_at": "2026-10-12T01:50:37.364Z",
+  "target": "crawler",
+  "stack": "python",
+  "host_token": true,
+  "security_checked": true,
+  "recommended": [
+    {
+      "full": "adbar/trafilatura",
+      "total": 93,
+      "verdict": "DIRECT_USE(可直接用)",
+      "version": "v2.3.1",
+      "security": "ok"
+    },
+    {
+      "full": "gocolly/colly",
+      "total": 80,
+      "verdict": "SUITABLE(可用，需评估二开)",
+      "version": "v2.2.0",
+      "security": "ok"
+    },
+    {
+      "full": "projectdiscovery/katana",
+      "total": 77,
+      "verdict": "SUITABLE(可用，需评估二开)",
+      "version": "v1.8.0",
+      "security": "ok"
+    }
+  ],
+  "candidates": [
+    {
+      "full": "unclecode/crawl4ai",
+      "stars": 85264,
+      "forks": 8846,
+      "lang": "Python",
+      "license": "Apache-2.0",
+      "license_cls": "PERMISSIVE",
+      "license_risk": "low",
+      "stale_days": 0,
+      "pushed_at": "2026-10-11T06:06:31Z",
+      "D1": 100,
+      "D2": 100,
+      "D3": 100,
+      "D4": 100,
+      "D5": 34,
+      "total": 92,
+      "verdict": "ELIMINATE(已知严重漏洞)",
+      "latest_release": {
+        "tag": "v0.9.4",
+        "name": "Release v0.9.4",
+        "published_at": "2026-09-23T12:14:55Z",
+        "age_days": 18
+      },
+      "advisories": {
+        "count": 19,
+        "severities": {
+          "high": 11,
+          "medium": 3,
+          "critical": 5
+        }
+      },
+      "osv": {
+        "count": 31,
+        "ids": [
+          "GHSA-2jq4-q6vv-4cp3",
+          "GHSA-365w-hqf6-vxfg",
+          "GHSA-445m-27cf-gr3x",
+          "GHSA-4qqr-vv2q-cmr5",
+          "GHSA-5882-5rx9-xgxp",
+          "GHSA-6qhc-x826-342c",
+          "GHSA-7cx2-g3h9-382p",
+          "GHSA-8qrg-7j2f-rf2h"
+        ],
+        "package": "crawl4ai@PyPI",
+        "guessed": false,
+        "note": "crawl4ai@PyPI 命中 31 条"
+      },
+      "security": {
+        "level": "critical",
+        "notes": [
+          "GitHub 安全公告 CRITICAL×5",
+          "OSV 已知漏洞×31"
+        ]
+      }
+    },
+    {
+      "full": "scrapy/scrapy",
+      "stars": 64738,
+      "forks": 12004,
+      "lang": "Python",
+      "license": "BSD-3-Clause",
+      "license_cls": "PERMISSIVE",
+      "license_risk": "low",
+      "stale_days": 1,
+      "pushed_at": "2026-10-10T19:54:42Z",
+      "D1": 100,
+      "D2": 100,
+      "D3": 100,
+      "D4": 100,
+      "D5": 56,
+      "total": 95,
+      "verdict": "REVIEW(有高危漏洞，禁止直接复用)",
+      "latest_release": {
+        "tag": "2.19.0",
+        "name": null,
+        "published_at": "2026-09-10T11:48:30Z",
+        "age_days": 31
+      },
+      "advisories": {
+        "count": 12,
+        "severities": {
+          "high": 5,
+          "medium": 7
+        }
+      },
+      "osv": {
+        "count": 23,
+        "ids": [
+          "GHSA-23j4-mw76-5v7h",
+          "GHSA-2qfp-q593-8484",
+          "GHSA-4qqq-9vqf-3h3f",
+          "GHSA-76g3-c3x4-crvx",
+          "GHSA-7j7m-v7m3-jqm7",
+          "GHSA-9x8m-2xpf-crp3",
+          "GHSA-cc65-xxvf-f7r9",
+          "GHSA-cjvr-mfj7-j4j8"
+        ],
+        "package": "scrapy@PyPI",
+        "guessed": false,
+        "note": "scrapy@PyPI 命中 23 条"
+      },
+      "security": {
+        "level": "high",
+        "notes": [
+          "GitHub 安全公告 HIGH×5",
+          "OSV 已知漏洞×23"
+        ]
+      }
+    },
+    {
+      "full": "gocolly/colly",
+      "stars": 25551,
+      "forks": 1861,
+      "lang": "Go",
+      "license": "Apache-2.0",
+      "license_cls": "PERMISSIVE",
+      "license_risk": "low",
+      "stale_days": 6,
+      "pushed_at": "2026-10-05T21:23:41Z",
+      "D1": 100,
+      "D2": 100,
+      "D3": 100,
+      "D4": 15,
+      "D5": 78,
+      "total": 80,
+      "verdict": "SUITABLE(可用，需评估二开)",
+      "latest_release": {
+        "tag": "v2.2.0",
+        "name": "v2.2.0",
+        "published_at": "2025-03-27T10:47:28Z",
+        "age_days": 563
+      },
+      "advisories": {
+        "count": 0,
+        "severities": {}
+      },
+      "osv": {
+        "count": 0,
+        "ids": [],
+        "package": "colly@PyPI",
+        "guessed": true,
+        "note": "无已知漏洞（colly@PyPI，包名为推断）"
+      },
+      "security": {
+        "level": "ok",
+        "notes": []
+      }
+    },
+    {
+      "full": "adbar/trafilatura",
+      "stars": 6957,
+      "forks": 457,
+      "lang": "Python",
+      "license": "Apache-2.0",
+      "license_cls": "PERMISSIVE",
+      "license_risk": "low",
+      "stale_days": 5,
+      "pushed_at": "2026-10-06T19:31:29Z",
+      "D1": 100,
+      "D2": 60,
+      "D3": 100,
+      "D4": 100,
+      "D5": 100,
+      "total": 93,
+      "verdict": "DIRECT_USE(可直接用)",
+      "latest_release": {
+        "tag": "v2.3.1",
+        "name": "trafilatura-2.3.1",
+        "published_at": "2026-10-06T19:31:30Z",
+        "age_days": 5
+      },
+      "advisories": {
+        "count": 0,
+        "severities": {}
+      },
+      "osv": {
+        "count": 0,
+        "ids": [],
+        "package": "trafilatura@PyPI",
+        "guessed": false,
+        "note": "无已知漏洞（trafilatura@PyPI）"
+      },
+      "security": {
+        "level": "ok",
+        "notes": []
+      }
+    },
+    {
+      "full": "mendableai/firecrawl",
+      "stars": 190548,
+      "forks": 10123,
+      "lang": "TypeScript",
+      "license": "AGPL-3.0",
+      "license_cls": "STRONG_COPYLEFT",
+      "license_risk": "critical",
+      "stale_days": 0,
+      "pushed_at": "2026-10-12T01:04:44Z",
+      "D1": 100,
+      "D2": 100,
+      "D3": 0,
+      "D4": 55,
+      "D5": 34,
+      "total": 51,
+      "verdict": "ELIMINATE(协议红线)",
+      "latest_release": {
+        "tag": "v2.11.0",
+        "name": "Firecrawl v2.11.0",
+        "published_at": "2026-06-19T15:09:30Z",
+        "age_days": 114
+      },
+      "advisories": {
+        "count": 4,
+        "severities": {
+          "high": 3,
+          "critical": 1
+        }
+      },
+      "osv": {
+        "count": 0,
+        "ids": [],
+        "package": "firecrawl-py@PyPI",
+        "guessed": false,
+        "note": "无已知漏洞（firecrawl-py@PyPI）"
+      },
+      "security": {
+        "level": "critical",
+        "notes": [
+          "GitHub 安全公告 CRITICAL×1"
+        ]
+      }
+    },
+    {
+      "full": "mikf/gallery-dl",
+      "stars": 20035,
+      "forks": 1504,
+      "lang": "Python",
+      "license": "GPL-2.0",
+      "license_cls": "STRONG_COPYLEFT",
+      "license_risk": "critical",
+      "stale_days": 2,
+      "pushed_at": "2026-10-09T09:44:13Z",
+      "D1": 100,
+      "D2": 100,
+      "D3": 0,
+      "D4": 100,
+      "D5": 100,
+      "total": 68,
+      "verdict": "ELIMINATE(协议红线)",
+      "latest_release": {
+        "tag": "v1.32.16",
+        "name": null,
+        "published_at": "2026-10-09T09:45:22Z",
+        "age_days": 2
+      },
+      "advisories": {
+        "count": 0,
+        "severities": {}
+      },
+      "osv": {
+        "count": 0,
+        "ids": [],
+        "package": "gallery-dl@PyPI",
+        "guessed": false,
+        "note": "无已知漏洞（gallery-dl@PyPI）"
+      },
+      "security": {
+        "level": "ok",
+        "notes": []
+      }
+    },
+    {
+      "full": "projectdiscovery/katana",
+      "stars": 17647,
+      "forks": 1193,
+      "lang": "Go",
+      "license": "MIT",
+      "license_cls": "PERMISSIVE",
+      "license_risk": "low",
+      "stale_days": 3,
+      "pushed_at": "2026-10-08T09:46:47Z",
+      "D1": 100,
+      "D2": 80,
+      "D3": 100,
+      "D4": 15,
+      "D5": 78,
+      "total": 77,
+      "verdict": "SUITABLE(可用，需评估二开)",
+      "latest_release": {
+        "tag": "v1.8.0",
+        "name": "v1.8.0",
+        "published_at": "2026-10-05T13:28:18Z",
+        "age_days": 6
+      },
+      "advisories": {
+        "count": 0,
+        "severities": {}
+      },
+      "osv": {
+        "count": 0,
+        "ids": [],
+        "package": "katana@PyPI",
+        "guessed": true,
+        "note": "无已知漏洞（katana@PyPI，包名为推断）"
+      },
+      "security": {
+        "level": "ok",
+        "notes": []
+      }
+    }
+  ],
+  "eliminated": [],
+  "hallucination": []
+}

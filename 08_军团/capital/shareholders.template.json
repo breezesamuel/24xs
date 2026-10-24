@@ -1,0 +1,23 @@
+{
+  "_comment": "股东名册模板。加密后存为 shareholders.enc（与 .master.key 同目录）。禁止在源码中硬编码姓名、证件号、银行账号。",
+  "shareholders": [
+    {
+      "id": "sh_001",
+      "name": "<股东姓名>",
+      "id_type": "id_card",
+      "id_number": "<证件号，加密存储>",
+      "share_ratio": "0.00",
+      "contact": "<手机或邮箱>",
+      "bank_name": "<开户行>",
+      "bank_account": "<收款账号，加密存储>",
+      "bank_branch": "<开户支行>",
+      "tax_resident": true,
+      "tax_rate": "0.20"
+    }
+  ],
+  "_notes": [
+    "share_ratio 之和须为 1.0（期权池可作为无收款账户条目单列）。",
+    "个人所得税代扣税率与计税方式须按股东身份当期政策核定，模板值不可直接用于申报。",
+    "本名册仅供生成待审分红草稿；付款须经两名不同自然人审批并留存证据。"
+  ]
+}

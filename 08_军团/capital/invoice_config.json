@@ -1,0 +1,17 @@
+{
+  "baiwang": {
+    "app_key": "your_app_key",
+    "app_secret": "your_app_secret",
+    "company_id": "your_company_id",
+    "base_url": "https://api.baiwang.com"
+  },
+  "hangxin": {
+    "app_id": "your_app_id",
+    "app_secret": "your_app_secret",
+    "base_url": "https://api.hangxin.cn"
+  },
+  "tax_digital": {
+    "access_token": "your_oauth_token",
+    "base_url": "https://api.tax.gov.cn"
+  }
+}

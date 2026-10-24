@@ -1,0 +1,8 @@
+﻿公司,官网,联系人,电话,邮箱,微信,行业,城市,痛点,来源,备注
+上海佩兹动物医疗,http://www.pawivs.com/,预约组,02167337866,,,pet_clinic,上海,24h急诊、ICU、CT/MRI齐全，但官网零结构化，搜『上海宠物急诊』AI 不提佩兹,公开官网实测 geo_pet_audit.py,实测缺口3项 | ICP=- | 备用号码 13816685486
+上海爱侣宠物医院,http://shanghaivet.com/,预约中心,02136150280,,,pet_clinic,上海,创始1993年、8家分院、40+兽医师，官网零结构化，『上海宠物医院推荐』AI 不引用爱侣,公开官网实测 geo_pet_audit.py,实测缺口3项 | ICP=沪ICP备19044338号-1 | 备用号码 02136588660 / 02152501619
+上海爱侣宠物医院集团,https://www.ruichen.com/,总部预约,01053822160,,,pet_clinic,上海,瑞辰华诺集团官网有 Organization schema 但无 FAQPage，旗下分院 AI 不可见,公开官网实测 geo_pet_audit.py,实测缺口3项 | ICP=闽ICP备2022015121号-2 | 备用号码 16818159613 / 16818159875
+上海爱侣宠物医院梅川分院,https://www.ruichen.com/content/details_17_682.html,梅川分院预约,01053822160,,,pet_clinic,上海,梅川分院详情页无结构化，搜『普陀宠物医院梅川』AI 不显示,公开官网实测 geo_pet_audit.py,实测缺口3项 | ICP=闽ICP备2022015121号-2 | 备用号码 02152501619 / 16818162857
+上海宠瑞动物医疗,https://35237241.1.net.cn/,陈海欢,02785558444,,,pet_clinic,上海,24h急诊ICU、骨科/牙科强项，官网零结构化，搜『松江宠物骨科』AI 不提宠瑞,公开官网实测 geo_pet_audit.py,实测缺口3项 | ICP=- | 备用号码 15316252781 / 15923987592
+宠爱国际连锁动物医院,https://www.chongaipet.com/,客服中心,4006663519,dayu@chongaipet.com,,pet_clinic,上海,已有 Organization+ContactPoint schema，但缺 FAQPage，『上海AAHA认证宠物医院』AI 不引用,公开官网实测 geo_pet_audit.py,实测缺口2项 | ICP=京ICP备18052702号-1
+宠爱国际连锁,https://www.chongaipet.com/index.html,官网客服/预约组,4006663519,dayu@chongaipet.com,,pet_clinic,上海,无FAQ/问答块、AI不认FAQ实体,公开官网实测 geo_pet_audit.py,实测缺口2项 | ICP=京ICP备18052702号-1

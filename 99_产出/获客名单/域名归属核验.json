@@ -1,0 +1,263 @@
+{
+  "上海摩尔口腔医院集团": {
+    "site": "http://www.moreck.com/",
+    "title": "上海摩尔口腔医院集团官网 - 服务热线 ：400-654-9969",
+    "error": "",
+    "core": "摩尔",
+    "host": "www.moreck.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 摩尔口腔医院集团）"
+  },
+  "上海夕阳红口腔门诊部": {
+    "site": "http://xyhkq.com.cn/",
+    "title": "上海夕阳红口腔门诊部官网",
+    "error": "",
+    "core": "夕阳红",
+    "host": "xyhkq.com.cn",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 夕阳红口腔门诊部）"
+  },
+  "上海市同济口腔医院": {
+    "site": "https://kouqiang.tongji.edu.cn/",
+    "title": "上海市同济口腔医院（同济大学附属口腔医院)",
+    "error": "",
+    "core": "同济",
+    "host": "kouqiang.tongji.edu.cn",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 同济口腔医院）"
+  },
+  "上海汇尚口腔": {
+    "site": "http://m.huishangdental.com/",
+    "title": "上海汇尚口腔官网",
+    "error": "",
+    "core": "汇尚",
+    "host": "m.huishangdental.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 汇尚口腔）"
+  },
+  "齐白雅口腔": {
+    "site": "https://qbykq.com/",
+    "title": "齐白雅口腔 - 上海周浦精品口腔门诊 · 双副高带队 · 三代牙医传承 · 种植双硕士领衔（上海白齐雅口腔门诊部有限公司）",
+    "error": "",
+    "core": "齐白雅",
+    "host": "qbykq.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 齐白雅口腔）"
+  },
+  "摩可纳婚礼艺术中心": {
+    "site": "https://www.imocona.com/",
+    "title": "上海婚庆策划_酒店婚宴价格_一站式婚礼服务-上海摩可纳婚礼服务",
+    "error": "",
+    "core": "摩可纳",
+    "host": "www.imocona.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 摩可纳）"
+  },
+  "格莱美婚礼宴会中心": {
+    "site": "https://www.grammywedding.com/",
+    "title": "格莱美婚礼宴会中心官网 - 国内头部一站式婚礼策划_高端婚礼宴会中心预订",
+    "error": "",
+    "core": "格莱美",
+    "host": "www.grammywedding.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 格莱美婚礼宴会中心）"
+  },
+  "圣诺莉婚礼艺术中心": {
+    "site": "https://www.saintnolly.com/",
+    "title": "圣诺莉婚礼艺术中心 | 上海浦东高端婚宴场馆",
+    "error": "",
+    "core": "圣诺莉",
+    "host": "www.saintnolly.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 圣诺莉婚礼艺术中心）"
+  },
+  "上海佩兹动物医疗": {
+    "site": "http://www.pawivs.com/",
+    "title": "Shanghai PAW Veterinary Clinic",
+    "error": "",
+    "core": "佩兹",
+    "host": "www.pawivs.com",
+    "status": "mismatch",
+    "reason": "页面自称『Shanghai PAW Veterinary Clinic』与公司名『上海佩兹动物医疗』对不上"
+  },
+  "上海爱侣宠物医院": {
+    "site": "http://shanghaivet.com/",
+    "title": "专业宠物医院-24小时电话-宠物助产-狗狗咳嗽抽筋-普陀宠物医院-上海爱侣",
+    "error": "",
+    "core": "爱侣",
+    "host": "shanghaivet.com",
+    "status": "mismatch",
+    "reason": "页面自称『专业宠物医院-24小时电话-宠物助产-狗狗咳嗽抽筋-普陀宠物医院-上海爱侣』与公司名『上海爱侣宠物医院』对不上"
+  },
+  "上海爱侣宠物医院集团": {
+    "site": "https://www.ruichen.com/",
+    "title": "瑞辰华诺-瑞辰宠物医院集团官网",
+    "error": "",
+    "core": "爱侣",
+    "host": "www.ruichen.com",
+    "status": "mismatch",
+    "reason": "页面自称『瑞辰华诺-瑞辰宠物医院集团官网』与公司名『上海爱侣宠物医院集团』对不上"
+  },
+  "上海爱侣宠物医院梅川分院": {
+    "site": "https://www.ruichen.com/content/details_17_682.html",
+    "title": "上海爱侣宠物医院 - 宠物医院 - 瑞辰华诺-瑞辰宠物医院集团官网",
+    "error": "",
+    "core": "爱侣梅川分院",
+    "host": "www.ruichen.com",
+    "status": "mismatch",
+    "reason": "页面自称『上海爱侣宠物医院 - 宠物医院 - 瑞辰华诺-瑞辰宠物医院集团官网』与公司名『上海爱侣宠物医院梅川分院』对不上"
+  },
+  "上海宠瑞动物医疗": {
+    "site": "https://35237241.1.net.cn/",
+    "title": "",
+    "error": "URLError",
+    "core": "宠瑞",
+    "host": "35237241.1.net.cn",
+    "status": "unreachable",
+    "reason": "官网抓取失败（URLError），无法核实归属"
+  },
+  "宠爱国际连锁动物医院": {
+    "site": "https://www.chongaipet.com/",
+    "title": "24小时动物医院，宠物医院排行榜，宠物医院哪家好，宠爱国际连锁动物医院[官方网站]",
+    "error": "",
+    "core": "宠爱动物",
+    "host": "www.chongaipet.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 宠爱国际连锁动物医院）"
+  },
+  "宠爱国际连锁": {
+    "site": "https://www.chongaipet.com/index.html",
+    "title": "24小时动物医院，宠物医院排行榜，宠物医院哪家好，宠爱国际连锁动物医院[官方网站]",
+    "error": "",
+    "core": "宠爱",
+    "host": "www.chongaipet.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 宠爱国际连锁）"
+  },
+  "妙小程少儿编程": {
+    "site": "https://www.miaocode.com/",
+    "title": "妙小程 - 少儿编程专业在线教育平台",
+    "error": "",
+    "core": "妙小程",
+    "host": "www.miaocode.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 妙小程少儿编程）"
+  },
+  "码高教育": {
+    "site": "https://www.magaoedu.com/",
+    "title": "码高教育-少儿编程_机器人编程_科技特长生培训_少儿编程加盟机构",
+    "error": "",
+    "core": "码高",
+    "host": "www.magaoedu.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 码高教育）"
+  },
+  "编玩边学": {
+    "site": "https://www.codepku.com/",
+    "title": "深圳市编玩边学教育科技有限公司-少儿编程加盟排行榜_少儿编程怎么样_少儿编程多少钱一节课",
+    "error": "",
+    "core": "编玩边学",
+    "host": "www.codepku.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 编玩边学）"
+  },
+  "斯坦星球科创编程": {
+    "site": "https://www.stemstar.com/",
+    "title": "斯坦星球，3-18岁青少儿STEM|AI科创编程，全球卓著科技教育品牌",
+    "error": "",
+    "core": "斯坦星球科创",
+    "host": "www.stemstar.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 斯坦星球）"
+  },
+  "小码王少儿编程": {
+    "site": "https://www.xiaomawang.com/",
+    "title": "小码王-中国少儿AI编程教育开创者_护航孩子领跑AI时代",
+    "error": "",
+    "core": "小码王",
+    "host": "www.xiaomawang.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 小码王）"
+  },
+  "编程猫": {
+    "site": "https://www.codemao.cn/",
+    "title": "点猫科技（编程猫）官方网站首页",
+    "error": "",
+    "core": "猫",
+    "host": "www.codemao.cn",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 编程猫）"
+  },
+  "上海千州装饰设计工程有限公司": {
+    "site": "http://www.shqianzhou.com/",
+    "title": "上海千州装饰官网—上海千州装饰设计工程有限公司-老板直管工地-服务响应及时",
+    "error": "",
+    "core": "千州",
+    "host": "www.shqianzhou.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 千州装饰设计工程有限公司）"
+  },
+  "上海心越装潢设计有限公司": {
+    "site": "http://www.xinyuezh.com/",
+    "title": "",
+    "error": "",
+    "core": "心越",
+    "host": "www.xinyuezh.com",
+    "status": "needs_review",
+    "reason": "页面抓到了但取不到 title（可能整站由 JS 渲染），需要人工确认归属"
+  },
+  "上海兜欢喜装饰": {
+    "site": "https://www.douhuanxi.com/",
+    "title": "",
+    "error": "",
+    "core": "兜欢喜",
+    "host": "www.douhuanxi.com",
+    "status": "needs_review",
+    "reason": "页面抓到了但取不到 title（可能整站由 JS 渲染），需要人工确认归属"
+  },
+  "上海高吉建筑装饰工程有限公司": {
+    "site": "http://shgaoji.com/",
+    "title": "上海高吉建筑装饰工程有限公司",
+    "error": "",
+    "core": "高吉",
+    "host": "shgaoji.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 高吉建筑装饰工程有限公司）"
+  },
+  "上海市室内装饰行业协会": {
+    "site": "https://www.snzsxh.com/",
+    "title": "上海市室内装饰行业协会",
+    "error": "",
+    "core": "室内",
+    "host": "www.snzsxh.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 室内装饰行业协会）"
+  },
+  "上海百姓装潢有限公司": {
+    "site": "https://shbx.com.cn/",
+    "title": "",
+    "error": "URLError",
+    "core": "百姓",
+    "host": "shbx.com.cn",
+    "status": "unreachable",
+    "reason": "官网抓取失败（URLError），无法核实归属"
+  },
+  "上海知贤装饰设计有限公司": {
+    "site": "https://www.zhixianzs.com/",
+    "title": "上海知贤装饰设计有限公司|专注于上海市普陀区毛坯房装修、老房翻新、二手房装修、全包装修服务",
+    "error": "",
+    "core": "知贤",
+    "host": "www.zhixianzs.com",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 知贤装饰设计有限公司）"
+  },
+  "上海紫业装饰设计工程有限公司": {
+    "site": "https://www.ziyehk.cn/",
+    "title": "上海紫业装饰设计工程有限公司|专注于上海市奉贤区一站式整装、全包装修、半包装修、老房翻新、别墅装修、自建房装修服务",
+    "error": "",
+    "core": "紫业",
+    "host": "www.ziyehk.cn",
+    "status": "ok",
+    "reason": "页面自称与公司名一致（匹配 紫业装饰设计工程有限公司）"
+  }
+}

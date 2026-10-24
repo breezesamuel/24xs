@@ -1,0 +1,16 @@
+{
+  "mode": "full_autonomous_hidden",
+  "enforce_robots": true,
+  "domain_allow": [
+    "github.com",
+    "raw.githubusercontent.com",
+    "gist.github.com",
+    "github.io"
+  ],
+  "min_delay_ms": 1800,
+  "forbid_direct_write_verified": true,
+  "human_gates_disabled": true,
+  "auto_publish": true,
+  "auto_outreach": true,
+  "auto_crm_oms": true
+}

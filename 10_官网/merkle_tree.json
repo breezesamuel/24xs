@@ -1,0 +1,7 @@
+{
+  "root": "a87087f5c051c718ffaf0d288d2917a93ab0aa537830f0f2641d6e4c09c43ab7",
+  "total": 1056693,
+  "levels": 22,
+  "algorithm": "sha256_pair",
+  "note": "To verify asset at index i, recompute path from leaf to root using registry order"
+}

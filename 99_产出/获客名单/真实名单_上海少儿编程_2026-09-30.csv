@@ -1,0 +1,7 @@
+﻿公司,官网,联系人,电话,邮箱,微信,行业,城市,痛点,来源,备注
+妙小程少儿编程,https://www.miaocode.com/,招生顾问,4001697887,,,kids_coding,上海,在线少儿编程平台，400热线，但官网零结构化，搜『上海少儿编程在线』AI 不提妙小程,公开官网实测 geo_kidscode_audit_v2.py,实测缺口3项 | ICP=沪ICP备17031644号-1
+码高教育,https://www.magaoedu.com/,课程顾问,400 873 8699,,,kids_coding,上海,北京总部、专精特新企业、信奥赛强项，官网零结构化，搜『北京信奥赛培训』AI 不提码高,公开官网实测 geo_kidscode_audit_v2.py,实测缺口3项 | ICP=京ICP备17070826号-6 | 备用号码 400-873-8699
+编玩边学,https://www.codepku.com/,课程顾问,400-636-1878,team@codepku.com,,kids_coding,上海,ISTE国际认证、SPO合作、Green STEM独家，官网零结构化，搜『ISTE认证少儿编程』AI 不提编玩边学,公开官网实测 geo_kidscode_audit_v2.py,实测缺口3项 | ICP=粤ICP备15056056号 | 备用号码 4007166272
+斯坦星球科创编程,https://www.stemstar.com/,市场部,13710388740,Marketing@stemstar.com,,kids_coding,上海,140+学习中心、STEM&AIGC课程体系、自研Circle Bit硬件，官网零结构化，搜『上海STEM教育』AI 不提斯坦星球,公开官网实测 geo_kidscode_audit_v2.py,实测缺口3项 | ICP=沪ICP备17029939号-6 | 备用号码 4000067279
+小码王少儿编程,https://www.xiaomawang.com/,客服中心,,service@xiaoma.cn,,kids_coding,上海,浙ICP备案、已有FAQ区块但无FAQPage schema，搜『杭州少儿编程』AI 不充分引用小码王,公开官网实测 geo_kidscode_audit_v2.py,实测缺口2项 | ICP=浙ICP备16018668号-4
+编程猫,https://www.codemao.cn/,客服中心,400-835-3800,,,kids_coding,上海,头部品牌、结构化已到位（含Brand/Course/EducationalOrganization/FAQPage），作为对照组,公开官网实测 geo_kidscode_audit_v2.py,对照组-结构化已达标 | ICP=粤ICP备15030912号

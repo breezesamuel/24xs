@@ -1,0 +1,100 @@
+[
+  {
+    "startup": {
+      "id": "#2296",
+      "name": "Pluralsight",
+      "sector": "Information Technology",
+      "product_type": "SaaS (B2B)",
+      "country": "",
+      "funding_total": 4000.0,
+      "cause_of_death": "Unit Economics",
+      "year_died": 0,
+      "rebuild_plan": {
+        "difficulty_rating": "easy",
+        "scalability_rating": "medium",
+        "_market_potential_word": "high",
+        "market_potential_score": 80,
+        "name": "CodeSensei",
+        "mvp_steps": [
+          "Step 1 - The Wedge (Weeks 1-6): Build a VS Code extension that provides AI code review and explanations. When a developer writes code, CodeSensei analyzes it, suggests improvements, and explains concepts just-in-time. Free tier: 10 AI reviews/day. This solves an immediate pain point (understanding unfamiliar code) and gets developers hooked on AI mentorship. Launch on VS Code Marketplace and Product Hunt. Target: 1,000 installs, 20% weekly active users.",
+          "Step 2 - Validation (Weeks 7-12): Add personalized project generation. Based on a developer's GitHub history and stated goals (e.g., 'learn React Server Components'), CodeSensei generates a custom project with step-by-step guidance. The AI acts as a pair programmer, reviewing each commit and providing feedback. Introduce paid tier ($20/month) for unlimited projects and advanced AI features. Validate willingness to pay. Target: 100 paying users, $2K MRR, 50%+ project completion rate.",
+          "Step 3 - Growth (Weeks 13-24): Build the skills verification and portfolio system. As developers complete projects, CodeSensei analyzes their code quality, problem-solving approach, and mastery of concepts. Issue verified skill badges (e.g., 'React Advanced - Verified by CodeSensei') that integrate with LinkedIn and GitHub profiles. Launch B2B tier for companies: team dashboards showing skill gaps, recommended learning paths, and progress tracking ($50/user/month). Partner with 3-5 companies for pilot programs. Target: 500 B2B seats, $25K MRR, 1,000+ verified skill badges issued.",
+          "Step 4 - Moat (Weeks 25-52): Integrate hiring marketplace. Companies post roles and required skills. CodeSensei matches developers who've demonstrated those skills through completed projects and code analysis. Charge placement fees (20% of first-year salary, ~$20K per placement). This creates a flywheel: developers use CodeSensei to learn → get verified skills → get hired → companies pay for access to verified talent → more developers join to access opportunities. Build proprietary skills graph: map relationships between technologies, projects, and career paths. This becomes the defensible moat—CodeSensei knows what skills lead to what outcomes better than anyone. Target: 10 successful placements ($200K in placement fees), 5,000 total users, $100K MRR across all revenue streams."
+        ],
+        "suggested_tech_stack": [
+          "Next.js 14 + Vercel (frontend",
+          "edge functions",
+          "deployment)",
+          "Supabase (auth",
+          "PostgreSQL",
+          "real-time subscriptions)",
+          "Anthropic Claude 3.5 Sonnet (code review",
+          "explanations",
+          "project generation)",
+          "OpenAI GPT-4 (conversational tutoring",
+          "skill assessment)",
+          "LangChain + Pinecone (vector DB for code examples",
+          "documentation retrieval)",
+          "WebContainers (StackBlitz) or CodeSandbox API (in-browser code execution)",
+          "Stripe (payments",
+          "subscriptions",
+          "usage-based billing)",
+          "VS Code Extension API (IDE integration)",
+          "GitHub API (portfolio integration",
+          "code analysis)",
+          "Posthog (product analytics",
+          "engagement tracking)",
+          "Resend (transactional emails)",
+          "Trigger.dev (background jobs",
+          "AI workflows)"
+        ]
+      },
+      "market_potential_score": 80.0,
+      "difficulty_rating": "easy",
+      "scalability_rating": "medium"
+    },
+    "why_rebuildable": "原死因 Unit Economics，现代 AI/Serverless 栈可翻转单位经济",
+    "suggested_stack": [
+      "Next.js 14 + Vercel (frontend",
+      "edge functions",
+      "deployment)",
+      "Supabase (auth",
+      "PostgreSQL",
+      "real-time subscriptions)",
+      "Anthropic Claude 3.5 Sonnet (code review",
+      "explanations",
+      "project generation)",
+      "OpenAI GPT-4 (conversational tutoring",
+      "skill assessment)",
+      "LangChain + Pinecone (vector DB for code examples",
+      "documentation retrieval)",
+      "WebContainers (StackBlitz) or CodeSandbox API (in-browser code execution)",
+      "Stripe (payments",
+      "subscriptions",
+      "usage-based billing)",
+      "VS Code Extension API (IDE integration)",
+      "GitHub API (portfolio integration",
+      "code analysis)",
+      "Posthog (product analytics",
+      "engagement tracking)",
+      "Resend (transactional emails)",
+      "Trigger.dev (background jobs",
+      "AI workflows)"
+    ],
+    "revenue_model": "SaaS subscription",
+    "mvp_steps": [
+      "Step 1 - The Wedge (Weeks 1-6): Build a VS Code extension that provides AI code review and explanations. When a developer writes code, CodeSensei analyzes it, suggests improvements, and explains concepts just-in-time. Free tier: 10 AI reviews/day. This solves an immediate pain point (understanding unfamiliar code) and gets developers hooked on AI mentorship. Launch on VS Code Marketplace and Product Hunt. Target: 1,000 installs, 20% weekly active users.",
+      "Step 2 - Validation (Weeks 7-12): Add personalized project generation. Based on a developer's GitHub history and stated goals (e.g., 'learn React Server Components'), CodeSensei generates a custom project with step-by-step guidance. The AI acts as a pair programmer, reviewing each commit and providing feedback. Introduce paid tier ($20/month) for unlimited projects and advanced AI features. Validate willingness to pay. Target: 100 paying users, $2K MRR, 50%+ project completion rate.",
+      "Step 3 - Growth (Weeks 13-24): Build the skills verification and portfolio system. As developers complete projects, CodeSensei analyzes their code quality, problem-solving approach, and mastery of concepts. Issue verified skill badges (e.g., 'React Advanced - Verified by CodeSensei') that integrate with LinkedIn and GitHub profiles. Launch B2B tier for companies: team dashboards showing skill gaps, recommended learning paths, and progress tracking ($50/user/month). Partner with 3-5 companies for pilot programs. Target: 500 B2B seats, $25K MRR, 1,000+ verified skill badges issued.",
+      "Step 4 - Moat (Weeks 25-52): Integrate hiring marketplace. Companies post roles and required skills. CodeSensei matches developers who've demonstrated those skills through completed projects and code analysis. Charge placement fees (20% of first-year salary, ~$20K per placement). This creates a flywheel: developers use CodeSensei to learn → get verified skills → get hired → companies pay for access to verified talent → more developers join to access opportunities. Build proprietary skills graph: map relationships between technologies, projects, and career paths. This becomes the defensible moat—CodeSensei knows what skills lead to what outcomes better than anyone. Target: 10 successful placements ($200K in placement fees), 5,000 total users, $100K MRR across all revenue streams."
+    ],
+    "mistakes_to_avoid": [
+      "Overbuilding",
+      "Ignoring unit economics",
+      "Premature scaling"
+    ],
+    "estimated_market_size": "Unknown",
+    "capital_required_usd": 10000.0,
+    "time_to_mvp_weeks": 4
+  }
+]

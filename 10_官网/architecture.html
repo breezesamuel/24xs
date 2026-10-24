@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丙大山·系统架构</title>
+<style>
+:root{--bg:#0a0f1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--warn:#f59e0b;--danger:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:1000px;margin:0 auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.logo{font-weight:700;font-size:1.25rem;color:var(--accent)}
+h1{font-size:2rem;margin-bottom:8px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;overflow-x:auto}
+.layer{display:flex;gap:16px;margin-bottom:16px;align-items:center}
+.layer-label{width:120px;font-size:.85rem;color:var(--muted);text-align:right;flex-shrink:0}
+.layer-box{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;font-size:.85rem}
+.layer-box.accent{border-color:var(--accent);color:var(--accent)}
+.layer-box.warn{border-color:var(--warn);color:var(--warn)}
+.layer-box.danger{border-color:var(--danger);color:var(--danger)}
+.arrow{text-align:center;color:var(--muted);font-size:1.2rem;margin:8px 0}
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
+.section h2{font-size:1.25rem;margin-bottom:16px}
+</style>
+</head>
+<body>
+<div class="container">
+<header><div class="logo">丙大山·系统架构</div><a href="/" style="color:var(--muted);text-decoration:none">返回商城</a></header>
+<h1>系统架构图</h1>
+
+<div class="diagram">
+<div class="layer">
+<div class="layer-label">前端层</div>
+<div class="layer-box accent">store.html</div>
+<div class="layer-box accent">portal.html</div>
+<div class="layer-box accent">monitoring.html</div>
+<div class="layer-box accent">settings.html</div>
+</div>
+<div class="arrow">↓</div>
+<div class="layer">
+<div class="layer-label">API 层</div>
+<div class="layer-box">assets.js</div>
+<div class="layer-box">search.js</div>
+<div class="layer-box">verify.js</div>
+<div class="layer-box">pricing.js</div>
+<div class="layer-box">purchase.js</div>
+<div class="layer-box">deliver.js</div>
+</div>
+<div class="arrow">↓</div>
+<div class="layer">
+<div class="layer-label">业务层</div>
+<div class="layer-box accent">entitlements.js</div>
+<div class="layer-box">webhook_queue.js</div>
+<div class="layer-box">notification.js</div>
+<div class="layer-box">rate_limiter.js</div>
+</div>
+<div class="arrow">↓</div>
+<div class="layer">
+<div class="layer-label">数据层</div>
+<div class="layer-box warn">assets_verifiable_1M.jsonl</div>
+<div class="layer-box warn">merkle_tree.json</div>
+<div class="layer-box warn">customer_schema.json</div>
+<div class="layer-box warn">pricing_engine.json</div>
+</div>
+<div class="arrow">↓</div>
+<div class="layer">
+<div class="layer-label">验证层</div>
+<div class="layer-box danger">SHA256</div>
+<div class="layer-box danger">Merkle Tree</div>
+<div class="layer-box danger">FTS5 Index</div>
+</div>
+</div>
+
+<div class="section">
+<h2>数据流</h2>
+<ol style="padding-left:20px">
+<li>用户通过前端页面发起请求</li>
+<li>API 层接收请求，进行身份验证</li>
+<li>业务层处理业务逻辑（权限校验、积分扣减等）</li>
+<li>数据层读取/写入数据</li>
+<li>验证层确保数据完整性</li>
+<li>返回结果给前端</li>
+</ol>
+</div>
+
+<div class="section">
+<h2>支付流程</h2>
+<ol style="padding-left:20px">
+<li>用户选择资产，点击购买</li>
+<li>系统创建订单，生成支付链接</li>
+<li>用户完成支付</li>
+<li>支付平台回调 Webhook</li>
+<li>系统验证签名，更新订单状态</li>
+<li>触发交付流程，生成下载链接</li>
+<li>发送通知邮件给用户</li>
+</ol>
+</div>
+
+<div class="section">
+<h2>订阅流程</h2>
+<ol style="padding-left:20px">
+<li>用户选择套餐，点击订阅</li>
+<li>系统创建订阅订单</li>
+<li>用户完成支付</li>
+<li>系统激活订阅，发放积分</li>
+<li>每月自动重置积分额度</li>
+<li>到期前发送续费提醒</li>
+</ol>
+</div>
+</div>
+</body>
+</html>

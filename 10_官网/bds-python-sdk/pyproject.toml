@@ -1,0 +1,23 @@
+﻿[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bds-client"
+version = "1.0.0"
+description = "丙大山数字资产平台 Python SDK"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = ["requests>=2.28"]
+authors = [{name = "丙大山智能科技", email = "supi24@163.com"}]
+license = {text = "Proprietary"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "mypy"]
+
+[tool.setuptools.packages.find]
+where = ["."]

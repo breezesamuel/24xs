@@ -1,0 +1,22 @@
+# 密钥与加密配置：绝不入库
+.master.key
+*.enc
+.env
+.env.*
+
+# 运行期账本与产物
+capital_state.json
+tax_previews/
+dividend_archive/
+payment_config.json
+entity_profile.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 导出数据（可能含客户信息，按需保留时单独加密）
+*.csv
+!99_产出/获客名单/*.csv

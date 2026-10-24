@@ -1,0 +1,30 @@
+﻿{
+  "name": "bds-js-sdk",
+  "version": "1.0.0",
+  "description": "丙大山数字资产平台 JavaScript/TypeScript SDK",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc && rollup -c",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": ["bds", "digital-assets", "api-client", "sdk"],
+  "author": "丙大山智能科技 <supi24@163.com>",
+  "license": "Proprietary",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "rollup": "^4.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "tslib": "^2.6.0",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

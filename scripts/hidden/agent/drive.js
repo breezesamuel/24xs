@@ -56,6 +56,24 @@ class CDP {
     return this;
   }
 
+  // === 安全获取 targets 兜底（防 _getTargets 因 target 类型错误而报错） ===
+  async safeGetTargets() {
+    // 1) 先尝试原方法
+    const targets = await this._getTargets();
+    if (targets && targets.length > 0 && targets[0].type === 'page') {
+      return targets;
+    }
+    // 2) 若无页类型或 _getTargets 直接报错，重新连接一个 about:blank page
+    try {
+      const created = await this._createTarget('about:blank');
+      await this.wait(1000);
+      return await this._getTargets();
+    } catch {
+      // 兜底：返回空数组，让调用方自行决定放弃或重试
+      return [];
+    }
+  }
+
   // === CDP HTTP 端点（/json/list、/json/new） ===
 
   _httpGet(pathname, method = 'GET') {

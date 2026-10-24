@@ -1,0 +1,13 @@
+{
+  "routes": [
+    {
+      "routePath": "/api/audit",
+      "mountPath": "/api",
+      "method": "GET",
+      "module": [
+        "api/audit.js:onRequestGet"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}

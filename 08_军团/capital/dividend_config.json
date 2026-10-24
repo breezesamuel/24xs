@@ -1,0 +1,21 @@
+{
+  "bank_ebics": {
+    "host": "ebics.icbc.com.cn",
+    "user": "corp_user",
+    "pass_enc": "gAAAAABnX...encrypted...",
+    "cert_path": "/path/to/cert.p12",
+    "cert_pass_enc": "gAAAAABnX...encrypted..."
+  },
+  "alipay": {
+    "app_id": "2021000000000000",
+    "private_key_enc": "gAAAAABnX...encrypted...",
+    "notify_url": "https://your.domain/alipay/notify"
+  },
+  "wechat": {
+    "mch_id": "1600000000",
+    "api_v3_key_enc": "gAAAAABnX...encrypted...",
+    "cert_serial": "1234567890ABCDEF",
+    "private_key_enc": "gAAAAABnX...encrypted...",
+    "notify_url": "https://your.domain/wechat/notify"
+  }
+}

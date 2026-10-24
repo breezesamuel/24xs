@@ -1,0 +1,91 @@
+{"at":"2026-10-11T07:11:47.642Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":1,"auto":true}
+{"at":"2026-10-11T07:14:05.603Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":0,"auto":true}
+{"at":"2026-10-11T07:17:20.324Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"auto":true}
+{"at":"2026-10-11T08:02:30.933Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"auto":true}
+{"at":"2026-10-11T08:07:01.805Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"details":[{"out_trade_no":"BDS_LIVETEST_1791505834060","ref":"LIVETEST","result":"written"},{"out_trade_no":"BDS__m10_1791085420252","ref":"P420252","result":"written"}],"auto":true}
+{"at":"2026-10-11T08:15:15.522Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"details":[{"out_trade_no":"BDS_LIVETEST_1791505834060","ref":"LIVETEST","result":"written"},{"out_trade_no":"BDS__m10_1791085420252","ref":"P420252","result":"written"}],"auto":true}
+{"at":"2026-10-11T09:05:54.008Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"details":[{"out_trade_no":"BDS_LIVETEST_1791505834060","ref":"LIVETEST","result":"written"},{"out_trade_no":"BDS__m10_1791085420252","ref":"P420252","result":"written"}],"auto":true}
+{"at":"2026-10-11T10:43:34.351Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"details":[{"out_trade_no":"BDS_LIVETEST_1791505834060","ref":"LIVETEST","result":"written"},{"out_trade_no":"BDS__m10_1791085420252","ref":"P420252","result":"written"}],"auto":true}
+{"at":"2026-10-11T11:48:44.471Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"details":[{"out_trade_no":"BDS_LIVETEST_1791505834060","ref":"LIVETEST","result":"written"},{"out_trade_no":"BDS__m10_1791085420252","ref":"P420252","result":"written"}],"auto":true}
+{"at":"2026-10-11T11:49:47.217Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"details":[{"out_trade_no":"BDS_LIVETEST_1791505834060","ref":"LIVETEST","result":"written"},{"out_trade_no":"BDS__m10_1791085420252","ref":"P420252","result":"written"}],"auto":true}
+{"at":"2026-10-11T11:54:45.158Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"details":[{"out_trade_no":"BDS_LIVETEST_1791505834060","ref":"LIVETEST","result":"written"},{"out_trade_no":"BDS__m10_1791085420252","ref":"P420252","result":"written"}],"auto":true}
+{"at":"2026-10-11T12:01:07.635Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"details":[{"out_trade_no":"BDS_LIVETEST_1791505834060","ref":"LIVETEST","result":"written"},{"out_trade_no":"BDS__m10_1791085420252","ref":"P420252","result":"written"}],"auto":true}
+{"at":"2026-10-11T12:03:36.249Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"details":[{"out_trade_no":"BDS_LIVETEST_1791505834060","ref":"LIVETEST","result":"written"},{"out_trade_no":"BDS__m10_1791085420252","ref":"P420252","result":"written"}],"auto":true}
+{"at":"2026-10-11T12:05:16.336Z","unpaid_scanned":2,"restored":2,"cleared":0,"skipped":0,"details":[{"out_trade_no":"BDS_LIVETEST_1791505834060","ref":"LIVETEST","result":"written"},{"out_trade_no":"BDS__m10_1791085420252","ref":"P420252","result":"written"}],"auto":true}
+{"at":"2026-10-12T01:23:18.969Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T01:28:55.841Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T01:28:55.918Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"prepared","count":2,"results":[{"order_ref":"BDS_LIVETEST_1791505834060","points":3,"ai_ok":false},{"order_ref":"BDS__m10_1791085420252","points":3,"ai_ok":false}]}],"auto":true}
+{"at":"2026-10-12T01:29:31.585Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T01:29:32.970Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"prepared","count":2,"results":[{"order_ref":"BDS_LIVETEST_1791505834060","points":3,"ai_ok":false},{"order_ref":"BDS__m10_1791085420252","points":3,"ai_ok":false}]}],"auto":true}
+{"at":"2026-10-12T01:30:54.412Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T01:30:54.472Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"prepared","count":2,"results":[{"order_ref":"BDS_LIVETEST_1791505834060","points":3,"ai_ok":false},{"order_ref":"BDS__m10_1791085420252","points":3,"ai_ok":false}]}],"auto":true}
+{"at":"2026-10-12T01:32:01.704Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T01:32:01.749Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T01:35:14.770Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T01:35:14.822Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T01:37:24.266Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T01:37:24.288Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T01:44:20.577Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T01:44:20.614Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T01:44:53.444Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T01:44:53.464Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T01:45:17.913Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T01:45:17.935Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T02:10:46.973Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T02:10:46.998Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T02:49:58.335Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T02:49:58.384Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T02:55:20.349Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T02:55:20.379Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T03:19:01.592Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T03:19:01.645Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T03:38:10.624Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T03:38:10.678Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T03:47:47.218Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T03:47:47.241Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T03:52:28.892Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T03:52:28.915Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T03:55:44.310Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T03:55:44.354Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T03:56:31.907Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T03:56:31.954Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T04:19:37.460Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T04:19:37.486Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T04:24:32.976Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T04:24:33.001Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T04:35:39.941Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T04:35:39.973Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T05:06:25.063Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T05:06:25.104Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T05:10:48.120Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T05:10:48.151Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T05:16:54.143Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T05:16:54.195Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T05:20:22.223Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T05:20:22.299Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T05:21:48.493Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T05:21:48.561Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T05:26:05.162Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T05:26:05.199Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T05:34:09.501Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T05:34:09.538Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T05:42:20.608Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T05:42:20.673Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T05:58:25.305Z","unpaid_scanned":2,"restored":0,"cleared":0,"skipped":2,"details":[],"auto":true}
+{"at":"2026-10-12T05:58:25.367Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T06:34:59.587Z","deferred":true,"reason":"no_secret","auto":true}
+{"at":"2026-10-12T06:34:59.622Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T06:40:52.555Z","deferred":true,"reason":"no_secret","auto":true}
+{"at":"2026-10-12T06:40:52.594Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T07:05:06.851Z","deferred":true,"reason":"no_secret","auto":true}
+{"at":"2026-10-12T07:05:06.905Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T11:33:02.509Z","deferred":true,"reason":"no_secret","auto":true}
+{"at":"2026-10-12T11:33:02.632Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"prepared","count":2,"skipped_cooldown":0,"results":[{"order_ref":"BDS_LIVETEST_1791505834060","points":3,"ai_ok":false},{"order_ref":"BDS__m10_1791085420252","points":3,"ai_ok":false}]}],"auto":true}
+{"at":"2026-10-12T11:48:41.370Z","deferred":true,"reason":"no_secret","auto":true}
+{"at":"2026-10-12T11:48:41.566Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T12:25:12.046Z","deferred":true,"reason":"no_secret","auto":true}
+{"at":"2026-10-12T12:25:12.079Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-12T12:32:24.800Z","deferred":true,"reason":"no_secret","auto":true}
+{"at":"2026-10-12T12:32:24.860Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"cooldown","count":0,"skipped_cooldown":2,"results":[]}],"auto":true}
+{"at":"2026-10-13T10:59:51.950Z","deferred":true,"reason":"no_secret","auto":true}
+{"at":"2026-10-13T10:59:52.015Z","chain":"executePlannedFollowup","focus":"跟进 2 笔未支付订单","unpaid_scanned":2,"executed":[{"kind":"followup","status":"prepared","count":2,"skipped_cooldown":0,"results":[{"order_ref":"BDS_LIVETEST_1791505834060","points":3,"ai_ok":false},{"order_ref":"BDS__m10_1791085420252","points":3,"ai_ok":false}]}],"auto":true}

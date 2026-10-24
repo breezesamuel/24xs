@@ -1,0 +1,121 @@
+{
+  "version": "2.0",
+  "last_updated": "2026-10-06",
+  "runbooks": {
+    "daily_ingestion": {
+      "name": "每日增量入库",
+      "schedule": "03:00 UTC+8 (schtasks: 24xs_Asset_Ingestion)",
+      "script": "_ingest.py + _ingest2.py",
+      "steps": [
+        "1. 连接 CCGP production DB，查询 rowid > 状态文件记录的新增 notices/buyers",
+        "2. 连接 Factory DB，查询 rowid > 状态文件记录的新增 geo_probes",
+        "3. 对每条新增：构建 canonical JSON → SHA256 proof → 追加写入注册表 JSONL",
+        "4. 更新 ingest_state.json（max_rowid、last_run）",
+        "5. 记录日志：新增条数、耗时、错误（如有）"
+      ],
+      "success_criteria": "新增条数 > 0 或 无新增但无错误；状态文件更新",
+      "failure_actions": [
+        "重试 1 次（间隔 5 分钟）",
+        "仍失败 → 发送告警邮件至 supi24@163.com",
+        "人工检查 DB 连接、schema 变更"
+      ],
+      "rollback": "误入库数据：从注册表 JSONL 尾部删除对应行（按 asset_id 前缀匹配），恢复状态文件"
+    },
+    "daily_rebuild": {
+      "name": "每日重建 Merkle + 搜索索引",
+      "schedule": "03:30 UTC+8 (schtasks: 24xs_Asset_Rebuild)",
+      "scripts": [
+        "_merkle.py",
+        "_search.py"
+      ],
+      "steps": [
+        "1. 读取注册表全部 proof 列表",
+        "2. 自底向上构建 Merkle 树，输出 merkle_tree.json（root、levels、total）",
+        "3. 清空并重建 SQLite FTS5 索引（assets_search.db）",
+        "4. 分批写入（10k/批），提交事务",
+        "5. 验证：随机抽样 100 条搜索、Merkle root 对比"
+      ],
+      "success_criteria": "Merkle root 与上轮一致（无新增时）或可验证；搜索索引行数 = 注册表行数",
+      "failure_actions": [
+        "重试 1 次",
+        "失败 → 告警，保留旧索引文件（assets_search.db.bak）",
+        "人工检查磁盘空间、SQLite 锁、内存"
+      ],
+      "rollback": "替换为 .bak 文件"
+    },
+    "quality_check": {
+      "name": "每日质量巡检",
+      "schedule": "04:00 UTC+8 (可并入 rebuild 后)",
+      "script": "_quality.py",
+      "checks": [
+        "Schema 完整性（必填字段）",
+        "Proof 校验（抽样 10k）",
+        "Chain 验证（抽样 5k）",
+        "ID 唯一性（全量）",
+        "价格合理性（floor ≤ ref）",
+        "来源可追溯（前缀 11_数据资产）",
+        "标签覆盖率",
+        "Merkle 一致性"
+      ],
+      "alert_threshold": "任一检查 fail → 立即告警"
+    },
+    "deployment": {
+      "name": "生产部署",
+      "trigger": "手动执行 python 07_运维/deploy_site.py --force",
+      "steps": [
+        "1. 同步 11_数据资产/cf-pages/* → 10_官网/（含 store.html、functions/、合规文档）",
+        "2. 执行 deploy_site.py --force（计算哈希，变更才上传）",
+        "3. 验证：curl https://geo-audit-24xs.vercel.app/healthz 或首页 200 OK",
+        "4. 冒烟测试：/api/assets、/api/search、/api/verify、/store.html 访问正常"
+      ],
+      "rollback": "Vercel Dashboard → Deployments → 回滚至上一版本"
+    },
+    "payment_webhook_failure": {
+      "name": "支付回调失败处理",
+      "detection": "MoltsPay Dashboard 重试次数 > 3 / 监控告警 payment_failure_rate > 10%",
+      "steps": [
+        "1. 检查 Vercel Function 日志：签名验证失败 / JSON 解析错误 / 幂等键冲突",
+        "2. 核对 MOLTSPAY_WEBHOOK_SECRET 环境变量是否正确",
+        "3. 手动重放：从 MoltsPay Dashboard 导出事件 → POST 到 /api/webhook/moltspay",
+        "4. 确认交付：查询注册表 asset_id → 生成下载链接 → 邮件补发"
+      ],
+      "escalation": "30 分钟未恢复 → 电话联系 MoltsPay 技术支持"
+    },
+    "api_outage": {
+      "name": "API 服务不可用",
+      "detection": "监控告警 api_error_rate > 5% 或 avg_latency > 500ms",
+      "steps": [
+        "1. Vercel Dashboard → Functions → 查看错误率、冷启动、配额",
+        "2. 检查上游依赖：MoltsPay、Cloudflare D1/KV、外部 DNS",
+        "3. 如为代码问题：回滚部署（见 deployment rollback）",
+        "4. 如为配额：升级 Vercel 方案或优化冷启动"
+      ]
+    },
+    "data_corruption": {
+      "name": "注册表数据损坏",
+      "detection": "质量巡检 fail / Merkle root 不匹配 / 客户投诉 proof 校验失败",
+      "steps": [
+        "1. 立即停止写入（禁用 ingestion 任务）",
+        "2. 对比最新 .bak 文件（每日重建前自动备份）",
+        "3. 识别损坏范围：二分查找首个不匹配行",
+        "4. 从 .bak 恢复损坏段，重新计算后续 Merkle、重建搜索索引",
+        "5. 事后复盘：根因分析（磁盘故障/并发写入/脚本Bug）"
+      ]
+    },
+    "customer_complaint": {
+      "name": "客户投诉处理",
+      "channels": [
+        "邮件 supi24@163.com",
+        "站内工单",
+        "电话"
+      ],
+      "sla": "首响应 ≤ 2 小时（工作日 9-18），解决 ≤ 24 小时",
+      "categories": {
+        "asset_quality": "proof 校验失败 / 字段缺失 / 数据过时 → 质量团队复核，必要时下架并退款",
+        "delivery_failure": "下载链接过期/失效 / 文件损坏 → 重新生成链接（延长有效期）、补发邮件",
+        "billing_dispute": "重复扣费 / 积分未到账 / 发票问题 → 核对支付流水、MoltsPay 对账、补开发票",
+        "license_violation": "疑似转售/泄露 → 冻结账户、要求说明、法律函件"
+      }
+    }
+  }
+}

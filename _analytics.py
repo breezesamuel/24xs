@@ -1,0 +1,77 @@
+﻿# Analytics models for revenue tracking, cohort analysis, churn prediction
+import json
+from pathlib import Path
+
+BASE = Path(r"F:/2026/24xs/11_数据资产")
+OUT = BASE / "registry_real_verified"
+OUT.mkdir(exist_ok=True)
+
+analytics = {
+    "version": "1.0",
+    "metrics": {
+        "revenue": {
+            "daily": ["gmv", "net_revenue", "refunds", "credits_sold", "credits_consumed", "avg_order_value"],
+            "monthly": ["mrr", "arr", "expansion_mrr", "contraction_mrr", "churned_mrr", "net_new_mrr"],
+            "cohort": ["cohort_month", "cohort_size", "month_0_revenue", "month_1_revenue", "month_2_revenue", "month_3_revenue", "ltv_estimate"]
+        },
+        "customers": {
+            "daily": ["new_signups", "activated", "active_users", "paying_customers"],
+            "monthly": ["cac", "ltv", "ltv_cac_ratio", "payback_period_months", "churn_rate", "logo_churn", "revenue_churn"],
+            "segments": ["by_tier", "by_acquisition_channel", "by_company_size", "by_industry"]
+        },
+        "assets": {
+            "daily": ["assets_viewed", "assets_purchased", "assets_delivered", "search_queries", "api_calls"],
+            "by_type": ["type", "views", "purchases", "revenue", "avg_price", "conversion_rate"],
+            "popularity": ["asset_id", "views_30d", "purchases_30d", "revenue_30d", "rating"]
+        },
+        "usage": {
+            "api": ["endpoint", "calls", "errors", "avg_latency_ms", "p95_latency_ms", "unique_customers"],
+            "search": ["query", "results_count", "click_through_rate", "conversion_rate"],
+            "verify": ["verifications", "success_rate", "avg_time_ms"]
+        }
+    },
+    "dashboards": {
+        "executive": {
+            "title": "Executive Overview",
+            "widgets": [
+                {"id": "kpi_mrr", "type": "kpi", "metric": "mrr", "format": "currency"},
+                {"id": "kpi_arr", "type": "kpi", "metric": "arr", "format": "currency"},
+                {"id": "kpi_customers", "type": "kpi", "metric": "paying_customers", "format": "number"},
+                {"id": "kpi_ltv_cac", "type": "kpi", "metric": "ltv_cac_ratio", "format": "ratio"},
+                {"id": "chart_revenue_trend", "type": "line", "metrics": ["gmv", "net_revenue"], "period": "30d"},
+                {"id": "chart_cohort", "type": "heatmap", "metric": "cohort_revenue", "period": "12m"},
+                {"id": "chart_churn", "type": "bar", "metrics": ["logo_churn", "revenue_churn"], "period": "12m"}
+            ]
+        },
+        "product": {
+            "title": "Product & Asset Performance",
+            "widgets": [
+                {"id": "top_assets_revenue", "type": "table", "metric": "asset_revenue", "limit": 20},
+                {"id": "conversion_by_type", "type": "bar", "metric": "conversion_rate_by_type"},
+                {"id": "search_performance", "type": "table", "metric": "search_queries", "limit": 50},
+                {"id": "api_health", "type": "line", "metrics": ["api_calls", "api_errors", "avg_latency"]}
+            ]
+        },
+        "customer": {
+            "title": "Customer Intelligence",
+            "widgets": [
+                {"id": "customer_lifecycle", "type": "funnel", "stages": ["signup", "activated", "first_purchase", "repeat_purchase", "champion"]},
+                {"id": "tier_distribution", "type": "pie", "metric": "customers_by_tier"},
+                {"id": "credit_utilization", "type": "histogram", "metric": "credit_usage_pct"},
+                {"id": "expansion_opportunities", "type": "table", "metric": "customers_near_limit", "limit": 20}
+            ]
+        }
+    },
+    "alerts": {
+        "revenue_drop_20pct_dod": {"condition": "gmv_dod_change < -0.20", "severity": "critical", "channels": ["email", "slack"]},
+        "churn_spike": {"condition": "churn_rate_7d > 0.05", "severity": "warning", "channels": ["email"]},
+        "api_error_rate": {"condition": "api_error_rate_5m > 0.05", "severity": "critical", "channels": ["slack", "pagerduty"]},
+        "payment_failure_rate": {"condition": "payment_failure_rate_1h > 0.10", "severity": "critical", "channels": ["email", "slack"]},
+        "credit_exhaustion": {"condition": "customers_at_90pct_credits > 10", "severity": "warning", "channels": ["email"]}
+    }
+}
+
+with open(OUT / "analytics_config.json", "w", encoding="utf-8") as f:
+    json.dump(analytics, f, ensure_ascii=False, indent=2)
+
+print("Analytics config saved")

@@ -1,0 +1,38 @@
+[Unit]
+Description=bingdashan AI Tools Platform
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+ExecStartPre=-/usr/bin/docker stop bingdashan
+ExecStartPre=-/usr/bin/docker rm bingdashan
+ExecStart=/usr/bin/docker run --rm --name bingdashan \
+  -p 80:80 -p 443:443 \
+  -e ALIPAY_APP_ID=${ALIPAY_APP_ID} \
+  -e ALIPAY_MERCHANT_PRIVATE_KEY=${ALIPAY_MERCHANT_PRIVATE_KEY} \
+  -e ALIPAY_ALIPAY_PUBLIC_KEY=${ALIPAY_ALIPAY_PUBLIC_KEY} \
+  -e ALIPAY_AES_KEY=${ALIPAY_AES_KEY} \
+  -e ALIPAY_ACCOUNT=${ALIPAY_ACCOUNT} \
+  -e SUPABASE_URL=${SUPABASE_URL} \
+  -e SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY} \
+  -e KV_REST_API_URL=${KV_REST_API_URL} \
+  -e KV_REST_API_TOKEN=${KV_REST_API_TOKEN} \
+  -e COMMISSION_PCT=${COMMISSION_PCT} \
+  -e ADMIN_SECRET=${ADMIN_SECRET} \
+  -e AUTOOPS_SECRET=${AUTOOPS_SECRET} \
+  -e STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY} \
+  -e STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET} \
+  -e STRIPE_PRICE_TRIAL=${STRIPE_PRICE_TRIAL} \
+  -e STRIPE_PRICE_PRO=${STRIPE_PRICE_PRO} \
+  -e STRIPE_PRICE_PRO3=${STRIPE_PRICE_PRO3} \
+  -e STRIPE_PRICE_PROY=${STRIPE_PRICE_PROY} \
+  -e STRIPE_PRICE_TEAM=${STRIPE_PRICE_TEAM} \
+  -e ARCADE_FREE_SEC=600 \
+  registry.cn-hangzhou.aliyuncs.com/bingdashan/bingdashan:latest
+ExecStop=/usr/bin/docker stop bingdashan
+
+[Install]
+WantedBy=multi-user.target

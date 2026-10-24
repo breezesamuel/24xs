@@ -1,0 +1,55 @@
+{
+  "created": "2026-10-11T02:54:55.846Z",
+  "updated_by": "content-distributor",
+  "interval": 3600,
+  "queue": [
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "topic": "ai-arcade",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    },
+    {
+      "file": "reddit-ai-arcade.md",
+      "channel": "reddit",
+      "topic": "ai-arcade",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    },
+    {
+      "file": "wechat-ai-arcade.md",
+      "channel": "wechat",
+      "topic": "ai-arcade",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    },
+    {
+      "file": "x-ai-arcade.md",
+      "channel": "x",
+      "topic": "ai-arcade",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    },
+    {
+      "file": "xiaohongshu-ai-arcade.md",
+      "channel": "xiaohongshu",
+      "topic": "ai-arcade",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    },
+    {
+      "file": "zhihu-ai-arcade.md",
+      "channel": "zhihu",
+      "topic": "ai-arcade",
+      "scheduled": true,
+      "posted": false,
+      "auto": true
+    }
+  ]
+}

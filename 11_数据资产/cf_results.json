@@ -1,0 +1,935 @@
+[
+  {
+    "url": "http://www.moreck.com/",
+    "host": "www.moreck.com",
+    "name": "上海摩尔口腔医院集团官网 - 服务热线 ：400-654-9969",
+    "industry": "口腔医疗",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": true
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 14834,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": true
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "上海摩尔口腔医院集团官网 - 服务热线 ：400-654-9969",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 60,
+    "grade": "中",
+    "blockers": [
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对"
+    ]
+  },
+  {
+    "url": "http://xyhkq.com.cn/",
+    "host": "xyhkq.com.cn",
+    "name": "上海夕阳红口腔门诊部官网",
+    "industry": "口腔医疗",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": true
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 52581,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": true
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "上海夕阳红口腔门诊部官网",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 60,
+    "grade": "中",
+    "blockers": [
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对"
+    ]
+  },
+  {
+    "url": "https://kouqiang.tongji.edu.cn/",
+    "host": "kouqiang.tongji.edu.cn",
+    "name": "404 Not Found",
+    "industry": "其他",
+    "http": 404,
+    "checks": {
+      "robots": {
+        "exists": false,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 520,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": false
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "404 Not Found",
+        "has_title": true,
+        "has_description": false
+      }
+    },
+    "score": 18,
+    "grade": "差",
+    "blockers": [
+      "没有 robots.txt，未明确放行 AI 爬虫",
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）",
+      "缺少 meta description",
+      "没有 sitemap.xml"
+    ]
+  },
+  {
+    "url": "http://m.huishangdental.com/",
+    "host": "m.huishangdental.com",
+    "name": "上海汇尚口腔官网",
+    "industry": "口腔医疗",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": false,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 25215,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": false
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "上海汇尚口腔官网",
+        "has_title": true,
+        "has_description": false
+      }
+    },
+    "score": 18,
+    "grade": "差",
+    "blockers": [
+      "没有 robots.txt，未明确放行 AI 爬虫",
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）",
+      "缺少 meta description",
+      "没有 sitemap.xml"
+    ]
+  },
+  {
+    "url": "https://qbykq.com/",
+    "host": "qbykq.com",
+    "name": "齐白雅口腔 - 上海周浦精品口腔门诊 · 双副高带队 · 三代牙医传承 · 种植双硕士领衔（上海白齐雅口腔门诊部有限公司）",
+    "industry": "口腔医疗",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": true
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 182703,
+        "waf": false
+      },
+      "schema": {
+        "exists": true,
+        "types": [
+          "BreadcrumbList",
+          "Dentist",
+          "FAQPage",
+          "ImageObject",
+          "LocalBusiness",
+          "WebSite"
+        ],
+        "has_org": true,
+        "has_faq": true
+      },
+      "sitemap": {
+        "exists": true
+      },
+      "faq": {
+        "exists": true
+      },
+      "meta": {
+        "title": "齐白雅口腔 - 上海周浦精品口腔门诊 · 双副高带队 · 三代牙医传承 · 种植双硕士领衔（上海白齐雅口腔门诊部有限公司）",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 100,
+    "grade": "优",
+    "blockers": []
+  },
+  {
+    "url": "https://www.imocona.com/",
+    "host": "www.imocona.com",
+    "name": "上海婚庆策划_酒店婚宴价格_一站式婚礼服务-上海摩可纳婚礼服务",
+    "industry": "本地生活",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 88244,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": true
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "上海婚庆策划_酒店婚宴价格_一站式婚礼服务-上海摩可纳婚礼服务",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 50,
+    "grade": "差",
+    "blockers": [
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）"
+    ]
+  },
+  {
+    "url": "https://www.grammywedding.com/",
+    "host": "www.grammywedding.com",
+    "name": "格莱美婚礼宴会中心官网 - 国内头部一站式婚礼策划_高端婚礼宴会中心预订",
+    "industry": "本地生活",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 575713,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": true
+      },
+      "faq": {
+        "exists": true
+      },
+      "meta": {
+        "title": "格莱美婚礼宴会中心官网 - 国内头部一站式婚礼策划_高端婚礼宴会中心预订",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 50,
+    "grade": "差",
+    "blockers": [
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）"
+    ]
+  },
+  {
+    "url": "https://www.saintnolly.com/",
+    "host": "www.saintnolly.com",
+    "name": "圣诺莉婚礼艺术中心 | 上海浦东高端婚宴场馆",
+    "industry": "本地生活",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": true
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 107696,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": true
+      },
+      "faq": {
+        "exists": true
+      },
+      "meta": {
+        "title": "圣诺莉婚礼艺术中心 | 上海浦东高端婚宴场馆",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 60,
+    "grade": "中",
+    "blockers": [
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对"
+    ]
+  },
+  {
+    "url": "https://www.chongaipet.com/",
+    "host": "www.chongaipet.com",
+    "name": "24小时动物医院，宠物医院排行榜，宠物医院哪家好，宠爱国际连锁动物医院[官方网站]",
+    "industry": "医疗健康",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": false,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 181048,
+        "waf": false
+      },
+      "schema": {
+        "exists": true,
+        "types": [
+          "Organization"
+        ],
+        "has_org": true,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": false
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "24小时动物医院，宠物医院排行榜，宠物医院哪家好，宠爱国际连锁动物医院[官方网站]",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 53,
+    "grade": "差",
+    "blockers": [
+      "没有 robots.txt，未明确放行 AI 爬虫",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）",
+      "没有 sitemap.xml"
+    ]
+  },
+  {
+    "url": "https://www.chongaipet.com/index.html",
+    "host": "www.chongaipet.com",
+    "name": "24小时动物医院，宠物医院排行榜，宠物医院哪家好，宠爱国际连锁动物医院[官方网站]",
+    "industry": "医疗健康",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": false,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 181048,
+        "waf": false
+      },
+      "schema": {
+        "exists": true,
+        "types": [
+          "Organization"
+        ],
+        "has_org": true,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": false
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "24小时动物医院，宠物医院排行榜，宠物医院哪家好，宠爱国际连锁动物医院[官方网站]",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 53,
+    "grade": "差",
+    "blockers": [
+      "没有 robots.txt，未明确放行 AI 爬虫",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）",
+      "没有 sitemap.xml"
+    ]
+  },
+  {
+    "url": "https://www.miaocode.com/",
+    "host": "www.miaocode.com",
+    "name": "妙小程 - 少儿编程专业在线教育平台",
+    "industry": "教育培训",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": true
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 136966,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": false
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "妙小程 - 少儿编程专业在线教育平台",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 50,
+    "grade": "差",
+    "blockers": [
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 sitemap.xml"
+    ]
+  },
+  {
+    "url": "https://www.magaoedu.com/",
+    "host": "www.magaoedu.com",
+    "name": "码高教育-少儿编程_机器人编程_科技特长生培训_少儿编程加盟机构",
+    "industry": "教育培训",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 55973,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": true
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "码高教育-少儿编程_机器人编程_科技特长生培训_少儿编程加盟机构",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 50,
+    "grade": "差",
+    "blockers": [
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）"
+    ]
+  },
+  {
+    "url": "https://www.codepku.com/",
+    "host": "www.codepku.com",
+    "name": "深圳市编玩边学教育科技有限公司-少儿编程加盟排行榜_少儿编程怎么样_少儿编程多少钱一节课",
+    "industry": "教育培训",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 132302,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": true
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "深圳市编玩边学教育科技有限公司-少儿编程加盟排行榜_少儿编程怎么样_少儿编程多少钱一节课",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 50,
+    "grade": "差",
+    "blockers": [
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）"
+    ]
+  },
+  {
+    "url": "https://www.stemstar.com/",
+    "host": "www.stemstar.com",
+    "name": "Stemstar | STEM &amp; AI Technology Programming for Kids Ages 3-18, World-renown",
+    "industry": "其他",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": false,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 303670,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": false
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "Stemstar | STEM &amp; AI Technology Programming for Kids Ages 3-18, World-renowned Science Education Brand",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 28,
+    "grade": "差",
+    "blockers": [
+      "没有 robots.txt，未明确放行 AI 爬虫",
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）",
+      "没有 sitemap.xml"
+    ]
+  },
+  {
+    "url": "https://www.xiaomawang.com/",
+    "host": "www.xiaomawang.com",
+    "name": "小码王-中国少儿AI编程教育开创者_护航孩子领跑AI时代",
+    "industry": "教育培训",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": true
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 112522,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": true
+      },
+      "faq": {
+        "exists": true
+      },
+      "meta": {
+        "title": "小码王-中国少儿AI编程教育开创者_护航孩子领跑AI时代",
+        "has_title": true,
+        "has_description": false
+      }
+    },
+    "score": 50,
+    "grade": "差",
+    "blockers": [
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "缺少 meta description"
+    ]
+  },
+  {
+    "url": "https://www.codemao.cn/",
+    "host": "www.codemao.cn",
+    "name": "点猫科技（编程猫）官方网站首页",
+    "industry": "教育培训",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": true
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 48126,
+        "waf": false
+      },
+      "schema": {
+        "exists": true,
+        "types": [
+          "Brand",
+          "Course",
+          "EducationalOrganization",
+          "FAQPage",
+          "ItemList",
+          "Organization",
+          "WebSite"
+        ],
+        "has_org": true,
+        "has_faq": true
+      },
+      "sitemap": {
+        "exists": true
+      },
+      "faq": {
+        "exists": true
+      },
+      "meta": {
+        "title": "点猫科技（编程猫）官方网站首页",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 100,
+    "grade": "优",
+    "blockers": []
+  },
+  {
+    "url": "http://www.shqianzhou.com/",
+    "host": "www.shqianzhou.com",
+    "name": "www.shqianzhou.com",
+    "industry": "其他",
+    "http": 520,
+    "checks": {
+      "robots": {
+        "exists": false,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": false,
+        "bytes": 16,
+        "waf": false
+      }
+    },
+    "score": 0,
+    "unreachable": true,
+    "grade": "无法访问",
+    "blockers": [
+      "探测端未取得任何响应（HTTP 520），AI 大概率也抓不到；建议先在境内网络复测可达性，确认不是我们这边网络的问题"
+    ]
+  },
+  {
+    "url": "http://shgaoji.com/",
+    "host": "shgaoji.com",
+    "name": "上海高吉建筑装饰工程有限公司",
+    "industry": "装修装饰",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": false,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 35699,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": false
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "上海高吉建筑装饰工程有限公司",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 28,
+    "grade": "差",
+    "blockers": [
+      "没有 robots.txt，未明确放行 AI 爬虫",
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）",
+      "没有 sitemap.xml"
+    ]
+  },
+  {
+    "url": "https://www.snzsxh.com/",
+    "host": "www.snzsxh.com",
+    "name": "上海市室内装饰行业协会",
+    "industry": "装修装饰",
+    "http": 200,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": true,
+        "bytes": 47581,
+        "waf": false
+      },
+      "schema": {
+        "exists": false,
+        "types": [],
+        "has_org": false,
+        "has_faq": false
+      },
+      "sitemap": {
+        "exists": false
+      },
+      "faq": {
+        "exists": false
+      },
+      "meta": {
+        "title": "上海市室内装饰行业协会",
+        "has_title": true,
+        "has_description": true
+      }
+    },
+    "score": 40,
+    "grade": "差",
+    "blockers": [
+      "没有 JSON-LD 结构化数据，AI 难以识别你是谁",
+      "没有 FAQ/问答区块，AI 无从抽取问答对",
+      "没有 llms.txt（给大模型的站点说明书）",
+      "没有 sitemap.xml"
+    ]
+  },
+  {
+    "url": "https://www.zhixianzs.com/",
+    "host": "www.zhixianzs.com",
+    "name": "www.zhixianzs.com",
+    "industry": "其他",
+    "http": 0,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": false,
+        "bytes": 0,
+        "waf": false
+      }
+    },
+    "score": 0,
+    "unreachable": true,
+    "grade": "无法访问",
+    "blockers": [
+      "探测端未取得任何响应（HTTP 0），AI 大概率也抓不到；建议先在境内网络复测可达性，确认不是我们这边网络的问题"
+    ]
+  },
+  {
+    "url": "https://www.ziyehk.cn/",
+    "host": "www.ziyehk.cn",
+    "name": "www.ziyehk.cn",
+    "industry": "其他",
+    "http": 0,
+    "checks": {
+      "robots": {
+        "exists": true,
+        "blocked": [],
+        "total": 6
+      },
+      "llms": {
+        "exists": false
+      },
+      "reachable": {
+        "ok": false,
+        "bytes": 0,
+        "waf": false
+      }
+    },
+    "score": 0,
+    "unreachable": true,
+    "grade": "无法访问",
+    "blockers": [
+      "探测端未取得任何响应（HTTP 0），AI 大概率也抓不到；建议先在境内网络复测可达性，确认不是我们这边网络的问题"
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "purchase_confirmation": {
+    "subject": "【丙大山数字资产】购买确认 - {asset_name}"
+  },
+  "delivery_ready": {
+    "subject": "【丙大山数字资产】资产交付 - {asset_name} 下载链接"
+  },
+  "subscription_welcome": {
+    "subject": "【丙大山数字资产】欢迎加入 {tier_name} 计划"
+  },
+  "credit_low": {
+    "subject": "【丙大山数字资产】积分余额预警 - 仅剩 {remaining_credits:,} 积分"
+  },
+  "api_key_created": {
+    "subject": "【丙大山数字资产】新 API 密钥已生成"
+  }
+}

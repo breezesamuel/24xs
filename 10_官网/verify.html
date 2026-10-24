@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丙大山·验证中心</title>
+<style>
+:root{--bg:#0a0f1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--warn:#f59e0b;--danger:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.logo{font-weight:700;font-size:1.25rem;color:var(--accent)}
+h1{font-size:2rem;margin-bottom:8px}
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
+.section h2{font-size:1.25rem;margin-bottom:16px}
+.test-result{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.test-result:last-child{border-bottom:none}
+.test-name{font-size:.9rem}
+.test-status{font-weight:600}
+.test-status.pass{color:var(--accent)}
+.test-status.fail{color:var(--danger)}
+.test-status.pending{color:var(--muted)}
+.btn{padding:10px 20px;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;border:none;background:var(--accent);color:var(--bg)}
+.btn:hover{opacity:.9}
+</style>
+</head>
+<body>
+<div class="container">
+<header><div class="logo">丙大山·验证中心</div><a href="/" style="color:var(--muted);text-decoration:none">返回商城</a></header>
+<h1>系统验证</h1>
+<button class="btn" onclick="runTests()" style="margin-bottom:24px">运行全部测试</button>
+<div class="section"><h2>API 端点测试</h2><div id="api-tests"><div class="test-result"><span class="test-name">等待测试...</span><span class="test-status pending">—</span></div></div></div>
+<div class="section"><h2>数据完整性</h2><div id="data-tests"><div class="test-result"><span class="test-name">等待测试...</span><span class="test-status pending">—</span></div></div></div>
+<div class="section"><h2>支付链路</h2><div id="payment-tests"><div class="test-result"><span class="test-name">等待测试...</span><span class="test-status pending">—</span></div></div></div>
+</div>
+<script>
+const API_TESTS = [
+  {name: "资产列表", url: "/api/assets?limit=1"},
+  {name: "搜索", url: "/api/search?q=test&limit=1"},
+  {name: "定价", url: "/api/pricing?action=compare"},
+  {name: "健康检查", url: "/api/health"},
+  {name: "配置", url: "/api/config"}
+];
+const DATA_TESTS = [
+  {name: "Merkle Tree", check: "merkle_tree.json"},
+  {name: "质量报告", check: "quality_report.json"},
+  {name: "定价引擎", check: "pricing_engine.json"},
+  {name: "许可注册", check: "license_registry.json"}
+];
+const PAYMENT_TESTS = [
+  {name: "Webhook 端点", url: "/api/webhook_moltspay"},
+  {name: "购买流程", url: "/api/purchase"}
+];
+async function runTests() {
+  await runApiTests();
+  await runDataTests();
+  await runPaymentTests();
+}
+async function runApiTests() {
+  const div = document.getElementById("api-tests");
+  div.innerHTML = API_TESTS.map(t =>
+    '<div class="test-result"><span class="test-name">' + t.name + '</span><span class="test-status pending">测试中...</span></div>'
+  ).join("");
+  for (let i = 0; i < API_TESTS.length; i++) {
+    try {
+      const res = await fetch(API_TESTS[i].url);
+      const ok = res.status < 500;
+      div.children[i].querySelector(".test-status").textContent = ok ? "通过" : "失败";
+      div.children[i].querySelector(".test-status").className = "test-status " + (ok ? "pass" : "fail");
+    } catch (e) {
+      div.children[i].querySelector(".test-status").textContent = "错误";
+      div.children[i].querySelector(".test-status").className = "test-status fail";
+    }
+  }
+}
+async function runDataTests() {
+  const div = document.getElementById("data-tests");
+  div.innerHTML = DATA_TESTS.map(t =>
+    '<div class="test-result"><span class="test-name">' + t.name + '</span><span class="test-status pending">测试中...</span></div>'
+  ).join("");
+  for (let i = 0; i < DATA_TESTS.length; i++) {
+    try {
+      const res = await fetch("/api/quality?action=report");
+      const ok = res.status === 200;
+      div.children[i].querySelector(".test-status").textContent = ok ? "通过" : "失败";
+      div.children[i].querySelector(".test-status").className = "test-status " + (ok ? "pass" : "fail");
+    } catch (e) {
+      div.children[i].querySelector(".test-status").textContent = "错误";
+      div.children[i].querySelector(".test-status").className = "test-status fail";
+    }
+  }
+}
+async function runPaymentTests() {
+  const div = document.getElementById("payment-tests");
+  div.innerHTML = PAYMENT_TESTS.map(t =>
+    '<div class="test-result"><span class="test-name">' + t.name + '</span><span class="test-status pending">测试中...</span></div>'
+  ).join("");
+  for (let i = 0; i < PAYMENT_TESTS.length; i++) {
+    try {
+      const res = await fetch(PAYMENT_TESTS[i].url, {method: "OPTIONS"});
+      const ok = res.status < 500;
+      div.children[i].querySelector(".test-status").textContent = ok ? "通过" : "失败";
+      div.children[i].querySelector(".test-status").className = "test-status " + (ok ? "pass" : "fail");
+    } catch (e) {
+      div.children[i].querySelector(".test-status").textContent = "错误";
+      div.children[i].querySelector(".test-status").className = "test-status fail";
+    }
+  }
+}
+</script>
+</body>
+</html>

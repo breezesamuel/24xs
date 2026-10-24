@@ -1,0 +1,40 @@
+{
+  "posts": [
+    {
+      "file": "x-ai-arcade.md",
+      "channel": "x",
+      "error": "this._getTargets is not a function",
+      "at": "2026-10-11T13:50:27.857Z",
+      "attempts": 1
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "this._getTargets is not a function",
+      "at": "2026-10-11T13:52:36.691Z",
+      "attempts": 1
+    },
+    {
+      "file": "xiaohongshu-ai-arcade.md",
+      "channel": "xiaohongshu",
+      "error": "Uncaught",
+      "at": "2026-10-13T07:42:32.547Z",
+      "attempts": 1
+    },
+    {
+      "file": "xiaohongshu-ai-arcade.md",
+      "channel": "xiaohongshu",
+      "error": "Uncaught",
+      "at": "2026-10-13T07:50:19.465Z",
+      "attempts": 2
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "Element not found: [name=\"title\"]",
+      "at": "2026-10-13T09:15:00.790Z",
+      "attempts": 2
+    }
+  ],
+  "updated": "2026-10-13T09:15:00.806Z"
+}

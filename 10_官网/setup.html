@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丙大山·快速开始</title>
+<style>
+:root{--bg:#0a0f1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--warn:#f59e0b;--danger:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.logo{font-weight:700;font-size:1.25rem;color:var(--accent)}
+h1{font-size:2rem;margin-bottom:8px}
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
+.section h2{font-size:1.25rem;margin-bottom:16px}
+.step{display:flex;gap:16px;margin-bottom:16px}
+.step-num{width:32px;height:32px;background:var(--accent);color:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.step-content{flex:1}
+.step-title{font-weight:600;margin-bottom:4px}
+.step-desc{font-size:.85rem;color:var(--muted)}
+.code-block{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0;overflow-x:auto}
+.code-block pre{font-family:monospace;font-size:.8rem;color:var(--muted);margin:0}
+.btn{display:inline-block;padding:10px 20px;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;border:none;background:var(--accent);color:var(--bg);text-decoration:none;margin-right:8px}
+.btn:hover{opacity:.9}
+.btn-secondary{background:var(--border);color:var(--text)}
+</style>
+</head>
+<body>
+<div class="container">
+<header><div class="logo">丙大山·快速开始</div><a href="/" style="color:var(--muted);text-decoration:none">返回商城</a></header>
+<h1>快速开始</h1>
+
+<div class="section">
+<h2>1. 环境准备</h2>
+<div class="step">
+<div class="step-num">1</div>
+<div class="step-content">
+<div class="step-title">安装 Node.js</div>
+<div class="step-desc">下载并安装 Node.js 18+ 版本</div>
+</div>
+</div>
+<div class="step">
+<div class="step-num">2</div>
+<div class="step-content">
+<div class="step-title">安装 Python</div>
+<div class="step-desc">下载并安装 Python 3.9+ 版本</div>
+</div>
+</div>
+<div class="step">
+<div class="step-num">3</div>
+<div class="step-content">
+<div class="step-title">安装 Vercel CLI</div>
+<div class="step-desc">运行: npm i -g vercel</div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<h2>2. 本地验证</h2>
+<div class="code-block"><pre><code>python verify.py</code></pre></div>
+<p style="color:var(--muted);font-size:.85rem">验证所有数据完整性和 API 端点</p>
+</div>
+
+<div class="section">
+<h2>3. 部署</h2>
+<div class="code-block"><pre><code>vercel --prod</code></pre></div>
+<p style="color:var(--muted);font-size:.85rem">部署到 Vercel 生产环境</p>
+</div>
+
+<div class="section">
+<h2>4. 验证部署</h2>
+<p style="margin-bottom:16px">访问以下 URL 验证部署是否成功：</p>
+<a class="btn" href="/api/health" target="_blank">健康检查</a>
+<a class="btn btn-secondary" href="/api/assets?limit=1" target="_blank">资产列表</a>
+<a class="btn btn-secondary" href="/api/pricing?action=compare" target="_blank">定价信息</a>
+</div>
+
+<div class="section">
+<h2>5. 下一步</h2>
+<p style="margin-bottom:16px">了解更多关于平台的信息：</p>
+<a class="btn" href="/api-docs.html">API 文档</a>
+<a class="btn btn-secondary" href="/architecture.html">系统架构</a>
+<a class="btn btn-secondary" href="/README.md">项目说明</a>
+</div>
+</div>
+</body>
+</html>

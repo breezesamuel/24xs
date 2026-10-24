@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-10-06T13:25:53.006958Z",
+  "checks": {
+    "schema_validation": {
+      "status": "pass",
+      "errors": 0
+    },
+    "proof_verification": {
+      "status": "pass",
+      "sampled": 10000,
+      "errors": 0
+    },
+    "chain_verification": {
+      "status": "pass",
+      "sampled": 0,
+      "errors": 0
+    },
+    "uniqueness": {
+      "status": "pass",
+      "duplicates": 0,
+      "unique_count": 1056693
+    },
+    "price_sanity": {
+      "status": "pass",
+      "errors": 0
+    },
+    "source_traceability": {
+      "status": "pass",
+      "errors": 0
+    },
+    "tag_coverage": {
+      "status": "pass",
+      "details": {
+        "has_tags": 1056693
+      }
+    },
+    "merkle_consistency": {
+      "status": "pass",
+      "stored_root": "a87087f5c051c718...",
+      "computed_root": "a87087f5c051c718..."
+    }
+  },
+  "overall": "pass"
+}

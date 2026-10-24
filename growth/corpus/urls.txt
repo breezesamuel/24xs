@@ -1,0 +1,35 @@
+# 获客调研抓取清单 — 订阅前端 + 企业AI服务后端
+# 目标：为企业AI提效服务定价、AI工具订阅打法、私域转化找真实依据
+# 客户处境：微信<500 + 粉丝<5000，纯启动，无企业单
+
+# === B端：自动化工作流 / RPA / Agent 平台（后端服务的定价锚点）===
+# 影刀 RPA — 国内自动化代表
+https://www.yingdao.com/
+# 来也科技 — RPA+AI 企业级
+https://www.laiye.com/
+# 实在智能 — AI Agent/数字员工
+https://www.ai-indeed.com/
+# n8n — 开源工作流自动化（国际定价锚点）
+https://n8n.io/
+https://n8n.io/pricing/
+
+# === B端：AI 知识库 / Agent 构建平台（后端服务的交付工具）===
+# Dify — 开源 LLM 应用平台
+https://dify.ai/
+https://dify.ai/pricing
+# FastGPT — 知识库问答
+https://fastgpt.in/
+# 扣子 Coze — 字节 Agent 平台
+https://www.coze.cn/
+
+# === B端：AI/职场培训（培训服务的定价与打法锚点）===
+# 三节课 — 互联网职业教育
+https://www.sanjieke.cn/
+# 人人都是产品经理 — 内容获客标杆
+https://www.woshipm.com/
+# 混沌学园 — 高端商学院
+https://www.hundun.cn/
+
+# === C端：AI 工具导航/订阅（前端订阅的产品形态参考）===
+# AI工具集导航
+https://ai-bot.cn/

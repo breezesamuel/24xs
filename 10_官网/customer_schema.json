@@ -1,0 +1,88 @@
+{
+  "version": "1.0",
+  "tables": {
+    "customers": {
+      "fields": {
+        "customer_id": "string (CUST-YYYYMMDD-XXXXXX)",
+        "email": "string (unique)",
+        "company_name": "string",
+        "contact_name": "string",
+        "phone": "string",
+        "tier": "string (starter/professional/enterprise)",
+        "status": "string (active/suspended/cancelled)",
+        "created_at": "iso8601",
+        "billing_cycle": "string (monthly/quarterly/annual)",
+        "payment_method": "string (moltspay/alipay/wechat/bank)",
+        "moltspay_customer_id": "string",
+        "credit_balance": "integer",
+        "total_spent": "number",
+        "total_assets_purchased": "integer"
+      },
+      "indexes": [
+        "email",
+        "customer_id",
+        "status"
+      ]
+    },
+    "purchases": {
+      "fields": {
+        "purchase_id": "string (PUR-YYYYMMDD-XXXXXX)",
+        "customer_id": "string",
+        "asset_ids": "array[string]",
+        "bundle_id": "string|null",
+        "license_type": "string",
+        "amount_cny": "number",
+        "credits_used": "integer",
+        "status": "string (pending/completed/refunded/failed)",
+        "payment_txn_id": "string",
+        "created_at": "iso8601",
+        "completed_at": "iso8601|null",
+        "delivery_status": "string (pending/delivered/expired)",
+        "delivery_url": "string|null",
+        "delivery_expires_at": "iso8601|null"
+      },
+      "indexes": [
+        "customer_id",
+        "purchase_id",
+        "status",
+        "payment_txn_id"
+      ]
+    },
+    "usage_logs": {
+      "fields": {
+        "log_id": "string",
+        "customer_id": "string",
+        "asset_id": "string",
+        "action": "string (view/download/api_call/verify)",
+        "timestamp": "iso8601",
+        "ip": "string",
+        "user_agent": "string",
+        "credits_consumed": "integer"
+      },
+      "indexes": [
+        "customer_id",
+        "asset_id",
+        "timestamp"
+      ]
+    },
+    "api_keys": {
+      "fields": {
+        "key_id": "string (KEY-XXXXXX)",
+        "customer_id": "string",
+        "key_hash": "string (sha256)",
+        "name": "string",
+        "permissions": "array[string]",
+        "rate_limit": "integer (req/min)",
+        "status": "string (active/revoked)",
+        "created_at": "iso8601",
+        "last_used_at": "iso8601|null",
+        "expires_at": "iso8601|null"
+      },
+      "indexes": [
+        "customer_id",
+        "key_id",
+        "key_hash"
+      ]
+    }
+  }
+}

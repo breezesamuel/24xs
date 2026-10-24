@@ -11,7 +11,7 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { episodic, knowledge, recall } from '../brain/hidden_brain.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -106,4 +106,4 @@ function main(){
   console.log(`[hidden_improver] learned=${learned} reasons=${reasons.join(',') || 'none'}`);
 }
 
-main();
+if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){ main(); }

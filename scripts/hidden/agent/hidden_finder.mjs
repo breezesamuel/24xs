@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import crypto from 'crypto';
 import { episodic } from '../brain/hidden_brain.mjs';
 
@@ -45,4 +45,4 @@ function main(){
   episodic('hidden_finder_auto_publish',{added:add, total:load(PUB).length});
   console.log(`[hidden_finder] auto_published=${add}`);
 }
-main();
+if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){ main(); }

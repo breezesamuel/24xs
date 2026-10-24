@@ -1,0 +1,111 @@
+{
+  "services": [
+    {
+      "name": "Tarot Reading",
+      "price_cents": 49,
+      "description": "Single-card tarot insight for immediate guidance.",
+      "input_schema": {
+        "type": "object",
+        "required": ["question"],
+        "properties": {
+          "question": { "type": "string", "minLength": 3, "maxLength": 500, "description": "Your specific question or situation" }
+        }
+      }
+    },
+    {
+      "name": "BaZi Reading",
+      "price_cents": 129,
+      "description": "Four Pillars destiny analysis with 10-year luck cycles.",
+      "input_schema": {
+        "type": "object",
+        "required": ["birth_datetime", "birth_location", "gender"],
+        "properties": {
+          "birth_datetime": { "type": "string", "format": "date-time", "description": "Exact birth date and time (e.g., 1990-05-15T07:30:00+08:00)" },
+          "birth_location": { "type": "string", "description": "City, province, country (e.g., Beijing, China)" },
+          "gender": { "type": "string", "enum": ["male", "female"], "description": "For correct 10-year luck cycle direction" }
+        }
+      }
+    },
+    {
+      "name": "Zi Wei Dou Shu",
+      "price_cents": 99,
+      "description": "Purple Star astrology life chart with palace interpretations.",
+      "input_schema": {
+        "type": "object",
+        "required": ["birth_datetime", "birth_location", "gender"],
+        "properties": {
+          "birth_datetime": { "type": "string", "format": "date-time", "description": "Exact birth date and time" },
+          "birth_location": { "type": "string", "description": "City, province, country" },
+          "gender": { "type": "string", "enum": ["male", "female"] }
+        }
+      }
+    },
+    {
+      "name": "Dream Oracle",
+      "price_cents": 49,
+      "description": "Symbolic dream interpretation with actionable guidance.",
+      "input_schema": {
+        "type": "object",
+        "required": ["dream_text"],
+        "properties": {
+          "dream_text": { "type": "string", "minLength": 10, "maxLength": 2000, "description": "Describe your dream in detail" }
+        }
+      }
+    },
+    {
+      "name": "Match Making",
+      "price_cents": 79,
+      "description": "Two-person BaZi compatibility with marriage timing hints.",
+      "input_schema": {
+        "type": "object",
+        "required": ["person1", "person2"],
+        "properties": {
+          "person1": {
+            "type": "object",
+            "required": ["birth_datetime", "birth_location", "gender"],
+            "properties": {
+              "birth_datetime": { "type": "string", "format": "date-time" },
+              "birth_location": { "type": "string" },
+              "gender": { "type": "string", "enum": ["male", "female"] }
+            }
+          },
+          "person2": {
+            "type": "object",
+            "required": ["birth_datetime", "birth_location", "gender"],
+            "properties": {
+              "birth_datetime": { "type": "string", "format": "date-time" },
+              "birth_location": { "type": "string" },
+              "gender": { "type": "string", "enum": ["male", "female"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Name Analysis",
+      "price_cents": 49,
+      "description": "Chinese name scoring with Five Elements balance suggestions.",
+      "input_schema": {
+        "type": "object",
+        "required": ["surname", "given_name", "birth_datetime", "gender"],
+        "properties": {
+          "surname": { "type": "string", "description": "Single Chinese character surname" },
+          "given_name": { "type": "string", "description": "1-2 character given name" },
+          "birth_datetime": { "type": "string", "format": "date-time" },
+          "gender": { "type": "string", "enum": ["male", "female"] }
+        }
+      }
+    },
+    {
+      "name": "Test Handler",
+      "price_cents": 11,
+      "description": "Internal test endpoint — hidden from public catalog.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "echo": { "type": "string" }
+        }
+      }
+    }
+  ]
+}

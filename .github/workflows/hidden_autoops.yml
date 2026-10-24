@@ -69,8 +69,6 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_AUTH: ${{ secrets.SMTP_AUTH }}
           SMTP_TO: ${{ secrets.SMTP_TO }}
-          ALERT_WEBHOOK_URL: ${{ vars.ALERT_WEBHOOK_URL }}
-          ALERT_WEBHOOK_TOKEN: ${{ vars.ALERT_WEBHOOK_TOKEN }}
           HIDDEN_INT_MIN: '15'
         run: |
           echo "Starting orchestrator at $(date -u)"
@@ -137,8 +135,6 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_AUTH: ${{ secrets.SMTP_AUTH }}
           SMTP_TO: ${{ secrets.SMTP_TO }}
-          ALERT_WEBHOOK_URL: ${{ vars.ALERT_WEBHOOK_URL }}
-          ALERT_WEBHOOK_TOKEN: ${{ vars.ALERT_WEBHOOK_TOKEN }}
         run: node scripts/hidden/agent/hidden_watchdog.mjs
       - name: Upload watchdog report
         if: always()

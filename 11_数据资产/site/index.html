@@ -1,0 +1,377 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 鍙搴︿綋妫€ 路 涓欏ぇ灞辨暟鎹祫浜?/title>
+<meta name="description" content="瀹炴祴锛氱綉鏄撱€佹嫾澶氬銆佺煡涔庡畼缃?AI 鍙搴﹂兘鍙湁 60 鍒嗐€傚綋瀹㈡埛鍦?AI 閲岄棶銆屽摢瀹跺ソ銆嶏紝AI 鎻愪笉鎻愪綘锛?8 瀹朵腑鍥戒紒涓氬疄娴嬪熀鍑嗭紝1 鍏冭捣鏌ャ€?>
+<link rel="canonical" href="https://geo-audit-cn.pages.dev/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "涓婃捣涓欏ぇ灞辨櫤鑳界鎶€鏈夐檺鍏徃",
+      "url": "https://geo-audit-cn.pages.dev/",
+      "description": "浼佷笟瀹樼綉 AI 鍙搴︿綋妫€涓庢暣鏀规湇鍔?,
+      "email": "460123249@qq.com"
+    },
+    {
+      "@type": "WebSite",
+      "name": "AI 鍙搴︿綋妫€",
+      "url": "https://geo-audit-cn.pages.dev/",
+      "inLanguage": "zh-CN"
+    },
+    {
+      "@type": "Service",
+      "name": "瀹樼綉 AI 鍙搴︿綋妫€",
+      "serviceType": "GEO 瀹¤涓庢暣鏀?,
+      "provider": { "@type": "Organization", "name": "涓婃捣涓欏ぇ灞辨櫤鑳界鎶€鏈夐檺鍏徃" },
+      "areaServed": { "@type": "Country", "name": "CN" },
+      "offers": { "@type": "AggregateOffer", "lowPrice": "0", "highPrice": "2999", "priceCurrency": "CNY" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "澶у叕鍙稿畼缃戠殑 AI 鍙搴﹀氨寰堥珮鍚楋紵",
+          "acceptedAnswer": { "@type": "Answer", "text": "涓嶆槸銆傛垜浠疄娴嬩簡 18 瀹剁煡鍚嶄腑鍥戒紒涓氬畼缃戯紝骞冲潎鍒嗗彧鏈?44.6 鍒嗭紝婊″垎 100銆傜綉鏄撱€佹嫾澶氬銆佺煡涔庡畼缃戦兘鍙湁 60 鍒嗐€侫I 鍙搴︿綆鏄櫘閬嶇幇璞★紝涓嶆槸灏忓叕鍙哥殑闂銆? }
+        },
+        {
+          "@type": "Question",
+          "name": "杩欎釜浣撴鍏蜂綋娴嬩粈涔堬紵",
+          "acceptedAnswer": { "@type": "Answer", "text": "娴?AI 鎶撳彇浣犵綉绔欑殑涓変欢浜嬶細robots.txt 鏄惁鏀捐 AI 鐖櫕銆佹槸鍚︽湁 JSON-LD 缁撴瀯鍖栨暟鎹 AI 鐪嬪緱鎳備綘鏄皝銆佹槸鍚︽湁 FAQ 鍜?llms.txt 璁?AI 鎶藉緱鍒颁綘鐨勯棶绛斻€傚叏閮ㄥ熀浜庡叕寮€鏂囦欢锛屼笉鎶撳彇涓汉淇℃伅銆? }
+        },
+        {
+          "@type": "Question",
+          "name": "1 鍧楅挶鐨勬姤鍛婂拰 99 鍧楅挶鐨勬湁浠€涔堝尯鍒紵",
+          "acceptedAnswer": { "@type": "Answer", "text": "1 鍏冪粰 8 涓淮搴︾殑鍒嗘暟鍜?3 鏉″缓璁€?9 鍏冪粰瀹屾暣璇婃柇銆佸彲鐩存帴绮樿创鐨?JSON-LD 浠ｇ爜銆乴lms.txt 鍜?robots.txt 瀹氬埗鍐呭銆佹寜鎶曞叆浜у嚭鎺掑簭鐨勬暣鏀规帓鏈熻〃锛屼互鍙?30 澶╁唴 3 娆″厤璐瑰娴嬨€傚樊浠?98 鍏冿紝涔扮殑鏄笉鐢ㄨ嚜宸辨兂鎬庝箞鏀广€? }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+:root{
+  --bg:#0d1117; --card:#161b22; --line:#21262d; --fg:#e6edf3;
+  --dim:#8b949e; --bad:#f85149; --ok:#3fb950; --warn:#d29922; --hi:#58a6ff;
+  --accent:#1f6feb;
+}
+@media (prefers-color-scheme:light){
+  :root{ --bg:#fff; --card:#f6f8fa; --line:#d0d7de; --fg:#1f2328; --dim:#59636e; --hi:#0969da; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.7 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
+a{color:var(--hi)}
+header{padding:56px 0 32px;border-bottom:1px solid var(--line)}
+h1{font-size:34px;margin:0 0 12px;line-height:1.3;letter-spacing:-.5px}
+h2{font-size:22px;margin:44px 0 16px;padding-top:20px;border-top:1px solid var(--line)}
+.sub{color:var(--dim);font-size:17px;margin:0}
+.hero-score{display:flex;gap:14px;flex-wrap:wrap;margin:28px 0}
+.stat{flex:1;min-width:130px;background:var(--card);border:1px solid var(--line);
+  border-radius:10px;padding:16px}
+.stat b{display:block;font-size:30px;line-height:1.2}
+.stat span{color:var(--dim);font-size:13px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--dim);font-weight:600;font-size:13px}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;min-width:70px}
+.bar i{display:block;height:100%;background:var(--bad)}
+.bar i.mid{background:var(--warn)}
+.bar i.good{background:var(--ok)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:18px;margin:14px 0}
+.tier{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  border-bottom:1px solid var(--line);padding:13px 0}
+.tier:last-child{border:0}
+.price{font-size:24px;font-weight:700;color:var(--ok);white-space:nowrap}
+.price small{font-size:13px;color:var(--dim);font-weight:400}
+.gives{color:var(--dim);font-size:14px;margin:5px 0 0}
+input,button{font:inherit;padding:12px 14px;border-radius:8px;border:1px solid var(--line)}
+input{width:100%;background:var(--bg);color:var(--fg);margin:10px 0}
+button{background:var(--accent);color:#fff;border:0;cursor:pointer;font-weight:600;width:100%}
+button:disabled{opacity:.5;cursor:not-allowed}
+.note{background:rgba(248,81,73,.08);border-left:3px solid var(--bad);
+  padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0;font-size:15px}
+.ok-box{background:rgba(63,185,80,.08);border-left:3px solid var(--ok);
+  padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0}
+footer{margin:56px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);
+  color:var(--dim);font-size:13px}
+code{background:var(--card);padding:2px 6px;border-radius:4px;font-size:13px}
+
+/* 浣撴缁撴灉鍗?*/
+#out{margin-top:18px}
+.res{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:20px}
+.res-head{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.gauge{width:96px;height:96px;border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;flex-shrink:0;border:6px solid var(--line)}
+.gauge b{font-size:30px;line-height:1}
+.gauge span{font-size:11px;color:var(--dim)}
+.res-meta{flex:1;min-width:180px}
+.res-meta .g{font-size:13px;color:var(--dim)}
+.res-meta .n{font-size:17px;font-weight:700;word-break:break-all}
+.dims{margin:16px 0 0}
+.dim{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:14px}
+.dim .dn{width:130px;flex-shrink:0}
+.dim .dt{flex:1;height:7px;background:var(--line);border-radius:4px;overflow:hidden}
+.dim .df{height:100%;border-radius:4px}
+.dim .ds{width:38px;text-align:right;font-variant-numeric:tabular-nums;color:var(--dim)}
+.find{margin-top:14px}
+.find .fi{display:flex;gap:9px;align-items:flex-start;padding:7px 0;font-size:14px;
+  border-top:1px solid var(--line)}
+.find .fi:first-child{border-top:0}
+.find .fi .mk{flex-shrink:0;font-weight:700}
+.bad .mk,.bad .ds{color:var(--bad)}
+.ok .mk,.ok .ds{color:var(--ok)}
+.warn .mk,.warn .ds{color:var(--warn)}
+.buy{margin-top:18px;display:grid;gap:10px;grid-template-columns:1fr 1fr}
+.buy a{display:block;text-align:center;padding:12px;border-radius:8px;text-decoration:none;
+  font-weight:700;font-size:14px}
+.buy .b1{background:var(--ok);color:#04210f}
+.buy .b2{background:var(--accent);color:#fff}
+.tiny{font-size:12px;color:var(--dim);margin-top:8px}
+@media(max-width:560px){.buy{grid-template-columns:1fr}.dim .dn{width:96px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>浣犵殑瀹樼綉锛孉I 鐪嬪緱瑙佸悧锛?/h1>
+  <p class="sub">褰撳鎴峰湪 DeepSeek / Kimi / 璞嗗寘 / ChatGPT 閲岄棶銆屽摢瀹跺ソ銆嶏紝
+  AI 浼氫笉浼氭彁鍒颁綘锛熲€斺€?杩欐槸 1 鍧楅挶灏辫兘鐭ラ亾鐨勪簨銆?/p>
+
+  <div class="hero-score">
+    <div class="stat"><b>44.6</b><span>18 瀹剁煡鍚嶄紒涓氬畼缃戝钩鍧囧垎锛堟弧鍒?100锛?/span></div>
+    <div class="stat"><b>60</b><span>缃戞槗 / 鎷煎澶?/ 鐭ヤ箮 瀹樼綉寰楀垎</span></div>
+    <div class="stat"><b>0</b><span>18 瀹跺疄娴嬩腑鏄庣‘绂佹 AI 鐖櫕鐨勬暟閲?/span></div>
+    <div class="stat"><b>14/18</b><span>缂哄皯缁撴瀯鍖栨暟鎹紝AI 璁や笉鍑轰綘鏄皝</span></div>
+  </div>
+
+  <div class="note">
+    <b>鍏堣娓呮锛氳繖涓嶆槸灏忓叕鍙哥殑闂銆?/b>
+    鎴戜滑鐢ㄥ悓涓€濂楀紩鎿庢壂浜嗗皬绫炽€佸崕涓恒€佺綉鏄撱€佹惡绋嬨€佺編鐨勩€佽敋鏉ョ瓑 18 瀹剁煡鍚嶄紒涓氬畼缃戯紝
+    骞冲潎鍒嗗彧鏈?44.6銆傜綉鏄撱€佹嫾澶氬銆佺煡涔庤繖绉嶆妧鏈洟闃熷緢寮虹殑鍏徃锛屽畼缃戜篃鍙湁 60 鍒嗐€?    <b>AI 鍙搴︿綆鏄涓氭櫘閬嶇幇鐘?/b>锛屾墍浠ヨ繖涓嶆槸銆屼綘璇ヨˉ鐨勭煭鏉裤€嶏紝鏄€屽ぇ瀹堕兘鍦ㄨ８濂旂殑鐭澘銆嶃€?  </div>
+</header>
+
+<h2>鍏堝厤璐规煡涓€涓嬩綘鑷繁鐨勭珯</h2>
+<p>杈撳叆缃戝潃锛屽疄鏃朵綋妫€锛?0 绉掑唴鐭ラ亾 AI 鑳戒笉鑳芥姄鍒颁綘銆備笉闇€瑕佹敞鍐屻€?/p>
+<div class="card">
+  <input id="u" type="text" placeholder="浣犵殑鍏徃瀹樼綉锛屼緥濡?www.example.com" autocomplete="off">
+  <button id="go">鍏嶈垂浣撴</button>
+</div>
+<div id="out"></div>
+
+<h2>鎴戜滑鍒板簳娴嬩粈涔?/h2>
+<p>AI 瑕佸湪鍥炵瓟閲屾彁鍒颁綘锛屽繀椤诲厛鍋氬埌涓変欢浜嬨€傜己浠讳綍涓€浠讹紝浣犵瓑浜庝笉瀛樺湪锛?/p>
+<table>
+  <tr><th style="width:38%">妫€鏌ラ」</th><th>AI 闇€瑕佸畠鍋氫粈涔?/th><th style="width:16%">鏉冮噸</th></tr>
+  <tr><td><code>robots.txt</code></td><td>鍒姝?AI 鐖櫕璁块棶</td><td>30 鍒?/td></tr>
+  <tr><td>缁撴瀯鍖栨暟鎹?/td><td>璁?AI 鐭ラ亾浣犳槸璋併€佸仛浠€涔堜笟鍔?/td><td>25 鍒?/td></tr>
+  <tr><td>FAQ 闂瓟</td><td>璁?AI 鎶藉緱鍒颁綘鐨勭瓟妗堝苟寮曠敤</td><td>15 鍒?/td></tr>
+  <tr><td>鍙揪鎬?/td><td>缃戠珯瑕佽兘姝ｅ父鎵撳紑銆佽瘉涔﹁鏈夋晥</td><td>15 鍒?/td></tr>
+  <tr><td><code>llms.txt</code></td><td>涓诲姩鍛婅瘔 AI 浣犵殑涓氬姟</td><td>10 鍒?/td></tr>
+  <tr><td>sitemap / meta</td><td>甯姪 AI 瀹氫綅鍜岀悊瑙ｉ〉闈?/td><td>5 鍒?/td></tr>
+</table>
+<p>鍏ㄩ儴鍩轰簬鍏紑鏂囦欢鍒ゅ畾锛?code>robots.txt</code>銆?code>llms.txt</code>銆侀〉闈㈡簮浠ｇ爜锛夛紝
+涓嶆姄鍙栦换浣曚釜浜轰俊鎭€傞亣鍒板紑鍚弽鐖獙璇侊紙WAF/楠岃瘉鐮侊級鐨勭珯锛屾垜浠爣銆岄渶浜哄伐澶嶆牳銆嶏紝
+缁濅笉缁曡繃瀹夊叏鎺у埗锛屼篃缁濅笉瀵圭潃楠岃瘉鐮侀〉鎵撳垎銆?/p>
+
+<h2>琛屼笟鍩哄噯锛?8 瀹朵腑鍥戒紒涓氬疄娴?/h2>
+<p>鍏ㄧ綉娌℃湁绗簩瀹跺叕寮€鍗栬繖涓€備綘鍙互鐩存帴鎷胯嚜宸辫涓氱殑鏁板瓧鍘诲拰鍚岃姣旓細</p>
+<table>
+  <tr><th>琛屼笟</th><th>鏍锋湰</th><th>骞冲潎鍒?/th><th>涓綅鏁?/th><th>鍖洪棿</th><th style="width:22%">鍒嗗竷</th></tr>
+  <tr><td>鏁欒偛鍩硅</td><td>5</td><td>60.0</td><td>50</td><td>50 鈥?100</td>
+    <td><div class="bar"><i class="mid" style="width:60%"></i></div></td></tr>
+  <tr><td>鍙ｈ厰鍖荤枟</td><td>4</td><td>59.5</td><td>60</td><td>18 鈥?100</td>
+    <td><div class="bar"><i class="mid" style="width:60%"></i></div></td></tr>
+  <tr><td>鏈湴鐢熸椿</td><td>3</td><td>53.3</td><td>50</td><td>50 鈥?60</td>
+    <td><div class="bar"><i class="mid" style="width:53%"></i></div></td></tr>
+  <tr><td>鍖荤枟鍋ュ悍</td><td>2</td><td>53.0</td><td>53</td><td>53 鈥?53</td>
+    <td><div class="bar"><i class="mid" style="width:53%"></i></div></td></tr>
+  <tr><td>瑁呬慨瑁呴グ</td><td>2</td><td>34.0</td><td>40</td><td>28 鈥?40</td>
+    <td><div class="bar"><i style="width:34%"></i></div></td></tr>
+  <tr><td>鍏朵粬</td><td>2</td><td>23.0</td><td>28</td><td>18 鈥?28</td>
+    <td><div class="bar"><i style="width:23%"></i></div></td></tr>
+  <tr><td><b>鍏ㄨ涓?/b></td><td><b>18</b></td><td><b>51.0</b></td><td><b>50</b></td><td><b>18 鈥?100</b></td>
+    <td><div class="bar"><i class="mid" style="width:51%"></i></div></td></tr>
+</table>
+<div class="ok-box">
+  <b>骞冲潎 51.0 鍒嗭紝涓綅鏁?50 鍒嗐€?/b>
+  涔熷氨鏄锛屼竴鍗婁互涓婄殑涓浗涓皬浼佷笟瀹樼綉鍦?AI 鐪奸噷鍩烘湰鏄殣褰㈢殑銆?  浣犱笉鏄惤鍚庝簡锛屼綘鏄拰澶у涓€璧疯惤鍚庝簡 鈥斺€?杩欎篃鎰忓懗鐫€鏁存敼鍚庤兘绔嬪埢鐢╁紑鍚岃銆?</div>
+
+<h2>鎶ュ憡浠锋牸</h2>
+<p class="sub" style="font-size:15px">
+  鍥介檯甯傚満鍚岀被 GEO 瀹¤鎶ヤ环 $700鈥?5,000/鍗曪紙宸叉牳瀹?Astral銆丩ayer3Labs銆丮arketerHire 绛?8 瀹?2026 鍏紑鎶ヤ环锛夈€?  鍥藉唴涓皬浼佷笟鎵垮彈鍔涗綆涓€涓暟閲忕骇锛屾墍浠ユ垜浠笉闈犺 PPT 鍗栭珮浠凤紝闈犵粰鑳界洿鎺ョ敤鐨勪唬鐮併€?</p>
+
+<div class="card">
+  <div class="tier">
+    <div><b>鍏嶈垂浣撴</b><div class="gives">鏈珯涓婃柟锛屽嵆鏃跺嚭鍒嗐€傛€诲垎 + 璇勭骇 + 缂轰粈涔堛€?/div></div>
+    <div class="price">楼0</div>
+  </div>
+  <div class="tier">
+    <div><b>鍗曠珯閫熻</b><div class="gives">8 缁村害閫愰」寰楀垎 + 3 鏉′紭鍏堢骇寤鸿 + PDF</div></div>
+    <div class="price">楼1</div>
+  </div>
+  <div class="tier">
+    <div><b>琛屼笟瀵规爣锛?0 瀹讹級</b><div class="gives">鍚岃鎺掕 + 涓綅鏁?+ 浣犳帓绗嚑 + Excel 瀵规爣琛?/div></div>
+    <div class="price">楼9.9</div>
+  </div>
+  <div class="tier">
+    <div><b>娣卞害鏁存敼鍖?/b><div class="gives">瀹屾暣璇婃柇 + 鍙洿鎺ョ矘璐寸殑 JSON-LD / llms.txt / robots.txt 瀹氬埗鍐呭 + 鎸夋姇鍏ヤ骇鍑烘帓搴忕殑鏁存敼鎺掓湡琛?+ 30 澶╁唴 3 娆″厤璐瑰娴?/div></div>
+    <div class="price">楼99</div>
+  </div>
+  <div class="tier">
+    <div><b>绔炲搧鏀婚槻锛? 瀹跺姣旓級</b><div class="gives">娣卞害鍖呭叏閮?+ 5 瀹剁珵鍝侀€愰」瀵规瘮 + AI 寮曠敤宸紓鍒嗘瀽 + 宸紓鍖栧叧閿瘝 + 90 澶╄窡韪?/div></div>
+    <div class="price">楼299</div>
+  </div>
+  <div class="tier">
+    <div><b>鐧芥爣鎺堟潈锛堟湇鍔″晢/浠ｈ繍钀ワ級</b><div class="gives">浣撴寮曟搸 API 璋冪敤鏉?+ 浣犵殑鍝佺墝 logo 鍜屽煙鍚?+ 妯℃澘鑷畾涔?+ 鎵归噺瀵煎嚭瀹㈡埛鍚嶅崟 + 鎶€鏈鎺ユ敮鎸?/div></div>
+    <div class="price">楼2999<small>/骞?/small></div>
+  </div>
+</div>
+
+<p><b>涓轰粈涔堟湁 1 鍏冩。锛?/b>涓嶆槸鍣卞ご銆備粯杩囦竴娆￠挶鐨勪汉锛屽啀浠?99 鍏冪殑姒傜巼楂樹竴涓暟閲忕骇銆?杩欎竴鏉℃瘮浠讳綍钀ラ攢璇濇湳閮藉疄鍦?鈥斺€?鎴戜滑瀹佹効 1 鍏冨崠 10000 鍗曪紝涔熶笉鎯?99 鍏冨崠涓嶅嚭鍘汇€?/p>
+
+<h2>鎴戜滑淇繃鐨勭湡瀹為敊璇?/h2>
+<p>浣撴宸ュ叿鏈韩鍑洪敊锛屽鎴峰氨浼氫负涓嶅瓨鍦ㄧ殑闂浠橀挶銆傛墍浠ヨ繖鍑犲鎴戜滑閮戒慨浜嗭紝骞跺啓鎴愪簡鑷姩鍖栨柇瑷€锛?07 鏉″叏缁匡級锛?/p>
+<table>
+  <tr><th>缂洪櫡</th><th>鍚庢灉</th></tr>
+  <tr><td>涓嶈 JSON-LD <code>@graph</code></td><td>鎶?Google 鎺ㄨ崘鍐欐硶璇垽鎴愩€屾棤缁撴瀯鍖栨暟鎹€?/td></tr>
+  <tr><td>鍙 HTTP 200</td><td>鍗庝负銆佹捣灏旂瓑娲荤珯琚垽銆屽畼缃戞棤娉曡闂€?/td></tr>
+  <tr><td>鎶?WAF 鎸戞垬椤靛綋瀹樼綉鍐呭</td><td>绛変簬瀵圭潃楠岃瘉鐮佹墦鍒嗭紝鏁版嵁閫犲亣</td></tr>
+  <tr><td>鎶?412銆屽嚭閿欏暒銆嶅弽鐖〉褰撶湡绔?/td><td>B 绔欒繖绫绘甯哥珯琚啢鍒?18 鍒?/td></tr>
+  <tr><td>520 鍥炴簮澶辫触鍗犱綅椤靛綋瀹樼綉</td><td>鍑┖鎸囨帶瀹㈡埛缂鸿繖缂洪偅</td></tr>
+  <tr><td>robots.txt 缂哄け绠椾綔銆岀姝?AI銆?/td><td>鍏ㄥ満璇垽鎴?0 鍒?/td></tr>
+  <tr><td>鍙煡鍩熷悕鏍广€佷笉鏌ョ珯鐐规牴</td><td>瀛愮洰褰曠珯鐐硅鍒ゃ€屼粈涔堥兘娌￠厤銆?/td></tr>
+</table>
+
+<h2>甯歌闂</h2>
+<p><b>澶у叕鍙稿畼缃戝垎鏁板氨寰堥珮鍚楋紵</b><br>
+涓嶆槸銆?8 瀹剁煡鍚嶄紒涓氬钩鍧?44.6 鍒嗐€傜綉鏄撱€佹嫾澶氬銆佺煡涔庨兘鍙湁 60 鍒嗐€?杩欐槸琛屼笟鏅亶鐜拌薄锛屼笉鏄綘鐨勪釜浜洪棶棰樸€?/p>
+
+<p><b>浼氫笉浼氭硠闇叉垜鐨勫晢涓氫俊鎭紵</b><br>
+鍙鍙栧叕寮€鏂囦欢锛坮obots.txt銆乴lms.txt銆侀〉闈㈡簮浠ｇ爜锛夈€備笉鎶撳彇銆佷笉瀛樺偍銆佷笉鍑哄敭浠讳綍涓汉淇℃伅銆?瀵瑰鍙戝竷鐨勮涓氬熀鍑嗗彧鏈夊垎鏁板拰琛屼笟锛屼笉鍚紒涓氬悕绉般€?/p>
+
+<p><b>鏁存敼瀹岀湡鏈夌敤鍚楋紵</b><br>
+杩欎簺鏄悳绱㈠紩鎿庡拰 AI 鐖櫕鍏紑鎵胯鐨勮鍙栫害瀹氾紝灞炰簬浜嬪疄鎬у熀纭€璁炬柦锛屼笉鏄粈涔堢巹瀛︺€?浣嗚璇氬疄璇达細鏁存敼鑳借浣犮€屾湁璧勬牸琚紩鐢ㄣ€嶏紝涓嶈兘淇濊瘉銆屼竴瀹氳寮曠敤銆嶃€?寮曠敤杩樺彇鍐充簬鍐呭璐ㄩ噺鍜岀涓夋柟淇℃簮锛岃繖鏄垜浠笉鎵胯鐨勯儴鍒嗐€?/p>
+
+<footer>
+  <p><b>涓婃捣涓欏ぇ灞辨櫤鑳界鎶€鏈夐檺鍏徃</b> 路 <a href="mailto:460123249@qq.com">460123249@qq.com</a></p>
+  <p>鏈珯鏁版嵁鐢辫嚜鐮斿紩鎿庡鍏紑瀹樼綉瀹炴祴寰楀嚭锛屽彲澶嶇幇銆佸彲澶嶆牳锛屼笉鍚汉宸ユ敼鍐欑殑鍒嗘暟銆?/p>
+  <p><a href="./llms.txt">llms.txt</a> 路 <a href="./robots.txt">robots.txt</a> 路
+     <a href="./sitemap.xml">sitemap.xml</a></p>
+</footer>
+</div>
+
+<script>
+var API = (location.hostname.indexOf('.pages.dev') >= 0)
+  ? './api/audit'
+  : 'https://geo-audit-cn.pages.dev/api/audit';
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+function scoreColor(v){
+  if(v>=80) return 'var(--ok)';
+  if(v>=55) return 'var(--warn)';
+  return 'var(--bad)';
+}
+
+function render(d){
+  var c = d.checks || {};
+  var col = scoreColor(d.score||0);
+  var blocked = (c.robots && c.robots.blocked) || [];
+  var dims = [
+    ['robots 鏀捐 AI', blocked.length ? 0 : (c.robots && c.robots.exists ? 30 : 18), 30],
+    ['缁撴瀯鍖栨暟鎹?, (c.schema && c.schema.exists) ? (c.schema.has_org ? 25 : 12) : 0, 25],
+    ['FAQ 闂瓟', (c.schema && c.schema.has_faq) ? 15 : 0, 15],
+    ['llms.txt', (c.llms && c.llms.exists) ? 10 : 0, 10],
+    ['meta 鎻忚堪', (c.meta && c.meta.has_description) ? 10 : 0, 10],
+    ['sitemap.xml', (c.sitemap && c.sitemap.exists) ? 10 : 0, 10]
+  ];
+  var unreachable = c.reachable && c.reachable.ok === false;
+  var waf = d.waf_blocked || (c.reachable && c.reachable.waf) || /澶嶆牳/.test(d.grade||'');
+  var h = '';
+  h += '<div class="res">';
+  h += '<div class="res-head">';
+  h += '<div class="gauge" style="border-color:'+col+'"><b style="color:'+col+'">'+esc(d.score)+'</b><span>婊″垎 100</span></div>';
+  h += '<div class="res-meta"><div class="g">璇勭骇锛?+esc(d.grade||'-')+'銆€琛屼笟锛?+esc(d.industry||'鍏朵粬')+'</div>';
+  h += '<div class="n">'+esc(d.name||d.host||d.url)+'</div>';
+  h += '<div class="g">'+esc(d.host||'')+'</div></div></div>';
+
+  if(unreachable || waf){
+    h += '<div class="note" style="margin:16px 0 0">'+esc((d.blockers||[]).join(' '))+'</div>';
+  }else{
+    h += '<div class="dims">';
+    dims.forEach(function(x){
+      var pct = x[2] ? Math.round(x[1]/x[2]*100) : 0;
+      var cc = pct>=80?'var(--ok)':pct>=40?'var(--warn)':'var(--bad)';
+      h += '<div class="dim"><div class="dn">'+x[0]+'</div><div class="dt">'
+        + '<div class="df" style="width:'+pct+'%;background:'+cc+'"></div></div>'
+        + '<div class="ds">'+x[1]+'/'+x[2]+'</div></div>';
+    });
+    h += '</div>';
+    var bl = d.blockers || [];
+    if(bl.length){
+      h += '<div class="find"><div class="dim ds" style="width:auto;color:var(--dim);padding-bottom:4px">寰呮暣鏀?'+bl.length+' 椤?/div>';
+      bl.forEach(function(b){
+        h += '<div class="fi bad"><div class="mk">鉁?/div><div>'+esc(b)+'</div></div>';
+      });
+      h += '</div>';
+    }else{
+      h += '<div class="find"><div class="fi ok"><div class="mk">鉁?/div><div>娌℃湁鍙戠幇鏄庢樉缂哄彛锛屽凡鍏峰琚?AI 寮曠敤鐨勫熀纭€鏉′欢銆?/div></div></div>';
+    }
+  }
+
+  h += '<div class="buy">'
+    + '<a class="b1" href="./report.html?url='+encodeURIComponent(d.url)+'">鏌ョ湅瀹屾暣鏁存敼鎶ュ憡</a>'
+    + '<a class="b2" href="mailto:460123249@qq.com?subject=璁㈣喘娣卞害鏁存敼鍖?body='+encodeURIComponent('缃戝潃锛?+d.url+'\n鍒嗘暟锛?+d.score+'锛屾兂瑕佸畬鏁存暣鏀逛唬鐮佸拰鎺掓湡')+'">楼99 娣卞害鏁存敼鍖?/a>'
+    + '</div>';
+  h += '<div class="tiny">瀹屾暣鎶ュ憡鑷甫鍙洿鎺ョ矘璐寸殑 JSON-LD / llms.txt / robots.txt 浠ｇ爜鍜屾暣鏀规帓鏈熻〃銆?
+    + '琛屼笟鍙傝€冨熀鍑嗭細鏁欒偛 60.0 / 鍙ｈ厰 59.5 / 鏈湴鐢熸椿 53.3 / 瑁呬慨 34.0 / 鍏ㄨ涓?51.0锛堜腑浣嶆暟 50锛夈€?/div>';
+  h += '</div>';
+  return h;
+}
+
+document.getElementById('go').onclick = function(){
+  var u = document.getElementById('u').value.trim();
+  var o = document.getElementById('out');
+  if(!u){ o.innerHTML = '<div class="note">璇峰～鍐欑綉鍧€銆?/div>'; return; }
+  this.disabled = true;
+  o.innerHTML = '<div class="card">浣撴涓紝姝ｅ湪浠庤竟缂樿妭鐐规姄鍙栦綘鐨勭綉绔欌€︼紙绾?5鈥?0 绉掞級</div>';
+  var self = this;
+  fetch(API + '?url=' + encodeURIComponent(u))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      self.disabled = false;
+      if(d.error){ o.innerHTML = '<div class="note">浣撴澶辫触锛?+esc(d.error)+'</div>'; return; }
+      o.innerHTML = render(d);
+    })
+    .catch(function(){
+      self.disabled = false;
+      o.innerHTML = '<div class="note">浣撴鎺ュ彛鏆傛椂涓嶅彲杈俱€傝閭欢 460123249@qq.com锛屾垜浠汉宸ヨ窇涓€娆＄粰浣犮€?/div>';
+    });
+};
+</script>
+</body>
+</html>
+<section class="section">
+      <h2>资产目录（可验证）</h2>
+      <p>总资产：<strong>1,000,000</strong> 条数字资产。每条附带 SHA256 校验证明（proof），可离线校验。</p>
+      <div class="grid">
+        <div class="card">
+          <h3>资产清单</h3>
+          <p><a href="/api/assets?limit=100">GET /api/assets</a></p>
+        </div>
+        <div class="card">
+          <h3>校验接口</h3>
+          <p>POST /api/verify</p>
+        </div>
+      </div>
+    </section>

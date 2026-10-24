@@ -1,0 +1,8 @@
+{
+  "total": 1000000,
+  "format": "jsonl",
+  "path": "11_数据资产/registry/assets_registry.jsonl",
+  "license": "internal-use-license-v1",
+  "hash_algo": "sha256(proof per record)",
+  "created_at": "auto"
+}
