@@ -1,22 +1,22 @@
 {
-  "at": "2026-10-13T11:02:50.749Z",
+  "at": "2026-10-24T08:22:59.110Z",
   "ready_count": 0,
   "total": 6,
   "channels": {
     "x": {
       "ok": false,
-      "reason": "unreachable",
-      "url": "chrome-error://chromewebdata/"
+      "reason": "editor_not_found",
+      "url": "https://x.com/i/jf/onboarding/web?redirect_after_login=%2Fcompose%2Fpost&mode=login"
     },
     "reddit": {
       "ok": false,
-      "reason": "unreachable",
-      "url": "chrome-error://chromewebdata/"
+      "reason": "editor_not_found",
+      "url": "https://www.reddit.com/submit?solution=a8004f34e3645ad0a8004f34e3645ad0&js_challenge=1&jsc_token=282"
     },
     "hackernews": {
       "ok": false,
-      "reason": "unreachable",
-      "url": "chrome-error://chromewebdata/"
+      "reason": "editor_not_found",
+      "url": "https://news.ycombinator.com/submit"
     },
     "xiaohongshu": {
       "ok": false,
