@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --bg:#0f172a; --card:#1e293b; --tx:#e2e8f0; --m:#94a3b8; --acc:#22d3ee; }
+  body { width: 380px; margin:0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--tx); }
+  header { padding: 12px 14px 8px; }
+  h1 { font-size: 15px; margin: 0 0 2px; }
+  h1 a { color: var(--acc); text-decoration: none; }
+  p.sub { margin: 0; font-size: 11px; color: var(--m); }
+  #q { width: calc(100% - 24px); margin: 10px 12px 6px; padding: 10px 10px; border-radius: 10px;
+       border: 1px solid #334155; background: var(--card); color: var(--tx); font-size: 14px; outline: none; }
+  #q:focus { border-color: var(--acc); }
+  #count { font-size: 11px; color: var(--m); margin: 0 14px 6px; }
+  ul { list-style: none; margin: 0; padding: 4px 8px 12px; max-height: 360px; overflow-y: auto; }
+  li a { display:block; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: var(--tx); }
+  li a:hover { background: var(--card); }
+  li b { display:block; font-size: 13px; font-weight: 600; }
+  li span { display:block; font-size: 11px; color: var(--m); margin-top: 1px; }
+  .empty { text-align:center; color: var(--m); font-size: 12px; padding: 18px 0 22px; }
+  footer { padding: 8px 14px 12px; font-size: 11px; color: var(--m); border-top: 1px solid #1e293b; }
+  footer a { color: var(--acc); text-decoration: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1><a href="https://tools.highkingflower.com" target="_blank">BDS Toolbox</a></h1>
+  <p class="sub" data-i="sub"></p>
+</header>
+<input id="q" type="search" autofocus>
+<p id="count"></p>
+<ul id="list"></ul>
+<footer><span data-i="foot"></span> <a href="https://tools.highkingflower.com/pricing.html" target="_blank" data-i="pricing"></a></footer>
+<script src="popup.js"></script>
+</body>
+</html>

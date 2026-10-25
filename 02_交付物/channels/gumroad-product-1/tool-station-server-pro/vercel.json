@@ -1,0 +1,42 @@
+{
+  "crons": [],
+  "builds": [
+    { "src": "api/**/*.js", "use": "@vercel/node" },
+    { "src": "**", "use": "@vercel/static" }
+  ],
+  "rewrites": [
+    { "source": "/api/pay", "destination": "/api/alipay.js?r=pay" },
+    { "source": "/api/notify", "destination": "/api/alipay.js?r=notify" },
+    { "source": "/api/order", "destination": "/api/alipay.js?r=order" },
+    { "source": "/api/entitle", "destination": "/api/alipay.js?r=entitle" },
+    { "source": "/api/paid", "destination": "/api/alipay.js?r=paid" },
+    { "source": "/api/config", "destination": "/api/alipay.js?r=config" },
+    { "source": "/api/health", "destination": "/api/alipay.js?r=health" },
+    { "source": "/api/verify", "destination": "/api/alipay.js?r=verify" },
+    { "source": "/api/aliq", "destination": "/api/alipay.js?r=aliq" },
+    { "source": "/api/arcade", "destination": "/api/alipay.js?r=arcade" },
+    { "source": "/api/autoops.js", "destination": "/api/autoops.js" },
+    { "source": "/api/rank", "destination": "/api/arcade-extra.js" },
+    { "source": "/api/reflect", "destination": "/api/arcade-extra.js" },
+    { "source": "/api/feedback", "destination": "/api/arcade-extra.js" },
+    { "source": "/api/alert", "destination": "/api/arcade-extra.js" },
+    { "source": "/api/pending", "destination": "/api/arcade-extra.js" },
+    { "source": "/paid.html", "destination": "/paid.html" },
+    { "source": "/api/subwall", "destination": "/api/alipay.js?r=subwall" },
+    { "source": "/api/subwall/:path*", "destination": "/api/alipay.js?r=subwall&action=:path*" },
+    { "source": "/api/morning-youth", "destination": "/api/alipay.js?r=morning-youth" },
+    { "source": "/api/morning-youth/:path*", "destination": "/api/alipay.js?r=morning-youth&__path=morning-youth/:path*" },
+    { "source": "/api/commission", "destination": "/api/alipay.js?r=commission" },
+    { "source": "/api/commission/:path*", "destination": "/api/alipay.js?r=commission&action=:path*" },
+    { "source": "/api/stripe/checkout", "destination": "/api/alipay.js?r=stripe/checkout" },
+    { "source": "/api/stripe/webhook", "destination": "/api/alipay.js?r=stripe/webhook" },
+    { "source": "/api/track", "destination": "/api/track.js" },
+    { "source": "/api/wxpay/create", "destination": "/api/alipay.js?r=wxpay/create" },
+    { "source": "/api/wxpay/notify", "destination": "/api/alipay.js?r=wxpay/notify" },
+    { "source": "/api/paypal/order", "destination": "/api/paypal/order.js" },
+    { "source": "/api/paypal/capture", "destination": "/api/paypal/capture.js" },
+    { "source": "/api/paypal/status", "destination": "/api/paypal/status.js" },
+    { "source": "/pay/return", "destination": "/api/pay/return.js" },
+    { "source": "/pay/cancel", "destination": "/api/pay/cancel.js" }
+  ]
+}

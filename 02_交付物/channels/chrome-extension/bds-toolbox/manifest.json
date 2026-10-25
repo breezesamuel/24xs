@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "BDS Toolbox — 508 AI micro-calculators",
+  "version": "1.0.0",
+  "description": "Instant answers for everyday pains: exam scoring, resume trimming, layover budgets, mortgage math. 508 micro-calculators, five languages. Free 10 uses per tool.",
+  "permissions": [],
+  "host_permissions": ["https://tools.highkingflower.com/*"],
+  "action": { "default_popup": "popup.html" },
+  "icons": { "128": "icons/icon128.png" }
+}
