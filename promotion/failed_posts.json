@@ -1,40 +1,145 @@
 {
   "posts": [
     {
-      "file": "x-ai-arcade.md",
-      "channel": "x",
-      "error": "this._getTargets is not a function",
-      "at": "2026-10-11T13:50:27.857Z",
-      "attempts": 1
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T05:02:20.174Z",
+      "attempts": 13
     },
     {
       "file": "hn-ai-arcade.md",
       "channel": "hackernews",
-      "error": "this._getTargets is not a function",
-      "at": "2026-10-11T13:52:36.691Z",
-      "attempts": 1
-    },
-    {
-      "file": "xiaohongshu-ai-arcade.md",
-      "channel": "xiaohongshu",
-      "error": "Uncaught",
-      "at": "2026-10-13T07:42:32.547Z",
-      "attempts": 1
-    },
-    {
-      "file": "xiaohongshu-ai-arcade.md",
-      "channel": "xiaohongshu",
-      "error": "Uncaught",
-      "at": "2026-10-13T07:50:19.465Z",
-      "attempts": 2
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T05:32:20.463Z",
+      "attempts": 14
     },
     {
       "file": "hn-ai-arcade.md",
       "channel": "hackernews",
-      "error": "Element not found: [name=\"title\"]",
-      "at": "2026-10-13T09:15:00.790Z",
-      "attempts": 2
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T06:02:23.203Z",
+      "attempts": 15
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T06:32:21.122Z",
+      "attempts": 16
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T07:02:20.818Z",
+      "attempts": 17
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T07:32:20.624Z",
+      "attempts": 18
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T08:02:20.221Z",
+      "attempts": 19
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T08:32:20.875Z",
+      "attempts": 19
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T09:02:20.295Z",
+      "attempts": 20
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T09:32:20.925Z",
+      "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T10:40:56.927Z",
+      "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T11:02:26.886Z",
+      "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T11:32:23.836Z",
+      "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T12:02:21.327Z",
+      "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T12:32:20.398Z",
+      "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T13:02:21.807Z",
+      "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-26T13:32:20.368Z",
+      "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-27T00:56:04.906Z",
+      "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-27T01:02:24.837Z",
+      "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-10-27T01:04:11.503Z",
+      "attempts": 21
     }
   ],
-  "updated": "2026-10-13T09:15:00.806Z"
+  "updated": "2026-10-27T01:04:11.508Z"
 }

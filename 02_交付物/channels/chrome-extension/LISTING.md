@@ -11,7 +11,7 @@
 - **Name**: BDS Toolbox — 508 AI micro-calculators
 - **Short desc**: Instant answers for everyday pains. 508 micro-calculators, five languages, free 10 uses per tool.
 - **Category**: Productivity → Tools
-- **Screenshots TODO**: popup 搜索截图 + 结果页截图（可用 Edge headless 对插件页截图生成，我下轮补）
+- **Screenshots**: 插件需在浏览器内截图（popup 1280x800 规范）——上架时用 Edge 打开 bds-toolbox 目录加载后截 2 张（popup 空态/搜索态），素材齐后 5 分钟可交
 - **Privacy tab**: 单一用途声明（本地搜索+跳转自家站点），不收集任何用户数据（manifest 零权限是最强隐私背书）
 
 **价值逻辑**：插件商店是自带搜索流量的分发渠道；每份安装都是进入 5775 工具站的入口，

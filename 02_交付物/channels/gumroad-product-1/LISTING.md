@@ -27,4 +27,5 @@ FAQ:
 - Can I sell access my way? Yes — the paywall exposes 3 functions; bring your own backend.
 - Updates? 12 months of generator updates included.
 
-**Cover image TODO**: 站点首页截图 + 徽标（自动化可生成）
+**Cover image**: cover-1280x720.png（已生成）
+**Gallery**: screenshots/home.png · agents-api.png · elder.png · arcade.png（真实站点截图，2026-10-26）
