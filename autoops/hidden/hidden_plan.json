@@ -1,5 +1,5 @@
 {
-  "ts": "2026-10-27T22:30:40.822Z",
+  "ts": "2026-10-28T01:37:04.732Z",
   "mode": "full_autonomous_hidden",
   "focus": "跟进 20 笔未支付订单",
   "tasks": [
@@ -14,7 +14,7 @@
       "id": "HB4",
       "name": "外呼 10 个 hot 线索",
       "pri": 88,
-      "why": "hot=83 warm=630 cold=101",
+      "why": "hot=83 warm=630 cold=102",
       "auto": true
     },
     {
@@ -28,7 +28,7 @@
       "id": "HB2",
       "name": "监控 Arcade 活跃与留存",
       "pri": 80,
-      "why": "用户 7，余额 0 分钟",
+      "why": "用户 8，余额 0 分钟",
       "auto": true
     },
     {
@@ -49,7 +49,7 @@
     "leads": {
       "hot": 83,
       "warm": 630,
-      "cold": 101,
+      "cold": 102,
       "none": 0
     },
     "promos": {
@@ -57,7 +57,7 @@
       "pending": 0,
       "cdp_known": null
     },
-    "arcade_users": 7,
+    "arcade_users": 8,
     "ai_key": true
   }
 }
