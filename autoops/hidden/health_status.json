@@ -1,7 +1,7 @@
 {
-  "at": "2026-10-28T07:27:56.938Z",
-  "overall": "degraded",
-  "exit_code": 0,
+  "at": "2026-10-28T14:20:03.069Z",
+  "overall": "critical",
+  "exit_code": 1,
   "checks": {
     "heartbeat": {
       "ok": true,
@@ -9,15 +9,9 @@
       "note": null
     },
     "storefront": {
-      "ok": true,
-      "env": {
-        "app": true,
-        "priv": true,
-        "pub": true,
-        "supabase": false,
-        "kv": true
-      },
-      "http": null,
+      "ok": false,
+      "env": null,
+      "http": 500,
       "error": null
     },
     "conversion": {
@@ -38,16 +32,21 @@
       "missing": []
     },
     "alert_channel": {
-      "ok": true,
-      "channel": "smtp",
+      "ok": false,
+      "channel": "unknown",
       "error": null
     }
   },
-  "critical": [],
+  "critical": [
+    "storefront_unhealthy_or_unready"
+  ],
   "degraded": [
-    "zero_paid_streak"
+    "zero_paid_streak",
+    "alert_channel:unknown"
   ],
   "active_failures": [
-    "zero_paid_streak"
+    "zero_paid_streak",
+    "smtp_broken",
+    "storefront_down"
   ]
 }

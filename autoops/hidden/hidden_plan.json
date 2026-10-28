@@ -1,13 +1,13 @@
 {
-  "ts": "2026-10-28T07:28:00.010Z",
+  "ts": "2026-10-28T14:20:03.320Z",
   "mode": "full_autonomous_hidden",
-  "focus": "跟进 20 笔未支付订单",
+  "focus": "等待真实首单",
   "tasks": [
     {
       "id": "HB1",
-      "name": "跟进 20 笔未支付订单",
-      "pri": 95,
-      "why": "漏斗:20 单 / 0 已付",
+      "name": "等待真实首单",
+      "pri": 100,
+      "why": "收银台尚无真实订单，优先获客",
       "auto": true
     },
     {
@@ -42,9 +42,9 @@
   "snapshot": {
     "revenue_cny": 0,
     "orders": {
-      "total": 20,
+      "total": 0,
       "paid": 0,
-      "unpaid": 20
+      "unpaid": 0
     },
     "leads": {
       "hot": 84,
