@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-29T16:20:57.063Z",
+  "at": "2026-10-29T21:19:28.825Z",
   "overall": "critical",
   "exit_code": 1,
   "checks": {
@@ -46,7 +46,7 @@
   ],
   "active_failures": [
     "zero_paid_streak",
-    "smtp_broken",
-    "storefront_down"
+    "storefront_down",
+    "smtp_broken"
   ]
 }
