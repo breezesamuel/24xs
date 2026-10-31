@@ -7,10 +7,10 @@
     "recovered_at": "2026-10-12T01:53:48.809Z"
   },
   "zero_paid_streak": {
-    "count": 134,
+    "count": 135,
     "active": true,
-    "last_fail_at": "2026-10-30T23:07:39.653Z",
-    "last_escalated_at": "2026-10-30T23:07:39.874Z"
+    "last_fail_at": "2026-10-31T02:23:28.369Z",
+    "last_escalated_at": "2026-10-31T02:23:28.641Z"
   },
   "promo_queue_stuck": {
     "count": 0,
@@ -20,10 +20,10 @@
     "recovered_at": "2026-10-12T11:32:51.466Z"
   },
   "smtp_broken": {
-    "count": 12,
+    "count": 13,
     "active": true,
-    "last_fail_at": "2026-10-30T23:07:40.095Z",
-    "last_escalated_at": "2026-10-30T23:07:40.318Z"
+    "last_fail_at": "2026-10-31T02:23:28.906Z",
+    "last_escalated_at": "2026-10-31T02:23:29.185Z"
   },
   "stale_heartbeat": {
     "count": 0,
@@ -33,9 +33,9 @@
     "recovered_at": "2026-10-12T11:32:53.447Z"
   },
   "storefront_down": {
-    "count": 12,
+    "count": 13,
     "active": true,
-    "last_fail_at": "2026-10-30T23:07:39.874Z",
-    "last_escalated_at": "2026-10-30T23:07:40.095Z"
+    "last_fail_at": "2026-10-31T02:23:28.641Z",
+    "last_escalated_at": "2026-10-31T02:23:28.906Z"
   }
 }
