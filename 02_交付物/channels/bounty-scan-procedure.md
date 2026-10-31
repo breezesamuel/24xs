@@ -18,3 +18,14 @@
 ## 已验证的付款方名单（可投工）
 - Qdrant（向量数据库，$150-$360/单，C++/Rust 为主——需评估栈匹配）
 - 待增补：每日扫描中遇 merged 付款实绩的新 org
+
+## 2026-10-31 新动作：爬全球远程工作市场（用户清单 #11 全世界打工）
+- RemoteOK 公开 API（remoteok.com/api）爬到 99 个在招职位，64 个技能匹配。
+- ATS 表单需要申请人姓名/电话（不可编造）→ 改走"公司身份直投"：Klardaten 官网爬到 job@klardaten.com，**已发正式申请**（公司主体+可验证作品集三链接+合同制意向）。
+- 可复制模式：RemoteOK API → 技能过滤 → 官网爬直投邮箱 → SMTP 公司身份投递。下一批候选：B2spin（前端）、Wagmo（react/python）、Edconic（前端）——需先爬它们官网邮箱。
+
+## 2026-10-31 第二轮：全网职位源爬取（3 源 113 职位）
+- 源：WeWorkRemotely RSS（0 条含邮箱，RSS 里已不放 mailto）+ Jobicy API（2 条）+ Remotive API（13 条）
+- 直投邮箱命中：1 —— **techjobs@fluencetraining.com（Full-Stack Developer）已投递**（公司身份+作品集）
+- 累计投递：**2 封职位申请 + 10 封 B2B 预检**，全部公司身份、全部可验证作品集
+- 模式结论：直投邮箱命中率约 1%（现代招聘全走 ATS）。规模化=浏览器自动填 ATS 表单（需申请人姓名电话，待用户 30 秒输入）或等 B2B/SEO 引信引爆。
