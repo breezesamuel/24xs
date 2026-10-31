@@ -771,3 +771,475 @@ npm error A complete log of this run can be found in: C:\Windows\Temp\npmcache-r
 ug-0.log
 
 [2026-10-27 09:01:32Z] still limited or failed; task remains for next trigger
+[2026-10-27 10:00:51Z] retry start
+node.exe : npm error code ECOMPROMISED
+ËùÔÚÎ»ÖÃ ÐÐ:1 ×Ö·û: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm error code ECOMPROMISED:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm error Lock compromised
+npm error A complete log of this run can be found in: C:\Windows\Temp\npmcache-retry\_logs\2026-10-27T02_00_58_472Z-deb
+ug-0.log
+
+[2026-10-27 10:03:34Z] still limited or failed; task remains for next trigger
+[2026-10-27 11:00:18Z] retry start
+node.exe : npm error code ETARGET
+ËùÔÚÎ»ÖÃ ÐÐ:1 ×Ö·û: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm error code ETARGET:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm error notarget No matching version found for @vercel/express@23.0.0.
+npm error notarget In most cases you or one of your dependencies are requesting
+npm error notarget a package version that doesn't exist.
+npm error A complete log of this run can be found in: C:\Windows\Temp\npmcache-retry\_logs\2026-10-27T03_00_20_954Z-deb
+ug-0.log
+
+[2026-10-27 11:00:48Z] still limited or failed; task remains for next trigger
+[2026-10-27 12:00:10Z] retry start
+node.exe : npm error code ETARGET
+ËùÔÚÎ»ÖÃ ÐÐ:1 ×Ö·û: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm error code ETARGET:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm error notarget No matching version found for @vercel/express@23.0.0.
+npm error notarget In most cases you or one of your dependencies are requesting
+npm error notarget a package version that doesn't exist.
+npm error A complete log of this run can be found in: C:\Windows\Temp\npmcache-retry\_logs\2026-10-27T04_00_13_547Z-deb
+ug-0.log
+
+[2026-10-27 12:00:42Z] still limited or failed; task remains for next trigger
+[2026-10-27 13:00:07Z] retry start
+node.exe : npm error code ETARGET
+ËùÔÚÎ»ÖÃ ÐÐ:1 ×Ö·û: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm error code ETARGET:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm error notarget No matching version found for @vercel/express@23.0.0.
+npm error notarget In most cases you or one of your dependencies are requesting
+npm error notarget a package version that doesn't exist.
+npm error A complete log of this run can be found in: C:\Windows\Temp\npmcache-retry\_logs\2026-10-27T05_00_09_923Z-deb
+ug-0.log
+
+[2026-10-27 13:00:30Z] still limited or failed; task remains for next trigger
+[2026-10-27 14:00:06Z] retry start
+node.exe : Vercel CLI 65.4.0 (Node.js 25.2.1)
+ËùÔÚÎ»ÖÃ ÐÐ:1 ×Ö·û: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Vercel CLI 65.4.0 (Node.js 25.2.1):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Deploying bingdashan-pain-tools
+Uploading [--------------------] (0.0B/5.6MB)
+Uploading [=====---------------] (1.4MB/5.6MB)
+Uploading [==========----------] (2.8MB/5.6MB)
+Uploading [===============-----] (4.2MB/5.6MB)
+Uploading [====================] (5.6MB/5.6MB)
+  Inspect         https://vercel.com/solmount/bingdashan-pain-tools/GcGzZD5B48uuvpkATxtjepUVbZ5Q
+  Production      https://bingdashan-pain-tools-8ia2bbgci-solmount.vercel.app
+Buildingâ€?Buildingâ€?Running build in Washington, D.C., USA (East) â€?iad1
+Build machine configuration: 2 cores, 8 GB
+Retrieving list of deployment files...
+Concatenating deployment archive files...
+Extracting deployment files...
+Extracted 11825 deployment files...
+Restored build cache from previous deployment (DxqAcpVv72oTPeHSjqxcKREfpCVb)
+Running "vercel build"
+Vercel CLI 65.1.0
+WARNING! Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Projec
+t Settings will not apply. Learn More: https://vercel.link/unused-build-settings
+Installing dependencies...
+npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` 
+for supported config options.
+up to date in 729ms
+25 packages are looking for funding
+run `npm fund` for details
+Warning: Node.js functions are compiled from ESM to CommonJS. If this is not intended, add "type": "module" to your pac
+kage.json file.
+Compiling "index.js" from ESM to CommonJS...
+Compiling "cancel.js" from ESM to CommonJS...
+Compiling "return.js" from ESM to CommonJS...
+Compiling "capture.js" from ESM to CommonJS...
+Compiling "order.js" from ESM to CommonJS...
+Compiling "status.js" from ESM to CommonJS...
+[2K[1A[2K[G  Production      https://bingdashan-pain-tools-8ia2bbgci-solmount.vercel.app
+Completingâ€?â–?Aliased         https://tools.highkingflower.com
+
+âœ?Ready in 13m
+Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Setting
+s will not apply. Learn More: https://vercel.link/unused-build-settings
+
+Next steps:
+- Automatically deploy changes on every push by connecting Git:
+  vercel git connect
+- Check the production response:
+  vercel curl https://tools.highkingflower.com
+- View build logs:
+  vercel inspect bingdashan-pain-tools-8ia2bbgci-solmount.vercel.app --logs
+- Create a new deployment from the same source:
+  vercel redeploy bingdashan-pain-tools-8ia2bbgci-solmount.vercel.app
+https://bingdashan-pain-tools-8ia2bbgci-solmount.vercel.app
+
+[2026-10-27 14:14:08Z] DEPLOY OK
+health: {"ok":true,"env":{"app":true,"priv":true,"pub":true,"supabase":false,"kv":true},"store":"kv"}
+aliq: {"ok":true,"probe":"alipay.trade.query","out_trade_no":"BDS_ALIQ_PROBE_700149","mode":"plain","aes_configured":false,"result":{"http":200,"code":"40004","msg":"Business Failed","sub":"ACQ.TRADE_NOT_EXIST","paid":false,"detail":{"msg":"Business Failed","code":"40004","out_trade_no":"BDS_ALIQ_PROBE_700149","sub_msg":"?????????","sub_code":"ACQ.TRADE_NOT_EXIST","receipt_amount":"0.00","point_amount":"0.00","buyer_pay_amount":"0.00","invoice_amount":"0.00"},"resp_encrypt":false},"sig_fp":"bc20fcb644a1e51c4e9dac21d188fe05"}
+wxpay: {"ok":false,"error":"ÉÌ»§ºÅmch_idÓëappid²»Æ¥Åä"}
+indexnow: / ok
+indexnow: /pricing.html ok
+indexnow: /arcade/ ok
+indexnow: /subwall.html ok
+indexnow: /paid.html ok
+indexnow key: d75aef6c8fd0b5987780761a6d97f3a3
+[2026-10-27 15:00:06Z] retry start
+node.exe : Vercel CLI 65.4.0 (Node.js 25.2.1)
+ËùÔÚÎ»ÖÃ ÐÐ:1 ×Ö·û: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Vercel CLI 65.4.0 (Node.js 25.2.1):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Deploying bingdashan-pain-tools
+Uploading [--------------------] (0.0B/5.6MB)
+Uploading [=====---------------] (1.4MB/5.6MB)
+Uploading [==========----------] (2.8MB/5.6MB)
+Uploading [===============-----] (4.2MB/5.6MB)
+Uploading [====================] (5.6MB/5.6MB)
+  Inspect         https://vercel.com/solmount/bingdashan-pain-tools/4LGaJRwVRGhtHUqS9wLGkiXcrwWu
+  Production      https://bingdashan-pain-tools-31qx5fug0-solmount.vercel.app
+Buildingâ€?Buildingâ€?Running build in Washington, D.C., USA (East) â€?iad1
+Build machine configuration: 2 cores, 8 GB
+Retrieving list of deployment files...
+Concatenating deployment archive files...
+Extracting deployment files...
+Extracted 11825 deployment files...
+Restored build cache from previous deployment (GcGzZD5B48uuvpkATxtjepUVbZ5Q)
+Running "vercel build"
+Vercel CLI 65.1.0
+WARNING! Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Projec
+t Settings will not apply. Learn More: https://vercel.link/unused-build-settings
+Installing dependencies...
+npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` 
+for supported config options.
+up to date in 711ms
+25 packages are looking for funding
+run `npm fund` for details
+Warning: Node.js functions are compiled from ESM to CommonJS. If this is not intended, add "type": "module" to your pac
+kage.json file.
+Compiling "index.js" from ESM to CommonJS...
+Compiling "cancel.js" from ESM to CommonJS...
+Compiling "return.js" from ESM to CommonJS...
+Compiling "capture.js" from ESM to CommonJS...
+Compiling "order.js" from ESM to CommonJS...
+Compiling "status.js" from ESM to CommonJS...
+[2K[1A[2K[G  Production      https://bingdashan-pain-tools-31qx5fug0-solmount.vercel.app
+Completingâ€?â–?Aliased         https://tools.highkingflower.com
+
+âœ?Ready in 11m
+Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Setting
+s will not apply. Learn More: https://vercel.link/unused-build-settings
+
+Next steps:
+- Automatically deploy changes on every push by connecting Git:
+  vercel git connect
+- Check the production response:
+  vercel curl https://tools.highkingflower.com
+- View build logs:
+  vercel inspect bingdashan-pain-tools-31qx5fug0-solmount.vercel.app --logs
+- Create a new deployment from the same source:
+  vercel redeploy bingdashan-pain-tools-31qx5fug0-solmount.vercel.app
+https://bingdashan-pain-tools-31qx5fug0-solmount.vercel.app
+
+[2026-10-27 15:11:38Z] DEPLOY OK
+health: {"ok":true,"env":{"app":true,"priv":true,"pub":true,"supabase":false,"kv":true},"store":"kv"}
+aliq: {"ok":true,"probe":"alipay.trade.query","out_trade_no":"BDS_ALIQ_PROBE_150396","mode":"plain","aes_configured":false,"result":{"http":200,"code":"40004","msg":"Business Failed","sub":"ACQ.TRADE_NOT_EXIST","paid":false,"detail":{"msg":"Business Failed","code":"40004","out_trade_no":"BDS_ALIQ_PROBE_150396","sub_msg":"?????????","sub_code":"ACQ.TRADE_NOT_EXIST","receipt_amount":"0.00","point_amount":"0.00","buyer_pay_amount":"0.00","invoice_amount":"0.00"},"resp_encrypt":false},"sig_fp":"bc20fcb644a1e51c4e9dac21d188fe05"}
+wxpay: {"ok":false,"error":"ÉÌ»§ºÅmch_idÓëappid²»Æ¥Åä"}
+indexnow: / ok
+indexnow: /pricing.html ok
+indexnow: /arcade/ ok
+indexnow: /subwall.html ok
+indexnow: /paid.html ok
+indexnow key: d75aef6c8fd0b5987780761a6d97f3a3
+[2026-10-27 16:00:09Z] retry start
+node.exe : Vercel CLI 65.4.0 (Node.js 25.2.1)
+ËùÔÚÎ»ÖÃ ÐÐ:1 ×Ö·û: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Vercel CLI 65.4.0 (Node.js 25.2.1):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Deploying bingdashan-pain-tools
+Uploading [--------------------] (0.0B/5.5MB)
+Uploading [=====---------------] (1.4MB/5.5MB)
+Uploading [==========----------] (2.8MB/5.5MB)
+Uploading [===============-----] (4.1MB/5.5MB)
+Uploading [====================] (5.5MB/5.5MB)
+  Inspect         https://vercel.com/solmount/bingdashan-pain-tools/5f13n1HMkpndyW1xWaVakRTLUngP
+  Production      https://bingdashan-pain-tools-93trpisie-solmount.vercel.app
+Buildingâ€?Buildingâ€?Running build in Washington, D.C., USA (East) â€?iad1
+Build machine configuration: 2 cores, 8 GB
+Retrieving list of deployment files...
+Concatenating deployment archive files...
+Extracting deployment files...
+Extracted 11825 deployment files...
+Restored build cache from previous deployment (4LGaJRwVRGhtHUqS9wLGkiXcrwWu)
+Running "vercel build"
+Vercel CLI 65.1.0
+WARNING! Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Projec
+t Settings will not apply. Learn More: https://vercel.link/unused-build-settings
+Installing dependencies...
+npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` 
+for supported config options.
+up to date in 623ms
+25 packages are looking for funding
+run `npm fund` for details
+Warning: Node.js functions are compiled from ESM to CommonJS. If this is not intended, add "type": "module" to your pac
+kage.json file.
+Compiling "index.js" from ESM to CommonJS...
+Compiling "cancel.js" from ESM to CommonJS...
+Compiling "return.js" from ESM to CommonJS...
+Compiling "capture.js" from ESM to CommonJS...
+Compiling "order.js" from ESM to CommonJS...
+Compiling "status.js" from ESM to CommonJS...
+[2K[1A[2K[G  Production      https://bingdashan-pain-tools-93trpisie-solmount.vercel.app
+Completingâ€?â–?Aliased         https://tools.highkingflower.com
+
+âœ?Ready in 12m
+Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Setting
+s will not apply. Learn More: https://vercel.link/unused-build-settings
+
+Next steps:
+- Automatically deploy changes on every push by connecting Git:
+  vercel git connect
+- Check the production response:
+  vercel curl https://tools.highkingflower.com
+- View build logs:
+  vercel inspect bingdashan-pain-tools-93trpisie-solmount.vercel.app --logs
+- Create a new deployment from the same source:
+  vercel redeploy bingdashan-pain-tools-93trpisie-solmount.vercel.app
+https://bingdashan-pain-tools-93trpisie-solmount.vercel.app
+
+[2026-10-27 16:12:54Z] DEPLOY OK
+health: {"ok":true,"env":{"app":true,"priv":true,"pub":true,"supabase":false,"kv":true},"store":"kv"}
+aliq: {"ok":true,"probe":"alipay.trade.query","out_trade_no":"BDS_ALIQ_PROBE_828798","mode":"plain","aes_configured":false,"result":{"http":200,"code":"40004","msg":"Business Failed","sub":"ACQ.TRADE_NOT_EXIST","paid":false,"detail":{"msg":"Business Failed","code":"40004","out_trade_no":"BDS_ALIQ_PROBE_828798","sub_msg":"?????????","sub_code":"ACQ.TRADE_NOT_EXIST","receipt_amount":"0.00","point_amount":"0.00","buyer_pay_amount":"0.00","invoice_amount":"0.00"},"resp_encrypt":false},"sig_fp":"bc20fcb644a1e51c4e9dac21d188fe05"}
+wxpay: {"ok":false,"error":"ÉÌ»§ºÅmch_idÓëappid²»Æ¥Åä"}
+indexnow: / ok
+indexnow: /pricing.html ok
+indexnow: /arcade/ ok
+indexnow: /subwall.html ok
+indexnow: /paid.html ok
+indexnow key: d75aef6c8fd0b5987780761a6d97f3a3
+[2026-10-27 17:00:07Z] retry start
+node.exe : Vercel CLI 65.4.0 (Node.js 25.2.1)
+ËùÔÚÎ»ÖÃ ÐÐ:1 ×Ö·û: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Vercel CLI 65.4.0 (Node.js 25.2.1):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Deploying bingdashan-pain-tools
+Uploading [--------------------] (0.0B/5.6MB)
+Uploading [=====---------------] (1.4MB/5.6MB)
+Uploading [==========----------] (2.8MB/5.6MB)
+Uploading [===============-----] (4.2MB/5.6MB)
+Uploading [====================] (5.6MB/5.6MB)
+  Inspect         https://vercel.com/solmount/bingdashan-pain-tools/C2oxWNg3q4ekgN2V8GyDMQbWrx2h
+  Production      https://bingdashan-pain-tools-ivspqzlgh-solmount.vercel.app
+Buildingâ€?Buildingâ€?Running build in Washington, D.C., USA (East) â€?iad1
+Build machine configuration: 2 cores, 8 GB
+Retrieving list of deployment files...
+Concatenating deployment archive files...
+Extracting deployment files...
+Extracted 11825 deployment files...
+Restored build cache from previous deployment (5f13n1HMkpndyW1xWaVakRTLUngP)
+Running "vercel build"
+Vercel CLI 65.1.0
+WARNING! Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Projec
+t Settings will not apply. Learn More: https://vercel.link/unused-build-settings
+Installing dependencies...
+npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` 
+for supported config options.
+up to date in 390ms
+25 packages are looking for funding
+run `npm fund` for details
+Warning: Node.js functions are compiled from ESM to CommonJS. If this is not intended, add "type": "module" to your pac
+kage.json file.
+Compiling "index.js" from ESM to CommonJS...
+Compiling "cancel.js" from ESM to CommonJS...
+Compiling "return.js" from ESM to CommonJS...
+Compiling "capture.js" from ESM to CommonJS...
+Compiling "order.js" from ESM to CommonJS...
+Compiling "status.js" from ESM to CommonJS...
+[2K[1A[2K[G  Production      https://bingdashan-pain-tools-ivspqzlgh-solmount.vercel.app
+Completingâ€?â–?Aliased         https://tools.highkingflower.com
+
+âœ?Ready in 10m
+Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Setting
+s will not apply. Learn More: https://vercel.link/unused-build-settings
+
+Next steps:
+- Automatically deploy changes on every push by connecting Git:
+  vercel git connect
+- Check the production response:
+  vercel curl https://tools.highkingflower.com
+- View build logs:
+  vercel inspect bingdashan-pain-tools-ivspqzlgh-solmount.vercel.app --logs
+- Create a new deployment from the same source:
+  vercel redeploy bingdashan-pain-tools-ivspqzlgh-solmount.vercel.app
+https://bingdashan-pain-tools-ivspqzlgh-solmount.vercel.app
+
+[2026-10-27 17:10:53Z] DEPLOY OK
+health: {"ok":true,"env":{"app":true,"priv":true,"pub":true,"supabase":false,"kv":true},"store":"kv"}
+aliq: {"ok":true,"probe":"alipay.trade.query","out_trade_no":"BDS_ALIQ_PROBE_309645","mode":"plain","aes_configured":false,"result":{"http":200,"code":"40004","msg":"Business Failed","sub":"ACQ.TRADE_NOT_EXIST","paid":false,"detail":{"msg":"Business Failed","code":"40004","out_trade_no":"BDS_ALIQ_PROBE_309645","sub_msg":"?????????","sub_code":"ACQ.TRADE_NOT_EXIST","receipt_amount":"0.00","point_amount":"0.00","buyer_pay_amount":"0.00","invoice_amount":"0.00"},"resp_encrypt":false},"sig_fp":"bc20fcb644a1e51c4e9dac21d188fe05"}
+wxpay: {"ok":false,"error":"ÉÌ»§ºÅmch_idÓëappid²»Æ¥Åä"}
+indexnow: / ok
+indexnow: /pricing.html ok
+indexnow: /arcade/ ok
+indexnow: /subwall.html ok
+indexnow: /paid.html ok
+indexnow key: d75aef6c8fd0b5987780761a6d97f3a3
+[2026-10-27 19:00:08Z] retry start
+node.exe : Vercel CLI 65.4.0 (Node.js 25.2.1)
+ËùÔÚÎ»ÖÃ ÐÐ:1 ×Ö·û: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Vercel CLI 65.4.0 (Node.js 25.2.1):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Deploying bingdashan-pain-tools
+Uploading [--------------------] (0.0B/5.6MB)
+Uploading [=====---------------] (1.4MB/5.6MB)
+Uploading [==========----------] (2.8MB/5.6MB)
+Uploading [===============-----] (4.2MB/5.6MB)
+Uploading [====================] (5.6MB/5.6MB)
+  Inspect         https://vercel.com/solmount/bingdashan-pain-tools/FJLU1tbxA7xwCj54Ngmd3x9qg1UU
+  Production      https://bingdashan-pain-tools-lmxfiotuv-solmount.vercel.app
+Buildingâ€?Buildingâ€?Running build in Washington, D.C., USA (East) â€?iad1
+Build machine configuration: 2 cores, 8 GB
+Retrieving list of deployment files...
+Concatenating deployment archive files...
+Extracting deployment files...
+Extracted 11825 deployment files...
+Restored build cache from previous deployment (C2oxWNg3q4ekgN2V8GyDMQbWrx2h)
+Running "vercel build"
+Vercel CLI 65.1.0
+WARNING! Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Projec
+t Settings will not apply. Learn More: https://vercel.link/unused-build-settings
+Installing dependencies...
+npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` 
+for supported config options.
+up to date in 1s
+25 packages are looking for funding
+run `npm fund` for details
+Warning: Node.js functions are compiled from ESM to CommonJS. If this is not intended, add "type": "module" to your pac
+kage.json file.
+Compiling "index.js" from ESM to CommonJS...
+Compiling "cancel.js" from ESM to CommonJS...
+Compiling "return.js" from ESM to CommonJS...
+Compiling "capture.js" from ESM to CommonJS...
+Compiling "order.js" from ESM to CommonJS...
+Compiling "status.js" from ESM to CommonJS...
+[2K[1A[2K[G  Production      https://bingdashan-pain-tools-lmxfiotuv-solmount.vercel.app
+Completingâ€?â–?Aliased         https://tools.highkingflower.com
+
+âœ?Ready in 9m
+Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Setting
+s will not apply. Learn More: https://vercel.link/unused-build-settings
+
+Next steps:
+- Automatically deploy changes on every push by connecting Git:
+  vercel git connect
+- Check the production response:
+  vercel curl https://tools.highkingflower.com
+- View build logs:
+  vercel inspect bingdashan-pain-tools-lmxfiotuv-solmount.vercel.app --logs
+- Create a new deployment from the same source:
+  vercel redeploy bingdashan-pain-tools-lmxfiotuv-solmount.vercel.app
+https://bingdashan-pain-tools-lmxfiotuv-solmount.vercel.app
+
+[2026-10-27 19:09:16Z] DEPLOY OK
+health: {"ok":true,"env":{"app":true,"priv":true,"pub":true,"supabase":false,"kv":true},"store":"kv"}
+aliq: {"ok":true,"probe":"alipay.trade.query","out_trade_no":"BDS_ALIQ_PROBE_409304","mode":"plain","aes_configured":false,"result":{"http":200,"code":"40004","msg":"Business Failed","sub":"ACQ.TRADE_NOT_EXIST","paid":false,"detail":{"msg":"Business Failed","code":"40004","out_trade_no":"BDS_ALIQ_PROBE_409304","sub_msg":"?????????","sub_code":"ACQ.TRADE_NOT_EXIST","receipt_amount":"0.00","point_amount":"0.00","buyer_pay_amount":"0.00","invoice_amount":"0.00"},"resp_encrypt":false},"sig_fp":"bc20fcb644a1e51c4e9dac21d188fe05"}
+wxpay: {"ok":false,"error":"ÉÌ»§ºÅmch_idÓëappid²»Æ¥Åä"}
+indexnow: / ok
+indexnow: /pricing.html ok
+indexnow: /arcade/ ok
+indexnow: /subwall.html ok
+indexnow: /paid.html ok
+indexnow key: d75aef6c8fd0b5987780761a6d97f3a3
+[2026-10-27 20:00:26Z] retry start
+node.exe : Vercel CLI 65.4.0 (Node.js 25.2.1)
+ËùÔÚÎ»ÖÃ ÐÐ:1 ×Ö·û: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Vercel CLI 65.4.0 (Node.js 25.2.1):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Deploying bingdashan-pain-tools
+Uploading [--------------------] (0.0B/5.5MB)
+Uploading [=====---------------] (1.4MB/5.5MB)
+Uploading [==========----------] (2.8MB/5.5MB)
+Uploading [===============-----] (4.1MB/5.5MB)
+Uploading [====================] (5.5MB/5.5MB)
+  Inspect         https://vercel.com/solmount/bingdashan-pain-tools/EJtkB4HvXKAfN62554obTMaE5un5
+  Production      https://bingdashan-pain-tools-qxb5bctzq-solmount.vercel.app
+Buildingâ€?Buildingâ€?Running build in Washington, D.C., USA (East) â€?iad1
+Build machine configuration: 2 cores, 8 GB
+Retrieving list of deployment files...
+Concatenating deployment archive files...
+Extracting deployment files...
+Extracted 11825 deployment files...
+Restored build cache from previous deployment (FJLU1tbxA7xwCj54Ngmd3x9qg1UU)
+Running "vercel build"
+Vercel CLI 65.1.0
+WARNING! Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Projec
+t Settings will not apply. Learn More: https://vercel.link/unused-build-settings
+Installing dependencies...
+npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` 
+for supported config options.
+up to date in 386ms
+25 packages are looking for funding
+run `npm fund` for details
+Warning: Node.js functions are compiled from ESM to CommonJS. If this is not intended, add "type": "module" to your pac
+kage.json file.
+Compiling "index.js" from ESM to CommonJS...
+Compiling "cancel.js" from ESM to CommonJS...
+Compiling "return.js" from ESM to CommonJS...
+Compiling "capture.js" from ESM to CommonJS...
+Compiling "order.js" from ESM to CommonJS...
+Compiling "status.js" from ESM to CommonJS...
+[2K[1A[2K[G  Production      https://bingdashan-pain-tools-qxb5bctzq-solmount.vercel.app
+Completingâ€?â–?Aliased         https://tools.highkingflower.com
+
+âœ?Ready in 8m
+Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Setting
+s will not apply. Learn More: https://vercel.link/unused-build-settings
+
+Next steps:
+- Automatically deploy changes on every push by connecting Git:
+  vercel git connect
+- Check the production response:
+  vercel curl https://tools.highkingflower.com
+- View build logs:
+  vercel inspect bingdashan-pain-tools-qxb5bctzq-solmount.vercel.app --logs
+- Create a new deployment from the same source:
+  vercel redeploy bingdashan-pain-tools-qxb5bctzq-solmount.vercel.app
+https://bingdashan-pain-tools-qxb5bctzq-solmount.vercel.app
+
+[2026-10-27 20:09:12Z] DEPLOY OK
+health: {"ok":true,"env":{"app":true,"priv":true,"pub":true,"supabase":false,"kv":true},"store":"kv"}
+aliq: {"ok":true,"probe":"alipay.trade.query","out_trade_no":"BDS_ALIQ_PROBE_5858","mode":"plain","aes_configured":false,"result":{"http":200,"code":"40004","msg":"Business Failed","sub":"ACQ.TRADE_NOT_EXIST","paid":false,"detail":{"msg":"Business Failed","code":"40004","out_trade_no":"BDS_ALIQ_PROBE_5858","sub_msg":"?????????","sub_code":"ACQ.TRADE_NOT_EXIST","receipt_amount":"0.00","point_amount":"0.00","buyer_pay_amount":"0.00","invoice_amount":"0.00"},"resp_encrypt":false},"sig_fp":"bc20fcb644a1e51c4e9dac21d188fe05"}
+wxpay: {"ok":false,"error":"ÉÌ»§ºÅmch_idÓëappid²»Æ¥Åä"}
+indexnow: / ok
+indexnow: /pricing.html ok
+indexnow: /arcade/ ok
+indexnow: /subwall.html ok
+indexnow: /paid.html ok
+indexnow key: d75aef6c8fd0b5987780761a6d97f3a3
