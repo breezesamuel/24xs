@@ -1,20 +1,20 @@
 {
-  "ts": "2026-10-27T01:08:05.227Z",
+  "ts": "2026-10-31T02:23:29.327Z",
   "mode": "full_autonomous_hidden",
-  "focus": "跟进 20 笔未支付订单",
+  "focus": "等待真实首单",
   "tasks": [
     {
       "id": "HB1",
-      "name": "跟进 20 笔未支付订单",
-      "pri": 95,
-      "why": "漏斗:20 单 / 0 已付",
+      "name": "等待真实首单",
+      "pri": 100,
+      "why": "收银台尚无真实订单，优先获客",
       "auto": true
     },
     {
       "id": "HB4",
       "name": "外呼 10 个 hot 线索",
       "pri": 88,
-      "why": "hot=82 warm=628 cold=102",
+      "why": "hot=85 warm=640 cold=111",
       "auto": true
     },
     {
@@ -28,7 +28,7 @@
       "id": "HB2",
       "name": "监控 Arcade 活跃与留存",
       "pri": 80,
-      "why": "用户 7，余额 0 分钟",
+      "why": "用户 8，余额 0 分钟",
       "auto": true
     },
     {
@@ -42,14 +42,14 @@
   "snapshot": {
     "revenue_cny": 0,
     "orders": {
-      "total": 20,
+      "total": 0,
       "paid": 0,
-      "unpaid": 20
+      "unpaid": 0
     },
     "leads": {
-      "hot": 82,
-      "warm": 628,
-      "cold": 102,
+      "hot": 85,
+      "warm": 640,
+      "cold": 111,
       "none": 0
     },
     "promos": {
@@ -57,7 +57,7 @@
       "pending": 0,
       "cdp_known": null
     },
-    "arcade_users": 7,
+    "arcade_users": 8,
     "ai_key": true
   }
 }
