@@ -49,6 +49,12 @@ async function collectJobs() {
     const r = await fj('https://jobicy.com/api/v2/remote-jobs?count=50&tag=' + encodeURIComponent(tag));
     ((r && r.jobs) || []).forEach(x => jobs.push({ src: 'Jobicy', company: x.companyName, position: x.jobTitle, tags: x.jobTags || [], desc: (x.jobDescription || '').slice(0, 3000), url: x.url }));
   }
+  // V2EX 酷工作（中文远程岗位，公开 API）
+  const vx = await fj('https://www.v2ex.com/api/topics/show.json?node_name=jobs');
+  (Array.isArray(vx) ? vx : []).forEach(x => { if (x.title) jobs.push({ src: 'V2EX', company: 'v2ex:' + (x.member||{}).username, position: x.title, tags: ['china','remote'], desc: (x.content || '').slice(0, 3000), url: x.url }); });
+  // Himalayas 公开 API
+  const him = await fj('https://app.himalayas.app/jobs/api?limit=50');
+  ((him && him.jobs) || []).forEach(x => { if (x.title) jobs.push({ src: 'Himalayas', company: x.companyName, position: x.title, tags: x.tags || [], desc: (x.description || '').slice(0, 3000), url: x.url }); });
   // WorkingNomads
   const wn = await fj('https://www.workingnomads.com/api/exposed_jobs/');
   (Array.isArray(wn) ? wn : []).forEach(x => { if (x.title) jobs.push({ src: 'WNomads', company: x.company_name, position: x.title, tags: [x.category_name], desc: (x.description || '').slice(0, 3000), url: 'https://www.workingnomads.com/jobs/' + x.id }); });
