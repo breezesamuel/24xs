@@ -68,7 +68,16 @@ async function pullStats(){
   const secret = getSecret();
   if(!secret) return { ok:false, reason:'no_secret', deferred:true };
   const r = await fetchJSON(`${STOREFRONT}/api/autoops.js?a=stats&k=${encodeURIComponent(secret)}`);
-  if(r.status !== 200 || !r.json || !r.json.ok) return { ok:false, reason:`http_${r.status}`, deferred:true };
+  if(r.status !== 200 || !r.json || !r.json.ok){
+    // 拉取失败绝不静默：连续失败即告警（watchdog 邮件）——2026-10-31 教训：站点瘫 4 天无人知晓
+    const f=load(path.join(H,'stats_failures.jsonl'));
+    const streak=(f.length&&f[f.length-1].ok===false)?(f[f.length-1].streak||0)+1:1;
+    append(path.join(H,'stats_failures.jsonl'),{at:now(),ok:false,streak:streak,reason:`http_${r.status}`});
+    if(streak>=2){
+      try{ await alert('stats_pull_failed','[realops] 收银台指标拉取连续失败——站点可能已瘫','连续 '+streak+' 次拉取 /api/autoops.js 失败（最近 http_'+r.status+'）。函数层可能 500，立即检查部署与 nodeVersion。'); }catch(e){}
+    }
+    return { ok:false, reason:`http_${r.status}`, deferred:true };
+  }
   const s = r.json;
   append(METRICS, { at: now(), captured_at: s.at, store: s.store,
     orders: s.orders, arcade: { users: s.arcade.users, total_balance_minutes: s.arcade.total_balance_minutes, invite_links: s.arcade.invite_links },
