@@ -1,0 +1,54 @@
+================================
+📋 平台注册信息（复制粘贴用）
+================================
+
+【通用信息】
+邮箱：460123249@qq.com
+手机：15802178278
+公司：上海丙大山智能科技有限公司
+QQ SMTP授权码：namnbldayykicaji
+
+【Gumroad】gumroad.com/signup
+  Email: 460123249@qq.com
+  Password: 查看 C:\bingdashan\keys\platform-credentials.txt 中的 GUMROAD_PASS
+  产品1: Chinese Payment Integration Toolkit — $14.99
+  产品2: SEO Site Factory — $11.99
+  产品3: Elder-Friendly Web App Template — $8.99
+  产品4: BYOK AI Chat Frontend — $6.99
+  产品5: Dream Dictionary Generator — $7.99
+  上传文件: F:\2026\24xs\02_交付物\channels\gumroad-upload-kit\*.zip
+  描述模板: 同目录 STEP-BY-STEP.md 底部
+
+【RapidAPI】rapidapi.com/hub
+  用 GitHub 登录（breezesamuel 账号）
+  添加 API: Deterministic Agents
+  Base URL: https://bingdashanai.highkingflower.com/agents
+  OpenAPI: /agents/openapi.json（70 路径）
+  定价: Free $0 / Basic $5 / Pro $15 / Ultra $49
+
+【Chrome Web Store】chrome.google.com/webstore/devconsole
+  注册费: $5（一次性）
+  上传: F:\2026\24xs\02_交付物\channels\chrome-extension\bds-toolbox\ 目录
+  或直接上传 zip
+
+【微信支付 appid】pay.weixin.qq.com
+  路径: 账户中心 → AppID 账号管理
+  填入: C:\bingdashan\keys\provide-values.env 的 WECHAT_APPID=wxXXX
+
+【支付宝控制台】open.alipay.com
+  应用: 2021006197622702（已配置完毕，无需操作）
+
+【帮帮测】bangbangce.com
+  注册占卜师 → 挂单塔罗解读 ¥39-99
+
+【高人汇】gaoren.net
+  App → 我的 → 老师入驻 → 挂单 ¥50-100
+
+【云队友】duiyou360.com
+  技能服务 → 塔罗解读 → 挂单 ¥39-99
+
+【钱去哪了】
+  支付宝/微信 → 你的账户
+  Gumroad → PayPal 提现
+  RapidAPI → PayPal 月结
+  Chrome → Google AdSense
