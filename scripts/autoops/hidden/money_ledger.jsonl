@@ -1,0 +1,37 @@
+{"at":"2026-10-31T12:42:24.272Z","event":"crawl","scanned":175,"matched":60}
+{"at":"2026-10-31T12:42:57.611Z","event":"done","scanned":175,"matched":60,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T12:48:07.990Z","event":"crawl","scanned":175,"matched":60}
+{"at":"2026-10-31T12:48:38.381Z","event":"done","scanned":175,"matched":60,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T12:49:19.518Z","event":"crawl","scanned":138,"matched":50}
+{"at":"2026-10-31T12:49:51.844Z","event":"done","scanned":138,"matched":50,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T13:14:43.649Z","event":"crawl","scanned":175,"matched":60}
+{"at":"2026-10-31T13:15:15.828Z","event":"done","scanned":175,"matched":60,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T13:20:19.502Z","event":"crawl","scanned":175,"matched":60}
+{"at":"2026-10-31T13:20:52.999Z","event":"done","scanned":175,"matched":60,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T13:44:43.650Z","event":"crawl","scanned":138,"matched":50}
+{"at":"2026-10-31T13:45:16.993Z","event":"done","scanned":138,"matched":50,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T14:15:14.471Z","event":"crawl","scanned":175,"matched":60}
+{"at":"2026-10-31T14:15:46.005Z","event":"done","scanned":175,"matched":60,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T14:29:06.477Z","event":"crawl","scanned":138,"matched":50}
+{"at":"2026-10-31T14:29:41.617Z","event":"done","scanned":138,"matched":50,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T14:44:45.480Z","event":"crawl","scanned":138,"matched":50}
+{"at":"2026-10-31T14:45:16.376Z","event":"done","scanned":138,"matched":50,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T15:14:56.553Z","event":"crawl","scanned":39,"matched":19}
+{"at":"2026-10-31T15:15:06.281Z","event":"apply","email":"techjobs@fluencetraining.com","position":"Full-Stack Developer","company":"Fluence International, Inc.","sent":true}
+{"at":"2026-10-31T15:15:07.865Z","event":"apply","email":"jobs@mitremedia.com","position":"Tech Lead Full-Stack Rails Engineer","company":"Mitre Media","sent":true}
+{"at":"2026-10-31T15:15:28.426Z","event":"done","scanned":39,"matched":19,"applied":2,"algoraNew":0}
+{"at":"2026-10-31T15:44:56.187Z","event":"crawl","scanned":39,"matched":19}
+{"at":"2026-10-31T15:45:27.189Z","event":"done","scanned":39,"matched":19,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T16:14:55.225Z","event":"crawl","scanned":72,"matched":27}
+{"at":"2026-10-31T16:15:21.300Z","event":"done","scanned":72,"matched":27,"applied":0,"algoraNew":0}
+{"at":"2026-10-31T16:44:52.864Z","event":"crawl","scanned":173,"matched":60}
+{"at":"2026-11-01T00:26:23.788Z","event":"crawl","scanned":74,"matched":29}
+{"at":"2026-11-01T00:26:46.544Z","event":"done","scanned":74,"matched":29,"applied":0,"algoraNew":0}
+{"at":"2026-11-01T00:39:11.143Z","event":"crawl","scanned":173,"matched":61}
+{"at":"2026-11-01T00:39:38.586Z","event":"done","scanned":173,"matched":61,"applied":0,"algoraNew":0}
+{"at":"2026-11-01T00:44:54.954Z","event":"crawl","scanned":173,"matched":61}
+{"at":"2026-11-01T00:45:22.693Z","event":"done","scanned":173,"matched":61,"applied":0,"algoraNew":0}
+{"at":"2026-11-01T01:00:11.129Z","event":"crawl","scanned":74,"matched":29}
+{"at":"2026-11-01T01:00:33.882Z","event":"done","scanned":74,"matched":29,"applied":0,"algoraNew":0}
+{"at":"2026-11-01T01:28:30.380Z","event":"crawl","scanned":173,"matched":61}
+{"at":"2026-11-01T01:28:57.256Z","event":"done","scanned":173,"matched":61,"applied":0,"algoraNew":0}
