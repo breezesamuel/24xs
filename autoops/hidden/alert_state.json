@@ -7,10 +7,10 @@
     "recovered_at": "2026-10-12T01:53:48.809Z"
   },
   "zero_paid_streak": {
-    "count": 147,
+    "count": 148,
     "active": true,
-    "last_fail_at": "2026-11-02T09:30:36.051Z",
-    "last_escalated_at": "2026-11-02T09:30:39.294Z"
+    "last_fail_at": "2026-11-02T19:43:46.205Z",
+    "last_escalated_at": "2026-11-02T19:43:49.472Z"
   },
   "promo_queue_stuck": {
     "count": 0,
