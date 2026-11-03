@@ -125,3 +125,4 @@
 {"at":"2026-11-03T01:50:40.496Z","captured_at":"2026-11-03T01:50:40.283Z","store":"kv-rest","orders":{"total":68,"paid":0,"revenue_cny":0,"plan_dist":{}},"arcade":{"users":8,"total_balance_minutes":0,"invite_links":0},"auto":true}
 {"at":"2026-11-03T09:00:35.574Z","captured_at":"2026-11-03T09:00:35.339Z","store":"kv-rest","orders":{"total":68,"paid":0,"revenue_cny":0,"plan_dist":{}},"arcade":{"users":8,"total_balance_minutes":0,"invite_links":0},"auto":true}
 {"at":"2026-11-03T16:58:50.936Z","captured_at":"2026-11-03T16:58:50.762Z","store":"kv-rest","orders":{"total":68,"paid":0,"revenue_cny":0,"plan_dist":{}},"arcade":{"users":8,"total_balance_minutes":0,"invite_links":0},"auto":true}
+{"at":"2026-11-03T22:15:28.693Z","captured_at":"2026-11-03T22:15:28.512Z","store":"kv-rest","orders":{"total":68,"paid":0,"revenue_cny":0,"plan_dist":{}},"arcade":{"users":8,"total_balance_minutes":0,"invite_links":0},"auto":true}
