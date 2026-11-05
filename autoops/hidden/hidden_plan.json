@@ -1,20 +1,20 @@
 {
-  "ts": "2026-11-05T10:55:39.520Z",
+  "ts": "2026-11-05T18:32:22.542Z",
   "mode": "full_autonomous_hidden",
-  "focus": "跟进 20 笔未支付订单",
+  "focus": "等待真实首单",
   "tasks": [
     {
       "id": "HB1",
-      "name": "跟进 20 笔未支付订单",
-      "pri": 95,
-      "why": "漏斗:20 单 / 0 已付",
+      "name": "等待真实首单",
+      "pri": 100,
+      "why": "收银台尚无真实订单，优先获客",
       "auto": true
     },
     {
       "id": "HB4",
       "name": "外呼 10 个 hot 线索",
       "pri": 88,
-      "why": "hot=86 warm=643 cold=108",
+      "why": "hot=86 warm=644 cold=109",
       "auto": true
     },
     {
@@ -42,14 +42,14 @@
   "snapshot": {
     "revenue_cny": 0,
     "orders": {
-      "total": 20,
+      "total": 0,
       "paid": 0,
-      "unpaid": 20
+      "unpaid": 0
     },
     "leads": {
       "hot": 86,
-      "warm": 643,
-      "cold": 108,
+      "warm": 644,
+      "cold": 109,
       "none": 0
     },
     "promos": {
