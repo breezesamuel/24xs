@@ -460,3 +460,6 @@
 {"task_id":"HB1","name":"等待真实首单","pri":100,"why":"收银台尚无真实订单，优先获客","ts":"2026-11-07T04:58:47.516Z","auto":true}
 {"task_id":"HB4","name":"外呼 10 个 hot 线索","pri":88,"why":"hot=87 warm=643 cold=111","ts":"2026-11-07T04:58:47.516Z","auto":true}
 {"task_id":"HB6","name":"CRM→OMS 状态机推进","pri":82,"why":"自动流转","ts":"2026-11-07T04:58:47.516Z","auto":true}
+{"task_id":"HB1","name":"等待真实首单","pri":100,"why":"收银台尚无真实订单，优先获客","ts":"2026-11-07T11:35:24.201Z","auto":true}
+{"task_id":"HB4","name":"外呼 10 个 hot 线索","pri":88,"why":"hot=87 warm=644 cold=110","ts":"2026-11-07T11:35:24.201Z","auto":true}
+{"task_id":"HB6","name":"CRM→OMS 状态机推进","pri":82,"why":"自动流转","ts":"2026-11-07T11:35:24.201Z","auto":true}
