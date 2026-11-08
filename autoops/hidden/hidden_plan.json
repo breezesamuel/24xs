@@ -1,5 +1,5 @@
 {
-  "ts": "2026-11-08T06:01:26.531Z",
+  "ts": "2026-11-08T13:14:28.966Z",
   "mode": "full_autonomous_hidden",
   "focus": "等待真实首单",
   "tasks": [
@@ -14,7 +14,7 @@
       "id": "HB4",
       "name": "外呼 10 个 hot 线索",
       "pri": 88,
-      "why": "hot=70 warm=659 cold=111",
+      "why": "hot=70 warm=660 cold=110",
       "auto": true
     },
     {
@@ -48,8 +48,8 @@
     },
     "leads": {
       "hot": 70,
-      "warm": 659,
-      "cold": 111,
+      "warm": 660,
+      "cold": 110,
       "none": 0
     },
     "promos": {
