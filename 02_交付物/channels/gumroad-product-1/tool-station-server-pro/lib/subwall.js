@@ -18,16 +18,27 @@ const PLANS={
 const FREE={'':'free',free:'free'};
 function up(){try{const u=process.env.SUPABASE_URL,k=process.env.SUPABASE_SERVICE_KEY||process.env.SUPABASE_KEY;return (u&&k)?{u:String(u).replace(/\/$/,''),k:k}:null;}catch(e){return null;}}
 function kv(){try{const u=process.env.KV_REST_API_URL||process.env.UPSTASH_REDIS_REST_URL,t=process.env.KV_REST_API_TOKEN||process.env.UPSTASH_REDIS_REST_TOKEN;return (u&&t)?{u:String(u).replace(/\/$/,''),t:t}:null;}catch(e){return null;}}
+// 文件存储回退（与 alipay.js 一致）：自托管实例（如阿里云 tools-cn）无 KV/Supabase 时，
+// 订阅权益也落盘持久化，避免"收钱但权益没开通"(store_failed)。Vercel 上不设该变量→行为不变。
+function fileStore(){try{const d=process.env.FILE_STORE_DIR;return (d&&String(d).trim())?String(d).trim():null;}catch(e){return null;}}
+function swFilePath(key){const dir=fileStore();if(!dir)return null;const safe=String(key).replace(/[^A-Za-z0-9_.:-]/g,'_').slice(0,180);return dir+'/subwall_'+safe+'.json';}
+async function swFileGet(key){const p=swFilePath(key);if(!p)return null;try{const fs=require('node:fs/promises');const raw=await fs.readFile(p,'utf8');return raw;}catch(e){return null;}}
+async function swFileSet(key,val){const p=swFilePath(key);if(!p)return false;try{const fs=require('node:fs/promises');await fs.mkdir(fileStore(),{recursive:true});await fs.writeFile(p,(typeof val==='string')?val:JSON.stringify(val),'utf8');return true;}catch(e){return false;}}
 async function kget(k){try{const m=kv();const r=m?await fetch(m.u+'/get/'+encodeURIComponent(k),{headers:{Authorization:'Bearer '+m.t},signal:AbortSignal.timeout(8000)}):null;if(r){const j=await r.json();if(j&&j.result!==null&&j.result!==undefined)return j.result;}return null;}catch(e){return null;}}
 async function kset(k,v){try{const m=kv();if(m){const body=(typeof v==='string')?v:JSON.stringify(v);const r=await fetch(m.u+'/set/'+encodeURIComponent(k),{method:'POST',headers:{Authorization:'Bearer '+m.t,'Content-Type':'application/json'},body:body,signal:AbortSignal.timeout(8000)});if(r.ok)return true;}return false;}catch(e){return false;}}
 async function dget(k){try{const v=await kget(k);if(v!==null&&v!==undefined)return v;}catch(e){}
-  const s=up();if(!s)return null;
-  try{const r=await fetch(s.u+'/rest/v1/subwall_kv?k=eq.'+encodeURIComponent(k)+'&select=v',{headers:{apikey:s.k,Authorization:'Bearer '+s.k},signal:AbortSignal.timeout(8000)});
-    const j=await r.json();if(Array.isArray(j)&&j[0])return j[0].v;}catch(e){}
+  const s=up();
+  if(s){try{const r=await fetch(s.u+'/rest/v1/subwall_kv?k=eq.'+encodeURIComponent(k)+'&select=v',{headers:{apikey:s.k,Authorization:'Bearer '+s.k},signal:AbortSignal.timeout(8000)});
+    const j=await r.json();if(Array.isArray(j)&&j[0])return j[0].v;}catch(e){}}
+  // 文件存储回退（自托管无 KV/Supabase 时）—— 即便没有远端存储也要走，否则 CN 开通权益永远写不进
+  if(fileStore()){const f=await swFileGet(k);if(f!==null&&f!==undefined)return f;}
   return null;}
 async function dset(k,v){if(await kset(k,v))return true;
-  const s=up();if(!s)return false;
-  try{const r=await fetch(s.u+'/rest/v1/subwall_kv',{method:'POST',headers:{apikey:s.k,Authorization:'Bearer '+s.k,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([{k:k,v:v}]),signal:AbortSignal.timeout(8000)});return r.ok;}catch(e){return false;}}
+  const s=up();
+  if(s){try{const r=await fetch(s.u+'/rest/v1/subwall_kv',{method:'POST',headers:{apikey:s.k,Authorization:'Bearer '+s.k,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([{k:k,v:v}]),signal:AbortSignal.timeout(8000)});if(r.ok)return true;}catch(e){}}
+  // 文件存储回退（自托管无 KV/Supabase 时）
+  if(fileStore()&&await swFileSet(k,v))return true;
+  return false;}
 function keyOf(ref){return 'subwall:'+ref;}
 async function load(ref){const raw=await dget(keyOf(ref));if(!raw)return [];try{const a=JSON.parse(raw);return Array.isArray(a)?a:[];}catch(e){return [];}}
 async function save(ref,arr){return dset(keyOf(ref),JSON.stringify(arr));}
