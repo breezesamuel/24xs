@@ -2,7 +2,9 @@
 // subwall.js - 订阅墙 独立 serverless 模块
 // 原则: 与 morning-youth.js 同 mode-switch 模式, 服务端权威(库存/过期/权益由服务端计算, 客户端不能伪造);
 //       fail-closed: 缺存储/缺配置时返回 ok:false, 不假装成功; 纯 ASCII + \u 转义; 幂等设计.
-// 端点: /api/subwall?action=check|list|subscribe|unsubscribe|extend|entitle
+// 端点: /api/subwall?action=check|list|unsubscribe|entitle  (只读 + 自助退订)
+//       ⚠️ subscribe/extend 已改为 fail-closed 拒绝: 付费订阅只能由 支付回调→activate() 服务端开通,
+//       公共端点不再允许客户端自行开通/延长 (堵住"不付款直接白嫖 pro/年订阅"的绕过漏洞)。
 //       (也支持 REST 风格 /api/subwall/check 等)
 // 存储: Supabase -> Vercel KV -> in-memory (与 alipay.js / morning-youth.js 一致)
 const PLANS={
@@ -78,17 +80,11 @@ async function onRequest(req,res,data){
       return send(200,{ok:true,count:out.filter(function(s){return s.status==='active';}).length,subscriptions:out});
     }
     if(action==='subscribe'){
-      const plan=String((data&&data.plan)||'').slice(0,16);
-      const p=PLANS[plan];
-      if(!p||(p.cny<=0 && p.usd<=0))return send(200,{ok:false,error:'unknown_plan'});
-      const subs=await load(ref);
-      if(p.trial && subs.some(s=>s.plan==='trial' && s.paid_out))return send(200,{ok:false,error:'trial_used'});
-      if(subs.some(active))return send(200,{ok:false,error:'already_active'});
-      const now=Date.now();
-      subs.push({plan:plan,status:'active',since:now,expires:now+p.days*86400000});
-      const ok=await save(ref,subs);
-      if(!ok)return send(500,{ok:false,error:'store_failed'});
-      return send(200,{ok:true,plan:plan,days:p.days,expires:now+p.days*86400000});
+      // 安全修复 (fail-closed): 公共端点**禁止**客户端自行开通付费订阅。
+      // 过去 action=subscribe 允许任何人不付款直接激活 pro/年订阅 (白嫖漏洞, 订阅墙可被绕过)。
+      // 付费订阅只能由 支付回调 → subwall.activate() 服务端权威开通 (见 alipay.js notify/order)。
+      // 这里保留路由仅返回明确拒绝, 防止旧客户端误以为开通成功。
+      return send(200,{ok:false,error:'subscribe_closed',hint:'paid plans are granted only via payment (alipay) → server-side activate; public subscribe is disabled'});
     }
     if(action==='unsubscribe'){
       const plan=String((data&&data.plan)||'').slice(0,16);
@@ -98,13 +94,9 @@ async function onRequest(req,res,data){
       return send(200,{ok:true});
     }
     if(action==='extend'){
-      const months=Math.max(1,Math.min(24,parseInt(String((data&&data.months)||'1'),10)||1));
-      const subs=await load(ref);
-      const cur=subs.filter(active).sort(function(a,b){return (b.expires||9e15)-(a.expires||9e15);})[0];
-      if(!cur)return send(200,{ok:false,error:'no_active'});
-      cur.expires=(cur.expires||Date.now())+months*30*86400000;
-      await save(ref,subs);
-      return send(200,{ok:true,plan:cur.plan,expires:cur.expires,days_remaining:daysLeft(cur)});
+      // 安全修复 (fail-closed): 公共端点**禁止**客户端自行延长订阅 (等于绕过续费付款)。
+      // 续费只能通过 再次支付 → alipay 回调 → activate() 叠加时长 (alipay.js 里同类订阅叠加 days)。
+      return send(200,{ok:false,error:'extend_closed',hint:'renewals/extends are granted only via payment (alipay) → server-side activate; public extend is disabled'});
     }
     if(action==='entitle'){
       const subs=await load(ref);
