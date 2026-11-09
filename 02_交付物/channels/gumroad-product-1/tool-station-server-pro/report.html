@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>深度整改报告 · 丙大山数据资产</title>
+<meta name="description" content="官网 AI 可见度深度整改报告：完整诊断、可直接粘贴的 JSON-LD / llms.txt / robots.txt 代码、按投入产出排序的整改排期表。">
+<link rel="canonical" href="https://geo-audit-cn.pages.dev/report.html">
+<meta name="robots" content="noindex">
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#21262d;--fg:#e6edf3;--dim:#8b949e;
+  --bad:#f85149;--ok:#3fb950;--warn:#d29922;--hi:#58a6ff;--accent:#1f6feb}
+@media (prefers-color-scheme:light){:root{--bg:#fff;--card:#f6f8fa;--line:#d0d7de;--fg:#1f2328;--dim:#59636e;--hi:#0969da}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 60px}
+a{color:var(--hi)}
+header{padding:36px 0 8px}
+h1{font-size:26px;margin:0 0 6px}
+h2{font-size:20px;margin:36px 0 12px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:20px 0 8px}
+.sub{color:var(--dim);font-size:14px;margin:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin:14px 0}
+input,button{font:inherit;padding:12px 14px;border-radius:8px;border:1px solid var(--line)}
+input{width:100%;background:var(--bg);color:var(--fg);margin:10px 0}
+button{background:var(--accent);color:#fff;border:0;cursor:pointer;font-weight:600;width:100%}
+button:disabled{opacity:.5}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--dim);font-size:13px}
+pre{background:#010409;border:1px solid var(--line);border-radius:8px;padding:14px;
+  overflow:auto;font:13px/1.6 ui-monospace,Consolas,monospace;position:relative}
+@media(prefers-color-scheme:light){pre{background:#f6f8fa}}
+.copy{position:absolute;top:8px;right:8px;width:auto;padding:5px 10px;font-size:12px;
+  background:var(--line);color:var(--fg)}
+.note{background:rgba(248,81,73,.08);border-left:3px solid var(--bad);padding:12px 16px;
+  border-radius:0 8px 8px 0;margin:14px 0}
+.ok-box{background:rgba(63,185,80,.08);border-left:3px solid var(--ok);padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0}
+.gauge{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+  width:90px;height:90px;border-radius:50%;border:6px solid var(--line);margin-right:16px;vertical-align:middle}
+.gauge b{font-size:28px;line-height:1}
+.gauge span{font-size:11px;color:var(--dim)}
+.hero{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.step{border-left:2px solid var(--line);padding:0 0 18px 18px;position:relative}
+.step:before{content:"";position:absolute;left:-7px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.step:last-child{border-left-color:transparent}
+.buy a{display:inline-block;padding:11px 18px;border-radius:8px;text-decoration:none;font-weight:700;margin:6px 8px 0 0}
+.b1{background:var(--ok);color:#04210f}.b2{background:var(--accent);color:#fff}
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+code{background:var(--card);padding:2px 6px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>官网 AI 可见度 · 深度整改报告</h1>
+  <p class="sub">完整诊断 + 可直接粘贴的整改代码 + 按投入产出排序的排期表。<br>
+  报告由自研引擎对公开官网实时扫描生成，可复核、可复现。</p>
+</header>
+
+<div class="card">
+  <input id="u" type="text" placeholder="输入要出报告的官网，例如 www.example.com" autocomplete="off">
+  <button id="go">生成报告</button>
+</div>
+<div id="out"></div>
+
+<footer>
+  <p><b>上海丙大山智能科技有限公司</b> · <a href="mailto:460123249@qq.com">460123249@qq.com</a> ·
+     <a href="./">返回首页</a></p>
+</footer>
+</div>
+
+<script>
+var API = (location.hostname.indexOf('.pages.dev') >= 0)
+  ? './api/audit'
+  : 'https://geo-audit-cn.pages.dev/api/audit';
+
+var RECIPES = [
+  {
+    needs: function(k){ return !(k.schema && k.schema.exists); },
+    title: 'JSON-LD 结构化数据',
+    points: 25,
+    method: '在 <head> 里加 Organization + WebSite + Service 三件套，用 @graph 包一层。',
+    code: '<script type="application/ld+json">\n{\n  "@context": "https://schema.org",\n  "@graph": [\n    {"@type":"Organization","name":"公司全称","url":"https://官网/","logo":"https://官网/logo.png"},\n    {"@type":"WebSite","name":"公司简称","url":"https://官网/"},\n    {"@type":"Service","name":"主营业务","provider":{"@type":"Organization"}}\n  ]\n}\n<\/script>',
+    tip: '必须用 @graph 包一层 —— 这是 Google 推荐写法，很多工具（含我们早期版本）不认顶层 @type。'
+  },
+  {
+    needs: function(k){ return k.schema && k.schema.exists && !k.schema.has_org; },
+    title: '结构化数据补实体',
+    points: 13,
+    method: '你已有 JSON-LD，但缺 Organization/LocalBusiness 实体。AI 认不出「你是谁」。',
+    code: '{"@type":"Organization","name":"公司全称","url":"https://官网/","address":{"@type":"PostalAddress","addressLocality":"城市","streetAddress":"地址"},"telephone":"联系电话"}',
+    tip: '对照首页把公司全称、地址、电话填全，与工商登记一致。'
+  },
+  {
+    needs: function(k){ return !(k.schema && k.schema.has_faq); },
+    title: 'FAQPage 问答结构化',
+    points: 15,
+    method: '把客户最常问的 5–10 个问题写成 FAQPage，AI 才好直接引用你的答案。',
+    code: '<script type="application/ld+json">\n{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[\n  {"@type":"Question","name":"客户最常问的问题一","acceptedAnswer":{"@type":"Answer","text":"第一句就给结论。"}},\n  {"@type":"Question","name":"客户最常问的问题二","acceptedAnswer":{"@type":"Answer","text":"第一句就给结论。"}}\n]}\n<\/script>',
+    tip: '答案第一句就要有结论，AI 摘取的就是第一句。'
+  },
+  {
+    needs: function(k){ return !(k.llms && k.llms.exists); },
+    title: 'llms.txt 站点说明书',
+    points: 10,
+    method: '站点根目录放一个 llms.txt，主动告诉大模型你是谁、提供什么。',
+    code: '# 公司全称\n\n> 一句话说明你提供什么服务。\n\n## 我们做什么\n- 业务一\n- 业务二\n\n## 联系\n- 官网：https://官网/\n- 邮箱：business@官网域名\n',
+    tip: 'AI 爬虫优先读这个文件；没有它，AI 只能猜你是谁。'
+  },
+  {
+    needs: function(k){ return (k.robots && k.robots.blocked && k.robots.blocked.length); },
+    title: 'robots.txt 放行 AI 爬虫',
+    points: 30,
+    method: '你的 robots.txt 明确拦了 AI 爬虫。这是自伤，不是保护。',
+    code: 'User-agent: GPTBot\nAllow: /\n\nUser-agent: ClaudeBot\nAllow: /\n\nUser-agent: PerplexityBot\nAllow: /\n\nUser-agent: Google-Extended\nAllow: /\n\nUser-agent: *\nDisallow: /admin\nDisallow: /cart\n\nSitemap: https://官网/sitemap.xml\n',
+    tip: '只 Disallow 后台和购物车，其余全部放行。'
+  },
+  {
+    needs: function(k){ return !(k.sitemap && k.sitemap.exists); },
+    title: 'sitemap.xml',
+    points: 10,
+    method: '生成站点地图并提交，帮助 AI 与搜索引擎定位全部页面。',
+    code: '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://官网/</loc><changefreq>weekly</changefreq></url>\n<\/urlset>',
+    tip: '在 robots.txt 末尾加一行 Sitemap: 指向它。'
+  },
+  {
+    needs: function(k){ return !(k.meta && k.meta.has_description); },
+    title: 'meta description',
+    points: 10,
+    method: '首页缺少 meta description。AI 摘取摘要时第一个看它。',
+    code: '<meta name="description" content="一句话说清：你是谁 + 服务谁 + 凭什么选你。控制在 80 字以内。">',
+    tip: '别写「欢迎访问本公司官网」这种废话，写具体业务和差异点。'
+  }
+];
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function color(v){ return v>=80?'var(--ok)':v>=55?'var(--warn)':'var(--bad)'; }
+
+function buildReport(d){
+  var c = d.checks || {};
+  var blocked = (c.robots && c.robots.blocked) || [];
+  var dims = [
+    ['robots 放行 AI', blocked.length?0:(c.robots&&c.robots.exists?30:18), 30],
+    ['结构化数据', (c.schema&&c.schema.exists)?(c.schema.has_org?25:12):0, 25],
+    ['FAQ 问答', (c.schema&&c.schema.has_faq)?15:0, 15],
+    ['llms.txt', (c.llms&&c.llms.exists)?10:0, 10],
+    ['meta 描述', (c.meta&&c.meta.has_description)?10:0, 10],
+    ['sitemap.xml', (c.sitemap&&c.sitemap.exists)?10:0, 10]
+  ];
+  var h='';
+  h+='<div class="hero">';
+  h+='<div class="gauge" style="border-color:'+color(d.score)+'"><b style="color:'+color(d.score)+'">'+esc(d.score)+'</b><span>/100</span></div>';
+  h+='<div><div style="font-size:18px;font-weight:700">'+esc(d.name||d.host||d.url)+'</div>';
+  h+='<div class="sub">'+esc(d.host||'')+'　评级：'+esc(d.grade||'-')+'　行业：'+esc(d.industry||'其他')+'</div></div></div>';
+
+  if((c.reachable && c.reachable.ok === false) || d.waf_blocked || (c.reachable && c.reachable.waf)
+     || /复核|无法访问|证书故障/.test(d.grade||'')){
+    h+='<div class="note" style="margin-top:16px"><b>注意：本次扫描未能取得可信结果，下方分数仅供参考，不代表站点真实水平。</b></div>';
+  }
+
+  h+='<h2>一、逐项得分</h2><table><tr><th>检查项</th><th>得分</th><th>满分</th><th>状态</th></tr>';
+  dims.forEach(function(x){
+    var st = x[1]===x[2]?'达标':(x[1]===0?'缺失（优先补）':'部分');
+    h+='<tr><td>'+x[0]+'</td><td>'+x[1]+'</td><td>'+x[2]+'</td><td>'+st+'</td></tr>';
+  });
+  h+='</table>';
+
+  h+='<h2>二、完整诊断</h2>';
+  var bl = d.blockers||[];
+  if(bl.length){ h+='<ul>'+bl.map(function(b){return '<li>'+esc(b)+'</li>';}).join('')+'</ul>'; }
+  else { h+='<div class="ok-box">没有发现明显缺口，已具备被 AI 引用的基础条件。</div>'; }
+
+  h+='<h2>三、可直接粘贴的整改代码</h2>';
+
+  // 打不开 / 反爬 / 证书故障的站，我们不做逐项指控。
+  // 拿不到证据就断言"你缺这些"和对着验证码打分一样，是数据造假。
+  var unverifiable = (c.reachable && c.reachable.ok === false)
+      || d.waf_blocked || (c.reachable && c.reachable.waf)
+      || /复核|无法访问|证书故障/.test(d.grade||'');
+
+  if(unverifiable){
+    h+='<div class="note"><b>本站本次无法完成可信体检，已停止出具整改清单。</b><br>'
+      + esc((d.blockers||[]).join(' ')) + '<br>'
+      + '我们不会在拿不到证据的情况下指控你「缺结构化数据」「缺 llms.txt」—— '
+      + '那样和对着验证码页打分没有区别。若需准确结论，请把上述原因排除后重试，'
+      + '或邮件联系 460123249@qq.com 由人工复核。</div>';
+    h+='<div class="buy"><a class="b2" href="mailto:460123249@qq.com?subject=人工复核&body='
+      + encodeURIComponent('网址：'+d.url+'\n自动体检无法完成：'+((d.blockers||[]).join(' ')))
+      + '">申请人工复核</a></div>';
+    h+='<h2>四、诚实说明（不承诺的部分）</h2>';
+    h+='<p class="sub">本报告不含整改排期，因为缺少可信扫描结果。</p>';
+    return h;
+  }
+
+  h+='<p class="sub">按影响分值从高到低排列。每条都能直接复制到你的网站，不需要二次加工。</p>';
+  var hits = RECIPES.filter(function(r){ return r.needs(c); });
+  if(!hits.length){ h+='<div class="ok-box">六项全部达标，无需整改代码。</div>'; }
+  hits.forEach(function(r,i){
+    h+='<h3>'+(i+1)+'. '+r.title+'　<span class="sub">（+'+r.points+' 分）</span></h3>';
+    h+='<p>'+esc(r.method)+'</p>';
+    h+='<pre><button class="copy" onclick="cp(this)">复制</button><code>'+esc(r.code)+'</code></pre>';
+    h+='<p class="sub">提示：'+esc(r.tip)+'</p>';
+  });
+
+  h+='<h2>四、整改排期表</h2>';
+  h+='<p class="sub">按「投入产出比」排序：先做 1 小时内能加完、且加分最多的。</p>';
+  var order = hits.slice().sort(function(a,b){return b.points-a.points;});
+  if(!order.length){ h+='<div class="ok-box">无需整改。</div>'; }
+  order.forEach(function(r,i){
+    h+='<div class="step"><b>第 '+(i+1)+' 步 · '+r.title+'（+'+r.points+' 分）</b><br>'
+      +'<span class="sub">预计工时：'+ (r.points>=25?'1–2 小时':'30 分钟')+'　负责：前端/建站方</span></div>';
+  });
+  if(order.length){
+    h+='<div class="ok-box"><b>整改后预期：</b>单项加分合计 '+order.reduce(function(s,r){return s+r.points;},0)
+      +' 分，理论可达 '+Math.min(100,d.score+order.reduce(function(s,r){return s+r.points;},0))+' 分。</div>';
+  }
+
+  h+='<h2>五、诚实说明（不承诺的部分）</h2>';
+  h+='<p class="sub">整改能让你「有资格被 AI 引用」，不能保证「一定被引用」。'
+    +'引用还取决于内容质量、第三方信源和 AI 自身的判断，这部分我们不做承诺，也建议你不要相信任何敢承诺的公司。</p>';
+
+  h+='<div class="buy"><h3>需要人工落地？</h3>'
+    +'<a class="b1" href="mailto:460123249@qq.com?subject=深度整改包&body='+encodeURIComponent('网址：'+d.url+'\n分数：'+d.score)+'">¥99 深度整改包（含 30 天 3 次复测）</a>'
+    +'<a class="b2" href="mailto:460123249@qq.com?subject=竞品攻防&body='+encodeURIComponent('网址：'+d.url)+'">¥299 竞品攻防（5 家对比）</a></div>';
+  h+='<p class="sub" style="margin-top:10px">演示环境：付款请先邮件联系，我们发送支付宝收款码，到账后回传正式 PDF 报告。</p>';
+  return h;
+}
+
+function cp(btn){
+  var code = btn.parentNode.querySelector('code');
+  var t = code.textContent;
+  if(navigator.clipboard){ navigator.clipboard.writeText(t); }
+  else { var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove(); }
+  btn.textContent='已复制'; setTimeout(function(){btn.textContent='复制';},1500);
+}
+
+function run(u){
+  var o = document.getElementById('out');
+  o.innerHTML = '<div class="card">正在实时扫描并生成报告…（约 5–20 秒）</div>';
+  fetch(API + '?url=' + encodeURIComponent(u))
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.error){ o.innerHTML='<div class="note">生成失败：'+esc(d.error)+'</div>'; return; }
+      o.innerHTML = buildReport(d);
+      window.scrollTo({top:0,behavior:'smooth'});
+    })
+    .catch(function(){ o.innerHTML='<div class="note">接口暂时不可达，请邮件 460123249@qq.com 人工出报告。</div>'; });
+}
+
+document.getElementById('go').onclick = function(){
+  var u = document.getElementById('u').value.trim();
+  if(!u){ document.getElementById('out').innerHTML='<div class="note">请填写网址。</div>'; return; }
+  run(u);
+};
+var q = new URLSearchParams(location.search).get('url');
+if(q){ document.getElementById('u').value=q; run(q); }
+</script>
+</body>
+</html><section class="section"><h2>经济价值证明（可验证）</h2><div class="card"><ul><li>数字资产总量：<strong>1,000,000</strong>（JSONL结构化，每条SHA256可校验）</li><li>可售SKU：样例2000，完整清单 /api/assets</li><li>单价区间（参考）：¥0.10 ~ ¥5.00/条</li><li>单元经济：保守毛利率60%，验证路径：1元×1,000,000=¥1,000,000</li><li>6个月路径：复利增长+长尾扩量，目标¥1,000,000进账</li></ul></div></section>

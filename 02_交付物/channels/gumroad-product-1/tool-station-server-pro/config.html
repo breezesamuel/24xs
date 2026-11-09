@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丙大山·系统配置</title>
+<style>
+:root{--bg:#0a0f1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--warn:#f59e0b;--danger:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.logo{font-weight:700;font-size:1.25rem;color:var(--accent)}
+h1{font-size:2rem;margin-bottom:8px}
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
+.section h2{font-size:1.25rem;margin-bottom:16px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:4px}
+.form-group input,.form-group select{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem}
+.btn{padding:10px 20px;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;border:none;background:var(--accent);color:var(--bg)}
+.btn:hover{opacity:.9}
+.btn-secondary{background:var(--border);color:var(--text)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 24px;z-index:200;transform:translateY(100px);opacity:0;transition:.3s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-color:var(--accent)}
+.toast.error{border-color:var(--danger)}
+</style>
+</head>
+<body>
+<div class="container">
+<header><div class="logo">丙大山·系统配置</div><a href="/" style="color:var(--muted);text-decoration:none">返回商城</a></header>
+<h1>系统配置</h1>
+<div class="section">
+<h2>定价配置</h2>
+<div class="form-group"><label>套餐层级</label><select id="tier"><option value="starter">入门版</option><option value="professional" selected>专业版</option><option value="enterprise">企业版</option></select></div>
+<div class="form-group"><label>月付价格 (CNY)</label><input type="number" id="price-monthly" value="999"></div>
+<div class="form-group"><label>年付价格 (CNY)</label><input type="number" id="price-yearly" value="9590"></div>
+<div class="form-group"><label>积分额度</label><input type="number" id="credits" value="15000"></div>
+<button class="btn" onclick="savePricing()">保存配置</button>
+</div>
+<div class="section">
+<h2>系统状态</h2>
+<div id="sys-status">加载中...</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+async function loadPricing() {
+  try {
+    const res = await fetch("/api/config");
+    const data = await res.json();
+    if (data.ok && data.data.tiers) {
+      const t = data.data.tiers.professional || {};
+      document.getElementById("price-monthly").value = t.price_monthly || 999;
+      document.getElementById("price-yearly").value = t.price_yearly || 9590;
+      document.getElementById("credits").value = t.included_credits || 15000;
+    }
+  } catch (e) {}
+}
+
+async function savePricing() {
+  const tier = document.getElementById("tier").value;
+  const pm = parseFloat(document.getElementById("price-monthly").value);
+  const py = parseFloat(document.getElementById("price-yearly").value);
+  const cr = parseInt(document.getElementById("credits").value);
+  try {
+    await fetch("/api/config?action=update", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({key: "tiers." + tier + ".price_monthly", value: pm})
+    });
+    await fetch("/api/config?action=update", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({key: "tiers." + tier + ".price_yearly", value: py})
+    });
+    await fetch("/api/config?action=update", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({key: "tiers." + tier + ".included_credits", value: cr})
+    });
+    showToast("配置已保存", "success");
+  } catch (e) {
+    showToast("保存失败", "error");
+  }
+}
+
+async function loadStatus() {
+  try {
+    const res = await fetch("/api/health");
+    const data = await res.json();
+    document.getElementById("sys-status").innerHTML = "<pre style='font-size:.8rem;color:var(--muted)'>" + JSON.stringify(data, null, 2) + "</pre>";
+  } catch (e) {
+    document.getElementById("sys-status").textContent = "无法连接";
+  }
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast " + type + " show";
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+loadPricing();
+loadStatus();
+</script>
+</body>
+</html>

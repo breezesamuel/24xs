@@ -1,0 +1,23 @@
+# Vercel 部署忽略规则
+# 目标：上传文件数 <5000，Serverless Functions <=12
+
+# ===== 排除的目录（生成的工具页 / 构建产物）=====
+.history/
+dist/
+.vercel/
+node_modules/
+.git/
+ops/
+scripts/
+artifacts/
+__pycache__/
+out/
+standards/
+growth/
+money-channels/
+moltspay/
+yieldwatcher-bounty/
+*.log
+*.tmp
+*.bak
+*.backup

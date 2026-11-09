@@ -1,7 +1,16 @@
 {
   "crons": [],
   "builds": [
-    { "src": "api/**/*.js", "use": "@vercel/node" },
+    { "src": "api/alipay.js", "use": "@vercel/node" },
+    { "src": "api/arcade-extra.js", "use": "@vercel/node" },
+    { "src": "api/track.js", "use": "@vercel/node" },
+    { "src": "api/index.js", "use": "@vercel/node" },
+    { "src": "api/autoops.js", "use": "@vercel/node" },
+    { "src": "api/paypal/order.js", "use": "@vercel/node" },
+    { "src": "api/paypal/capture.js", "use": "@vercel/node" },
+    { "src": "api/paypal/status.js", "use": "@vercel/node" },
+    { "src": "api/pay/return.js", "use": "@vercel/node" },
+    { "src": "api/pay/cancel.js", "use": "@vercel/node" },
     { "src": "**", "use": "@vercel/static" }
   ],
   "rewrites": [
@@ -15,7 +24,6 @@
     { "source": "/api/verify", "destination": "/api/alipay.js?r=verify" },
     { "source": "/api/aliq", "destination": "/api/alipay.js?r=aliq" },
     { "source": "/api/arcade", "destination": "/api/alipay.js?r=arcade" },
-    { "source": "/api/autoops.js", "destination": "/api/autoops.js" },
     { "source": "/api/rank", "destination": "/api/arcade-extra.js" },
     { "source": "/api/reflect", "destination": "/api/arcade-extra.js" },
     { "source": "/api/feedback", "destination": "/api/arcade-extra.js" },

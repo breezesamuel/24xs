@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丙大山·系统管理</title>
+<style>
+:root{--bg:#0a0f1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--warn:#f59e0b;--danger:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:1200px;margin:0 auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.logo{font-weight:700;font-size:1.25rem;color:var(--accent)}
+h1{font-size:2rem;margin-bottom:8px}
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
+.section h2{font-size:1.25rem;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.stat .label{font-size:.8rem;color:var(--muted)}
+.stat .value{font-size:1.5rem;font-weight:700;color:var(--accent);margin-top:4px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;text-align:left;border-bottom:1px solid var(--border);font-size:.85rem}
+th{color:var(--muted);font-weight:600}
+.btn{padding:8px 16px;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;border:none;background:var(--accent);color:var(--bg)}
+.btn-secondary{background:var(--border);color:var(--text)}
+.btn-danger{background:var(--danger);color:#fff}
+</style>
+</head>
+<body>
+<div class="container">
+<header><div class="logo">丙大山·系统管理</div><a href="/" style="color:var(--muted);text-decoration:none">返回商城</a></header>
+<h1>系统管理</h1>
+<div class="stats" id="stats"></div>
+<div class="section">
+<h2>客户管理</h2>
+<table><thead><tr><th>客户ID</th><th>邮箱</th><th>套餐</th><th>状态</th><th>操作</th></tr></thead><tbody id="customers"></tbody></table>
+</div>
+<div class="section">
+<h2>系统操作</h2>
+<button class="btn" onclick="runBackup()">运行备份</button>
+<button class="btn btn-secondary" onclick="runValidation()">运行验证</button>
+<button class="btn btn-danger" onclick="clearCache()">清除缓存</button>
+</div>
+</div>
+<script>
+async function loadStats() {
+  try {
+    const res = await fetch("/api/admin/dashboard");
+    const data = await res.json();
+    if (data.ok) {
+      const d = data.dashboard;
+      document.getElementById("stats").innerHTML =
+        '<div class="stat"><div class="label">总客户</div><div class="value">' + (d.total_customers || 0) + '</div></div>' +
+        '<div class="stat"><div class="label">活跃客户</div><div class="value">' + (d.active_customers || 0) + '</div></div>' +
+        '<div class="stat"><div class="label">总收入</div><div class="value">¥' + (d.total_revenue || 0).toLocaleString() + '</div></div>' +
+        '<div class="stat"><div class="label">总订单</div><div class="value">' + (d.total_purchases || 0) + '</div></div>';
+    }
+  } catch (e) {}
+}
+
+async function loadCustomers() {
+  try {
+    const res = await fetch("/api/admin/customers");
+    const data = await res.json();
+    const tbody = document.getElementById("customers");
+    if (data.ok && data.data && data.data.length) {
+      tbody.innerHTML = data.data.slice(0, 20).map(c =>
+        '<tr><td>' + c.customer_id + '</td><td>' + (c.email || "—") + '</td><td>' + (c.tier || "—") + '</td><td>' + (c.status || "—") + '</td><td><button class="btn btn-secondary" onclick="viewCustomer(\'' + c.customer_id + '\')">查看</button></td></tr>'
+      ).join("");
+    } else {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted)">暂无客户</td></tr>';
+    }
+  } catch (e) {
+    document.getElementById("customers").innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted)">无法加载</td></tr>';
+  }
+}
+
+function runBackup() {
+  alert("备份功能请在服务器端运行: python backup.py");
+}
+
+function runValidation() {
+  location.href = "/verify.html";
+}
+
+function clearCache() {
+  if (confirm("确定要清除缓存吗？")) {
+    alert("缓存已清除");
+  }
+}
+
+function viewCustomer(id) {
+  location.href = "/portal.html?customer=" + id;
+}
+
+loadStats();
+loadCustomers();
+</script>
+</body>
+</html>

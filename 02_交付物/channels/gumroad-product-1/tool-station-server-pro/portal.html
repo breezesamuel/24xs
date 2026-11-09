@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丙大山·客户门户</title>
+<style>
+:root{--bg:#0a0f1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--warn:#f59e0b;--danger:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:1000px;margin:0 auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.logo{font-weight:700;font-size:1.25rem;color:var(--accent)}
+h1{font-size:2rem;margin-bottom:8px}
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
+.section h2{font-size:1.25rem;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.stat .label{font-size:.8rem;color:var(--muted)}
+.stat .value{font-size:1.5rem;font-weight:700;color:var(--accent);margin-top:4px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;text-align:left;border-bottom:1px solid var(--border);font-size:.85rem}
+th{color:var(--muted);font-weight:600}
+.btn{padding:8px 16px;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;border:none;background:var(--accent);color:var(--bg)}
+.btn-secondary{background:var(--border);color:var(--text)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 24px;z-index:200;transform:translateY(100px);opacity:0;transition:.3s}
+.toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<div class="container">
+<header><div class="logo">丙大山·客户门户</div><a href="/" style="color:var(--muted);text-decoration:none">返回商城</a></header>
+<h1>我的账户</h1>
+<div class="stats" id="profile-stats"></div>
+<div class="section">
+<h2>订阅状态</h2>
+<div id="subscription-info">加载中...</div>
+</div>
+<div class="section">
+<h2>积分用量</h2>
+<div id="usage-info">加载中...</div>
+</div>
+<div class="section">
+<h2>购买记录</h2>
+<table><thead><tr><th>订单号</th><th>金额</th><th>状态</th><th>时间</th></tr></thead><tbody id="purchases"></tbody></table>
+</div>
+<div class="section">
+<h2>API Keys</h2>
+<table><thead><tr><th>名称</th><th>权限</th><th>状态</th><th>创建时间</th></tr></thead><tbody id="api-keys"></tbody></table>
+<button class="btn btn-secondary" onclick="createApiKey()">创建新 Key</button>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let customerId = localStorage.getItem("customer_id") || "";
+
+async function loadProfile() {
+  if (!customerId) { showToast("请先登录", "error"); return; }
+  try {
+    const res = await fetch("/api/portal/profile", {headers: {"x-customer-id": customerId}});
+    const data = await res.json();
+    if (!data.ok) { showToast("加载失败", "error"); return; }
+    const d = data.data;
+    document.getElementById("profile-stats").innerHTML =
+      '<div class="stat"><div class="label">客户ID</div><div class="value" style="font-size:1rem">' + d.customer_id + '</div></div>' +
+      '<div class="stat"><div class="label">套餐</div><div class="value">' + (d.tier || "—") + '</div></div>' +
+      '<div class="stat"><div class="label">状态</div><div class="value">' + (d.status || "—") + '</div></div>' +
+      '<div class="stat"><div class="label">总消费</div><div class="value">¥' + (d.total_spent || 0).toLocaleString() + '</div></div>';
+    document.getElementById("subscription-info").innerHTML =
+      '<p>套餐: <strong>' + (d.tier || "—") + '</strong></p>' +
+      '<p>计费周期: ' + (d.billing_cycle || "—") + '</p>' +
+      '<p>下次续费: ' + (d.renews_at ? d.renews_at.slice(0, 10) : "—") + '</p>' +
+      '<p>到期时间: ' + (d.ends_at ? d.ends_at.slice(0, 10) : "—") + '</p>';
+  } catch (e) { showToast("加载失败", "error"); }
+}
+
+async function loadUsage() {
+  try {
+    const res = await fetch("/api/portal/credits", {headers: {"x-customer-id": customerId}});
+    const data = await res.json();
+    if (!data.ok) return;
+    const d = data.data;
+    document.getElementById("usage-info").innerHTML =
+      '<p>总额度: <strong>' + (d.included_credits || 0).toLocaleString() + '</strong></p>' +
+      '<p>已使用: ' + (d.used_this_month || 0).toLocaleString() + '</p>' +
+      '<p>剩余: ' + (d.remaining || 0).toLocaleString() + '</p>' +
+      '<p>利用率: ' + (d.utilization_pct || 0) + '%</p>';
+  } catch (e) {}
+}
+
+async function loadPurchases() {
+  try {
+    const res = await fetch("/api/portal/purchases", {headers: {"x-customer-id": customerId}});
+    const data = await res.json();
+    const tbody = document.getElementById("purchases");
+    if (data.ok && data.data && data.data.length) {
+      tbody.innerHTML = data.data.map(p =>
+        '<tr><td>' + p.purchase_id + '</td><td>¥' + (p.amount_cny || 0).toFixed(2) + '</td><td>' + p.status + '</td><td>' + new Date(p.created_at).toLocaleString() + '</td></tr>'
+      ).join("");
+    } else {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted)">暂无记录</td></tr>';
+    }
+  } catch (e) {}
+}
+
+async function loadApiKeys() {
+  try {
+    const res = await fetch("/api/portal/api-keys", {headers: {"x-customer-id": customerId}});
+    const data = await res.json();
+    const tbody = document.getElementById("api-keys");
+    if (data.ok && data.data && data.data.length) {
+      tbody.innerHTML = data.data.map(k =>
+        '<tr><td>' + k.name + '</td><td>' + (k.permissions || []).join(", ") + '</td><td>' + k.status + '</td><td>' + new Date(k.created_at).toLocaleString() + '</td></tr>'
+      ).join("");
+    } else {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted)">暂无 API Key</td></tr>';
+    }
+  } catch (e) {}
+}
+
+async function createApiKey() {
+  const name = prompt("请输入 API Key 名称:");
+  if (!name) return;
+  try {
+    const res = await fetch("/api/portal/api-keys", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "x-customer-id": customerId},
+      body: JSON.stringify({name, permissions: ["read"]})
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showToast("API Key 创建成功", "success");
+      loadApiKeys();
+    } else {
+      showToast(data.error || "创建失败", "error");
+    }
+  } catch (e) { showToast("请求失败", "error"); }
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast " + type + " show";
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+loadProfile();
+loadUsage();
+loadPurchases();
+loadApiKeys();
+</script>
+</body>
+</html>
