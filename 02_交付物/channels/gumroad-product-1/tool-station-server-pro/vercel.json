@@ -45,6 +45,7 @@
     { "source": "/api/paypal/capture", "destination": "/api/paypal/capture.js" },
     { "source": "/api/paypal/status", "destination": "/api/paypal/status.js" },
     { "source": "/pay/return", "destination": "/api/pay/return.js" },
-    { "source": "/pay/cancel", "destination": "/api/pay/cancel.js" }
+    { "source": "/pay/cancel", "destination": "/api/pay/cancel.js" },
+    { "source": "/dashboard", "destination": "/dashboard.html" }
   ]
 }

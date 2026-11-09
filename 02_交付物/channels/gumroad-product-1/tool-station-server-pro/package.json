@@ -1,20 +1,8 @@
 {
-  "name": "site",
+  "name": "tool-station-server-pro",
   "version": "1.0.0",
-  "description": "",
-  "main": "pw-runtime.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "Storefront API (Vercel Node runtime)",
   "type": "commonjs",
-  "dependencies": {
-    "@x402/core": "^2.28.0",
-    "@x402/evm": "^2.28.0",
-    "mppx": "^0.13.4",
-    "stripe": "^16.12.0",
-    "viem": "^2.57.4"
-  }
+  "dependencies": {},
+  "note": "stripe 通过 require('stripe') 动态导入 + try/catch 兜底，缺 SDK 时返回 stripe_sdk_missing 而非崩溃。其他依赖 (crypto/node:fs/node:module) 为 Node builtin。无需 npm install。"
 }
