@@ -181,12 +181,18 @@ function isSynthetic(o){
   const ref = String(o.ref || o.visitor || '');
   const out = String(o.out_trade_no || '');
   const subj = String(o.subject || '');
+  const st = String(o.status || '');
+  const amt = o.amount_cny != null ? o.amount_cny : (o.amount != null ? o.amount : null);
   // 探测 ref/单号/主题特征: ci_ e2e_ probe_ sigtest_ dual_ cnv_ walltest_ entitleprobe_ bds-ci / ci probe / sig test / 巡检
   var pat = /^(ci_|e2e_|probe_|sigtest_|dual_|cnv_|cnwrite_|cnact|cnok|cnfinal|walltest_|entitleprobe_|storwtest|fprobe_|legit_|_check|fin_|sweep_|cnv_)/;
   if(pat.test(ref)) return true;
   if(/^(BDS_|SIGTEST_|CNV_|PROBE_|SWEEP_|FIN_)[A-Za-z0-9_]*(ci_|e2e_|probe_|sigtest_|dual_|walltest_|entitleprobe_|fin_|sweep_)/i.test(out)) return true;
   var sp = /ci probe|sig test|巡检|probe|selftest|self-test|billing-diag/i;
   if(sp.test(subj)) return true;
+  // 第二类合成: 测试/void 状态 + 1 元测试单 (self-generated test/void cycles, 非真实客户单)
+  if(/^(void_test|test|cancelled_test|_test)$/.test(st)) return true;
+  if(st.indexOf('test') > -1 && amt === 1) return true;
+  if(amt === 1 && /test|probe|void|demo|sample/i.test(subj + ' ' + ref + ' ' + st)) return true;
   return false;
 }
 
