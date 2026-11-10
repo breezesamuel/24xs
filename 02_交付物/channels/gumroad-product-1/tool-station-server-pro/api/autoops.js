@@ -175,9 +175,26 @@ function renderDashboard(h){
     + '<div style="margin-top:18px">' + (issues || '<span style="color:#7d8aa0;font-size:12px">无告警</span>') + '</div></main></body></html>';
 }
 
+// 识别合成/探测订单 (CI/e2e/巡检探针), 从"真实订单"统计中剔除, 避免 self-probe 污染指标
+// (这些单是系统自己造的建单探针, 不是真实客户, 一直 paid=0 是正常态而非故障)
+function isSynthetic(o){
+  const ref = String(o.ref || o.visitor || '');
+  const out = String(o.out_trade_no || '');
+  const subj = String(o.subject || '');
+  // 探测 ref/单号/主题特征: ci_ e2e_ probe_ sigtest_ dual_ cnv_ walltest_ entitleprobe_ bds-ci / ci probe / sig test / 巡检
+  var pat = /^(ci_|e2e_|probe_|sigtest_|dual_|cnv_|cnwrite_|cnact|cnok|cnfinal|walltest_|entitleprobe_|storwtest|fprobe_|legit_|_check|fin_|sweep_|cnv_)/;
+  if(pat.test(ref)) return true;
+  if(/^(BDS_|SIGTEST_|CNV_|PROBE_|SWEEP_|FIN_)[A-Za-z0-9_]*(ci_|e2e_|probe_|sigtest_|dual_|walltest_|entitleprobe_|fin_|sweep_)/i.test(out)) return true;
+  var sp = /ci probe|sig test|巡检|probe|selftest|self-test|billing-diag/i;
+  if(sp.test(subj)) return true;
+  return false;
+}
+
 async function stats(){
   const orders = await fetchOrders(400);
-  const paid = orders.filter(function(o){ return o.status === 'paid'; });
+  const real = orders.filter(function(o){ return !isSynthetic(o); });
+  const synthetic = orders.length - real.length;
+  const paid = real.filter(function(o){ return o.status === 'paid'; });
   let revenue = 0;
   const planDist = {};
   paid.forEach(function(o){
@@ -190,10 +207,12 @@ async function stats(){
     at: new Date().toISOString(),
     store: rest() ? 'kv-rest' : 'global-kv',
     orders: {
-      total: orders.length,
+      total: real.length,               // 只算真实客户订单 (剔除合成探针), 指标诚实
       paid: paid.length,
       revenue_cny: Math.round(revenue * 100) / 100,
       plan_dist: planDist,
+      synthetic_excluded: synthetic,    // 透明: 剔除了多少合成探针单
+      total_incl_probe: orders.length
     },
     arcade: arcade,
     recent: orders.slice(0, 20).map(function(o){

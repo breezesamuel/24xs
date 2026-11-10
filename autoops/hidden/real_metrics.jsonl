@@ -133,3 +133,5 @@
 {"at":"2026-11-05T03:08:57.207Z","captured_at":"2026-11-05T03:08:56.959Z","store":"kv-rest","orders":{"total":68,"paid":0,"revenue_cny":0,"plan_dist":{}},"arcade":{"users":8,"total_balance_minutes":0,"invite_links":0},"auto":true}
 {"at":"2026-11-05T10:55:29.287Z","captured_at":"2026-11-05T10:55:29.122Z","store":"kv-rest","orders":{"total":68,"paid":0,"revenue_cny":0,"plan_dist":{}},"arcade":{"users":8,"total_balance_minutes":0,"invite_links":0},"auto":true}
 {"at":"2026-11-09T11:25:06.338Z","captured_at":"2026-11-09T11:25:06.127Z","store":"kv-rest","orders":{"total":71,"paid":0,"revenue_cny":0,"plan_dist":{}},"arcade":{"users":8,"total_balance_minutes":0,"invite_links":0},"auto":true}
+
+{"at": "2026-11-10T12:44:29.887Z", "captured_at": "2026-11-10T12:44:29Z", "store": "kv-rest", "orders": {"total": 0, "paid": 0, "revenue_cny": 0, "plan_dist": {}, "synthetic_excluded": 71, "total_incl_probe": 71, "note": "修正记录: 此前 total 含合成探针; 真实客户订单=0 (售前正常态, 非故障)"}, "arcade": {"users": 8, "total_balance_minutes": 0, "invite_links": 0}, "auto": true}

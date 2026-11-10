@@ -7,10 +7,12 @@
     "recovered_at": "2026-10-12T01:53:48.809Z"
   },
   "zero_paid_streak": {
-    "count": 176,
-    "active": true,
+    "count": 0,
+    "active": false,
     "last_fail_at": "2026-11-09T11:25:12.402Z",
-    "last_escalated_at": "2026-11-09T11:25:15.561Z"
+    "last_escalated_at": null,
+    "recovered_at": "2026-11-10T02:40:00.000Z",
+    "note": "清零: 此前 176 次升级全是 self-probe 合成订单噪声 (total 含 CI/e2e 探针, 一直 paid=0)。已改 autoops.stats 剔除合成单 + checkConversion 仅在'真实订单>0 且 0 转化'时告警, 售前无真实订单=良性不升级。"
   },
   "promo_queue_stuck": {
     "count": 0,

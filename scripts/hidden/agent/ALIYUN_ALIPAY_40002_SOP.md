@@ -91,10 +91,22 @@ curl -s -X POST https://tools-cn.highkingflower.com/api/order \
 - 教训: 静默 `catch{}` + `const` 重名 组合最坑；改前先看运行日志真因。
 
 ### F. Hidden AutoOps security-lint (actionlint+shellcheck+codeql/zizmor) → 已修
-- `storefront_integrity.yml` 里 `probe_wall`/`probe_entitle` 的 `local ref="...$(date...)"`
-  触发 shellcheck **SC2155** (declare-and-assign 分离) → actionlint 把 warning 当 fatal → job 失败。
-- 修复: `local ref` 与 `ref="...$(...)"` 拆成两行。已触发 run 验证通过。
-- 注: zizmor 的 `unpinned-uses` (keepalive/secrets-presence 用 @v4 未锁 hash) 是 **note/warning 级, 非 fatal**, 可后续再锁。
+
+### G. zero_paid_streak "CRITICAL ×178" 误报根治 (self-probe 噪声) → 已修
+- 现象: `[watchdog ESCALATED ×178 CRITICAL] zero_paid_streak` 连续 30+ 天刷屏。
+- 根因 (深挖 `real_metrics.jsonl` + `autoops.js stats()`): 指标 `orders.total` 把 **系统自己造的
+  CI/e2e/巡检探针订单** (ci_* / e2e_* / probe_* 等 71 个) 全算进 total, 它们永远 paid=0
+  → watchdog `checkConversion` (total>0 && paid=0) 一直判"转化故障"并升级 CRITICAL。
+  真相: **这些是合成探针, 不是真实客户; "零真实营收" 是售前正常态, 不是运维故障。**
+- 修复 (3 层, 全对齐"不做假数据"):
+  1. `autoops.js stats()`: 加 `isSynthetic()` 识别探针 (ref/out_trade_no/subject 特征),
+     `orders.total` 只算真实客户订单, 新增 `synthetic_excluded`/`total_incl_probe` 透明字段。
+  2. `hidden_watchdog.mjs checkConversion()`: 只在 **"真实订单>0 且 0 转化"** 时才告警;
+     "真实订单=0" = 售前良性, 只记录不升级 (不再 CRITICAL 刷屏)。
+  3. `alert_state.json`: zero_paid_streak 清零 (count=0 active=false)。
+     `real_metrics.jsonl` 追加一条诚实修正记录 (total=0, synthetic_excluded=71)。
+- 结果: 该 run watchdog 从 CRITICAL 降为 degraded (良性), 升级停止; 收敛靠 autoops 新格式 + 下轮 realops 回传。
+- 教训: **监控指标必须剔除系统自造的合成数据**, 否则 watchdog 会因自己的探针自我告警 30 天。
 
 ## 最终健康总扫
 `python scripts/hidden/agent/_sig_sweep.py`（双活查单签名 40004）

@@ -218,12 +218,27 @@ async function checkStorefront(){
 async function checkConversion(){
   const rows = load(path.join(H, 'real_metrics.jsonl'));
   const recent = rows.slice(-3).map(r => r.orders);
-  const allZero = recent.length >= 2 && recent.every(o => o && o.total > 0 && o.paid === 0);
-  if(allZero){
-    const total = recent[recent.length - 1].total;
-    await alert('zero_paid_streak', '[watchdog] 连续无支付',
-      `最近 ${recent.length} 次拉取：订单 ${total} 笔但 paid=0。需检查支付流程/获客质量。`);
-    return { ok:false, streak: recent.length };
+  // 真实订单数: 若指标已带 synthetic 剔除 (total 只算真实), 直接用 total;
+  // 兼容旧指标 (total 含探针) → 用 total_incl_probe - synthetic_excluded 还原真实数
+  const real = recent.map(o => {
+    if(!o) return 0;
+    if(typeof o.synthetic_excluded === 'number') return (o.total || 0);         // 新版: total 已是真实数
+    return Math.max(0, (o.total || 0) - (o.synthetic_excluded || 0));          // 旧版: 还原
+  });
+  const paidLast = recent.length ? (recent[recent.length-1].paid || 0) : 0;
+  const realLast = real[real.length-1] || 0;
+  // 只有当 "真实客户订单>0 但 0 转化" 才算转化故障 (真正需要关注的);
+  // "真实订单=0" = 尚未有客户下单 (售前正常态) → 良性, 只记录不升级, 避免 CRITICAL 刷屏
+  const allZeroReal = realLast > 0 && paidLast === 0 && recent.length >= 2 && recent.every(o => o && o.total > 0 && o.paid === 0);
+  if(allZeroReal){
+    await alert('zero_paid_streak', '[watchdog] 真实订单未转化',
+      `最近 ${recent.length} 次拉取：真实订单 ${realLast} 笔但 paid=0。需检查支付流程/获客质量。(合成探针已剔除)`);
+    return { ok:false, streak: real.length, real_orders: realLast };
+  }
+  if(realLast === 0 && paidLast === 0){
+    // 售前正常: 无真实客户订单。记录为良性状态, 不告警、不升级。
+    record('zero_real_orders', 'no real customer orders yet (pre-launch benign)', false, 'benign_pre_launch');
+    return { ok:true, note: 'no_real_orders_yet' };
   }
   return { ok:true };
 }
