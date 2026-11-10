@@ -15,7 +15,7 @@ function getAuthHeader(clientId, secret) {
   return `Basic ${raw}`;
 }
 
-export class PayPalGateway {
+class PayPalGateway {
   constructor(clientId, secret) {
     this.clientId = clientId;
     this.secret = secret;
@@ -201,6 +201,8 @@ export class PayPalGateway {
   }
 }
 
-export function cnyToUsd(priceCny) {
+function cnyToUsd(priceCny) {
   return Math.round(priceCny / FX_CNY_PER_USD * 100) / 100;
 }
+
+module.exports = { PayPalGateway, cnyToUsd };

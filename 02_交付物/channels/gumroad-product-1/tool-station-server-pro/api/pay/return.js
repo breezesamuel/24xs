@@ -1,8 +1,9 @@
 // GET /pay/return - PayPal auto-return callback (auto-capture + activate + receipt)
-import { PayPalGateway } from "../../lib/_lib/paypal.js";
-import { SUBSCRIPTION_PLANS, CURRENCY } from "../../lib/_lib/plans.js";
-import { getPending, removePending } from "../../lib/_lib/pending.js";
-import { sendReceipt } from "../../lib/_lib/mailer.js";
+// CJS (Vercel type=commonjs; ESM import 会 FUNCTION_INVOCATION_FAILED)
+const { PayPalGateway } = require("../../lib/_lib/paypal.js");
+const { SUBSCRIPTION_PLANS, CURRENCY } = require("../../lib/_lib/plans.js");
+const { getPending, removePending } = require("../../lib/_lib/pending.js");
+const { sendReceipt } = require("../../lib/_lib/mailer.js");
 
 function html(title, body) {
   return `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>${title}</title>
@@ -13,7 +14,7 @@ code{background:#f3f4f6;padding:2px 5px;border-radius:3px;font-size:.9em}</style
 <body><div class="card">${body}</div></body></html>`;
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   const { token: orderId, plan: planQuery, user: userQuery, dry_run } = req.query;
   if (!orderId) return res.status(400).send(html("错误", `<p class="err">缺少订单号 token</p>`));
 
@@ -61,7 +62,7 @@ export default async function handler(req, res) {
   }
 
   if (!clientId || !secret) {
-    return res.status(500).send(html("错误", `<p class="err">PayPal 凭证未配置</p>`));
+    return res.status(503).send(html("未就绪", `<p class="err">PayPal 收款网关未配置</p><p class="muted">主收款走支付宝 /api/pay (本窗口可关闭)。</p>`));
   }
 
   const gw = new PayPalGateway(clientId, secret);
@@ -131,3 +132,6 @@ export default async function handler(req, res) {
     </script>
   `));
 }
+
+module.exports = handler;
+module.exports.default = handler;

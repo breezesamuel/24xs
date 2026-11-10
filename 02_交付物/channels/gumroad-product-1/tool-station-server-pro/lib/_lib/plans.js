@@ -1,5 +1,6 @@
 // Subscription plans (mirror of Python plans.py)
-export const SUBSCRIPTION_PLANS = {
+// CJS (与 alipay.js 一致, Vercel 项目 type=commonjs; 用 import 会 FUNCTION_INVOCATION_FAILED)
+const SUBSCRIPTION_PLANS = {
   basic: {
     name: "基础体验卡",
     price: 1.0,
@@ -26,4 +27,6 @@ export const SUBSCRIPTION_PLANS = {
   },
 };
 
-export const CURRENCY = "CNY";
+const CURRENCY = "CNY";
+
+module.exports = { SUBSCRIPTION_PLANS, CURRENCY };

@@ -1,10 +1,11 @@
 // POST /api/paypal/capture - Capture approved order (real charge)
-import { PayPalGateway } from "../../lib/_lib/paypal.js";
-import { SUBSCRIPTION_PLANS, CURRENCY } from "../../lib/_lib/plans.js";
-import { getPending, removePending } from "../../lib/_lib/pending.js";
-import { sendReceipt } from "../../lib/_lib/mailer.js";
+// CJS (Vercel type=commonjs)
+const { PayPalGateway } = require("../../lib/_lib/paypal.js");
+const { SUBSCRIPTION_PLANS, CURRENCY } = require("../../lib/_lib/plans.js");
+const { getPending, removePending } = require("../../lib/_lib/pending.js");
+const { sendReceipt } = require("../../lib/_lib/mailer.js");
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
@@ -37,7 +38,7 @@ export default async function handler(req, res) {
 
     const clientId = process.env.PAYPAL_CLIENT_ID;
     const secret   = process.env.PAYPAL_SECRET;
-    if (!clientId || !secret) return res.status(500).json({ status: "error", message: "PayPal credentials not configured" });
+    if (!clientId || !secret) return res.status(503).json({ status: "unavailable", error: "paypal_not_configured", message: "PayPal 收款网关未配置 (主收款走支付宝 /api/pay)" });
 
     const gw = new PayPalGateway(clientId, secret);
     const cap = await gw.captureOrder(order_id);
@@ -84,3 +85,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ status: "error", message: String(e) });
   }
 }
+
+module.exports = handler;
+module.exports.default = handler;

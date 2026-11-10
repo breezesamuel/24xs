@@ -1,9 +1,10 @@
 // GET /api/paypal/status?order_id=xxx —— 只读查单，供客户页"零操作"自动确认到账
 // 前端轮询本接口：COMPLETED 即视为付款成功（不需客户手动刷新或点任何按钮）。
 // 注意路径：_lib 在 api/ 的同级目录，故用 ../_lib/paypal.js
-import { PayPalGateway } from "../../lib/_lib/paypal.js";
+// CJS (Vercel type=commonjs)
+const { PayPalGateway } = require("../../lib/_lib/paypal.js");
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
 
@@ -13,7 +14,7 @@ export default async function handler(req, res) {
   const clientId = process.env.PAYPAL_CLIENT_ID;
   const secret = process.env.PAYPAL_SECRET;
   if (!clientId || !secret) {
-    return res.status(500).json({ status: "error", message: "PayPal credentials not configured" });
+    return res.status(503).json({ status: "unavailable", error: "paypal_not_configured", message: "PayPal 收款网关未配置 (主收款走支付宝 /api/pay)" });
   }
 
   try {
@@ -34,3 +35,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ status: "error", message: String(e) });
   }
 }
+
+module.exports = handler;
+module.exports.default = handler;

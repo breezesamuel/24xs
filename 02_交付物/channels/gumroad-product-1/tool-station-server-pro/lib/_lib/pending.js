@@ -38,7 +38,7 @@ async function kvExec(args) {
   }
 }
 
-export async function registerPending(orderId, info) {
+async function registerPending(orderId, info) {
   const record = { ...info, createdAt: Date.now() };
   const key = `pay_pending_${orderId}`;
   const kv = await kvExec([
@@ -50,7 +50,7 @@ export async function registerPending(orderId, info) {
   }
 }
 
-export async function getPending(orderId) {
+async function getPending(orderId) {
   const key = `pay_pending_${orderId}`;
   const kv = await kvExec(["GET", key]);
   if (kv.ok && kv.data[0] != null) {
@@ -60,8 +60,10 @@ export async function getPending(orderId) {
   return memFallback.get(key) || null;
 }
 
-export async function removePending(orderId) {
+async function removePending(orderId) {
   const key = `pay_pending_${orderId}`;
   await kvExec(["DEL", key]);
   memFallback.delete(key);
 }
+
+module.exports = { registerPending, getPending, removePending };

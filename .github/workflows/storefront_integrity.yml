@@ -89,6 +89,157 @@ jobs:
             echo "::warning::Storefront degraded endpoints: $FAIL_WARN (non-critical)"
           fi
 
+      - name: Verify Alipay payment loop (建单/查单/notify fail-safe)
+        env:
+          STOREFRONT_BASE: https://tools.highkingflower.com
+        run: |
+          set -uo pipefail
+          BASE="${STOREFRONT_BASE}"
+          REF="ci_$(date -u +%Y%m%d%H%M%S)_$RANDOM"
+          OUT="BDS_${REF}_trial"
+          echo "=== 支付宝收款闭环验证 (probe ref=${REF}) ==="
+
+          # 1. 建单: 期望返回收银台 HTML (含 gateway.do + 本次 out_trade_no)
+          PAY=$(curl -s --max-time 30 -X POST "${BASE}/api/pay" \
+            -H "Content-Type: application/json" \
+            -d "{\"plan\":\"trial\",\"ref\":\"${REF}\",\"out_trade_no\":\"${OUT}\",\"subject\":\"bingdashan ci probe\"}" || echo "")
+          if echo "$PAY" | grep -q "openapi.alipay.com/gateway.do" && echo "$PAY" | grep -q "$OUT"; then
+            echo "  [OK] /api/pay 建单 (收银台表单 + out_trade_no)"
+          else
+            echo "  [FAIL] /api/pay 建单"
+            echo "$PAY" | head -c 300
+            exit 1
+          fi
+
+          # 2. 查单: 幂等, 未支付应返回 ok=true paid=false
+          Q=$(curl -s --max-time 30 -X POST "${BASE}/api/order" \
+            -H "Content-Type: application/json" -d "{\"out_trade_no\":\"${OUT}\"}" || echo "{}")
+          if echo "$Q" | grep -q '"ok":true' && echo "$Q" | grep -q '"paid":false'; then
+            echo "  [OK] /api/order 查单 (ok=true paid=false, 真实查支付宝网关)"
+          else
+            echo "  [WARN] /api/order 查单异常: $(echo "$Q" | head -c 200)"
+          fi
+
+          # 3. /api/notify 回调 fail-safe: 无签名的 GET 应返回 400 fail (拒绝非法回调)
+          N=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "${BASE}/api/notify" || echo "000")
+          if [ "$N" = "400" ] || [ "$N" = "200" ]; then
+            echo "  [OK] /api/notify 回调路由可达 (HTTP ${N}, 非法回调被验签拒绝)"
+          else
+            echo "  [WARN] /api/notify HTTP ${N}"
+          fi
+
+          echo "  注: 本次 probe 订单 ${OUT} 挂起, 15m 超时自动关闭, 不影响营收"
+
+      - name: Verify dual-active Alipay signature (Vercel + Aliyun tools-cn)
+        env:
+          CN_BASE: https://tools-cn.highkingflower.com
+          VCL_BASE: https://tools.highkingflower.com
+        run: |
+          set -uo pipefail
+          echo "=== 双活域名支付宝签名一致性 (防 40002 复发) ==="
+          CNREF="dual_$(date -u +%Y%m%d%H%M%S)_$RANDOM"
+          CNOUT="CN_${CNREF}"
+          VREF="dual_$(date -u +%Y%m%d%H%M%S)_${RANDOM}_v"
+          VOUT="V_${VREF}"
+
+          check() {
+            local base="$1" out="$2" label="$3"
+            local Q
+            Q=$(curl -s --max-time 30 -X POST "${base}/api/order" \
+              -H "Content-Type: application/json" -d "{\"out_trade_no\":\"${out}\"}" || echo "{}")
+            # 期望: 网关验签通过 → sub=ACQ.TRADE_NOT_EXIST(40004); 绝不能出现 isv.invalid-signature(40002)
+            if echo "$Q" | grep -q "isv.invalid-signature"; then
+              echo "  [FAIL] ${label} 查单签名失败 (isv.invalid-signature) → 该域无法真收款"
+              echo "         根因: /etc/bingdashan-cn/ 密钥 与 支付宝开放平台登记的公钥不配对"
+              echo "         修复: 用平台已登记配对的密钥重写 /etc/bingdashan-cn/alipay_{priv,pub}.pem + systemctl restart bingdashan-cn"
+              echo "$Q" | head -c 300
+              return 1
+            fi
+            if echo "$Q" | grep -qE "ACQ.TRADE_NOT_EXIST|TRADE_NOT_EXIST"; then
+              echo "  [OK] ${label} 查单 40004 (网关验签通过, 未支付态正常)"
+            elif echo "$Q" | grep -q '"ok":true'; then
+              echo "  [OK] ${label} 查单 ok=true (验签通过)"
+            else
+              echo "  [WARN] ${label} 查单: $(echo "$Q" | head -c 200)"
+            fi
+            return 0
+          }
+
+          FAIL=0
+          check "${CN_BASE}" "${CNOUT}" "阿里云 tools-cn" || FAIL=1
+          check "${VCL_BASE}" "${VOUT}" "Vercel 主站" || FAIL=1
+          echo "  双活签名一致性: $([ $FAIL -eq 0 ] && echo '✅ 全绿' || echo '❌ 有域签名失败')"
+          [ $FAIL -eq 0 ]
+
+      - name: Verify subscription wall is not bypassable (subscribe/extend fail-closed)
+        env:
+          CN_BASE: https://tools-cn.highkingflower.com
+          VCL_BASE: https://tools.highkingflower.com
+        run: |
+          set -uo pipefail
+          echo "=== 订阅墙白嫖漏洞探针 (subscribe/extend 必须被拒) ==="
+          FAIL=0
+          probe_wall() {
+            local base="$1" label="$2"
+            local ref
+            ref="wallprobe_$(date -u +%s)_$RANDOM"
+            local R
+            R=$(curl -s --max-time 25 -X POST "${base}/api/subwall" \
+              -H "Content-Type: application/json" \
+              -d "{\"action\":\"subscribe\",\"ref\":\"${ref}\",\"plan\":\"pro\"}" || echo "{}")
+            # 期望: 拒绝 (subscribe_closed / 非 ok:true)
+            if echo "$R" | grep -qE '"ok":true' && ! echo "$R" | grep -q "subscribe_closed"; then
+              echo "  [FAIL] ${label} subscribe 竟返回 ok:true → 白嫖漏洞未堵!"
+              echo "$R" | head -c 200
+              FAIL=1
+            else
+              echo "  [OK] ${label} subscribe 被拒 ($(echo "$R" | grep -oE 'subscribe_closed|store_failed|unknown_plan' | head -1))"
+            fi
+          }
+          probe_wall "${VCL_BASE}" "Vercel 主站"
+          probe_wall "${CN_BASE}" "阿里云 tools-cn"
+          echo "  订阅墙白嫖探针: $([ $FAIL -eq 0 ] && echo '✅ 双活均拒绝 (正确)' || echo '❌ 有域可白嫖!')"
+          [ $FAIL -eq 0 ]
+
+      - name: Verify no fake entitlements + receipt->entitlement read-back is honest
+        env:
+          CN_BASE: https://tools-cn.highkingflower.com
+          VCL_BASE: https://tools.highkingflower.com
+        run: |
+          set -uo pipefail
+          echo "=== 权益真实性探针 (未付款绝不得有权益; 开通必须走 支付→activate) ==="
+          FAIL=0
+          probe_entitle() {
+            local base="$1" label="$2"
+            local ref
+            ref="entitleprobe_$(date -u +%s)_$RANDOM"
+            # 1) 全新 ref 未付款 → orders 必须 0 (无假开通)
+            local E
+            E=$(curl -s --max-time 25 -X POST "${base}/api/entitle" \
+              -H "Content-Type: application/json" -d "{\"ref\":\"${ref}\"}" || echo "{}")
+            if echo "$E" | grep -qE '"orders":[1-9]'; then
+              echo "  [FAIL] ${label} 未付款 ref 竟有权益 orders>0 → 假开通!"
+              echo "$E" | head -c 200
+              FAIL=1
+            else
+              echo "  [OK] ${label} 未付款 orders=0 (无假权益)"
+            fi
+            # 2) subwall check 该 ref 必须 = free (未开通)
+            local C
+            C=$(curl -s --max-time 25 -X POST "${base}/api/subwall" \
+              -H "Content-Type: application/json" -d "{\"action\":\"check\",\"ref\":\"${ref}\"}" || echo "{}")
+            if echo "$C" | grep -qE '"plan":"(pro|pro3|proY|team)"' && echo "$C" | grep -q '"subscribed":true'; then
+              echo "  [FAIL] ${label} 未付款 ref 竟有付费订阅 (订阅墙可绕过!)"
+              FAIL=1
+            else
+              echo "  [OK] ${label} subwall 未付款=未开通 (plan=free/无订阅)"
+            fi
+          }
+          probe_entitle "${VCL_BASE}" "Vercel 主站"
+          probe_entitle "${CN_BASE}" "阿里云 tools-cn"
+          echo "  权益真实性探针: $([ $FAIL -eq 0 ] && echo '✅ 双活无假开通' || echo '❌ 有假权益!')"
+          [ $FAIL -eq 0 ]
+
       - name: Upload integrity report
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

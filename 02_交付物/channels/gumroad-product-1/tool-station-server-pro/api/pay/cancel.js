@@ -1,5 +1,6 @@
 // GET /pay/cancel - PayPal cancel page
-export default function handler(req, res) {
+// CJS (Vercel type=commonjs)
+function handler(req, res) {
   const html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>已取消</title>
 <style>body{font-family:system-ui,sans-serif;max-width:600px;margin:40px auto;padding:0 16px;line-height:1.6}
 .card{border:1px solid #e5e7eb;border-radius:8px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
@@ -12,3 +13,6 @@ export default function handler(req, res) {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.send(html);
 }
+
+module.exports = handler;
+module.exports.default = handler;

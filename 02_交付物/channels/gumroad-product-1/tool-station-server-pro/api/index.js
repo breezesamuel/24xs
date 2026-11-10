@@ -1,5 +1,6 @@
 // Vercel rewrite target for dashboard (optional - serves the HTML dashboard)
-export default function handler(req, res) {
+// CJS (Vercel type=commonjs)
+function handler(req, res) {
   const html = `<!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="UTF-8"><title>AI 获客运营看板</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -175,3 +176,6 @@ setInterval(loadState, 10000);
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.send(html);
 }
+
+module.exports = handler;
+module.exports.default = handler;

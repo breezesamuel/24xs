@@ -2,8 +2,8 @@
 // 环境变量: SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_AUTH / SMTP_TO
 // 用法: await sendReceipt({ to, orderId, plan, amountUsd, amountCny, payerEmail, env })
 
-import net from "node:net";
-import tls from "node:tls";
+const net = require("node:net");
+const tls = require("node:tls");
 
 function env(k) { return process.env[k] || ""; }
 function b64(s) { return Buffer.from(String(s), "utf8").toString("base64"); }
@@ -51,7 +51,7 @@ function sendMail({ host, port, user, pass, to, subject, body }) {
   });
 }
 
-export async function sendReceipt({ to, orderId, plan, planName, amountUsd, amountCny, payerEmail, env: payEnv }) {
+async function sendReceipt({ to, orderId, plan, planName, amountUsd, amountCny, payerEmail, env: payEnv }) {
   const host = env("SMTP_HOST") || "smtp.qq.com";
   const port = env("SMTP_PORT") || "465";
   const user = env("SMTP_USER");
@@ -78,3 +78,5 @@ export async function sendReceipt({ to, orderId, plan, planName, amountUsd, amou
     body,
   });
 }
+
+module.exports = { sendReceipt };
