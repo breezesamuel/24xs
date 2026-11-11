@@ -85,9 +85,29 @@
     <div class="note">付费自动到账 + 自动开通 + 自动收据 + 自动对账 (无需人工核账)</div>
   </div>
 
+  <!-- 5. 公益基金 -->
+  <div class="card">
+    <h3>🕊️ 公益基金 <span class="tag live">LIVE</span></h3>
+    <p class="d">捐赠透明记账 (总额公示), 走支付宝收款 / 账本记一笔</p>
+    <div class="acts">
+      <a id="donateLink" href="#">捐 ¥10</a>
+      <button id="donateLedgerBtn">查我的捐赠</button>
+    </div>
+    <div class="stat" id="charityStat"></div>
+    <div class="note">真实公益需 owner 备案 + 受赠资质; 本页只做 *透明账本*, 不自动打款。</div>
+  </div>
+
+  <!-- 6. 带宽/闲置共享 -->
+  <div class="card">
+    <h3>📡 带宽共享 <span class="tag live">LIVE</span></h3>
+    <p class="d">共享闲置带宽 (0.5 币/GB, 日上限 50GB), 累计 ≥100 币可提现</p>
+    <div class="stat" id="bwStat"></div>
+    <div class="note">需 P2P 网络 + 结算; 本页做 *计量账本*, 防刷 (日上限 + 物理速率上限)。</div>
+  </div>
+
   <h2>为什么可信</h2>
   <p class="sub" style="margin-bottom:0">
-    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 4 条账本渠道防刷 (哈希去重 + 上限)<br>
+    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 6 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁)<br>
     所有指标读真实账本, 无假数据。提现需达门槛 (返现 10 元 / 币 100), 由平台结算。
   </p>
 </div>
@@ -151,6 +171,10 @@ function loadAll(){
   // 付费链接带 ref (收款后自动记返现+权益)
   document.getElementById('payLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=channels&amount=1';
   document.getElementById('trialLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=trial&amount=1';
+  // 公益 + 带宽
+  document.getElementById('donateLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=charity&amount=10&charity_project=general';
+  j('/api/charity?action=total').then(function(r){ var s=r.body; document.getElementById('charityStat').innerHTML='累计捐赠 <b>'+(s.total_yuan||0)+'</b> 元 · '+(s.count||0)+' 笔'+(s.by_project&&s.by_project.length?' · 项目: '+s.by_project.map(function(x){return x.project+' '+x.yuan+'元';}).join(', '):''); }).catch(function(){});
+  j('/api/bandwidth?ref='+encodeURIComponent(REF)).then(function(r){ var s=r.body; if(s.store){ document.getElementById('bwStat').innerHTML='已共享 <b>'+(s.total_gb||0)+'</b>GB · 币 <b>'+(s.tokens_total||0)+'</b>'+(s.can_settle?' · 可提现':''); } else { document.getElementById('bwStat').textContent='注册后共享带宽赚币'; } }).catch(function(){});
 }
 
 function claimTask(t){
@@ -180,6 +204,15 @@ document.getElementById('wrBtn').onclick = function(){
     else if(b.reasons){ toast('被拒: '+b.reasons.join(', ')); }
     else { toast('提交失败: '+(b.error||'未知')); }
     loadAll();
+  }).catch(function(){ toast('网络错误'); });
+};
+
+// 公益: 查我的捐赠
+document.getElementById('donateLedgerBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  j('/api/charity?ref='+encodeURIComponent(REF)).then(function(r){
+    var s=r.body;
+    toast('我的捐赠 '+(s.count||0)+' 笔共 '+(s.total_yuan||0)+' 元');
   }).catch(function(){ toast('网络错误'); });
 };
 

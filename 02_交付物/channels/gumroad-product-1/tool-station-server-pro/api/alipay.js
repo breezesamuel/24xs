@@ -807,6 +807,36 @@ module.exports=async(req,res)=>{
       }
       return;
     }
+    // 公益基金 (charity) 账本 独立路由 (赚钱回路新维度: 捐赠透明账本)
+    if(route.startsWith('/api/charity')){
+      try{
+        const mod = require('../lib/charity.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'charity handler error: '+e.message});
+      }
+      return;
+    }
+    // 带宽/闲置资源共享 (bandwidth) 账本 独立路由 (赚钱回路新维度: 共享闲置带宽得币)
+    if(route.startsWith('/api/bandwidth')){
+      try{
+        const mod = require('../lib/bandwidth.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'bandwidth handler error: '+e.message});
+      }
+      return;
+    }
     send(404,{ok:false,error:'not found',route:route});
   }catch(e){send(500,{ok:false,error:e.message,stack:(e.stack||'').split('\n').slice(0,3)});}
 };
