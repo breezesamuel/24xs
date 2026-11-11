@@ -791,6 +791,21 @@ module.exports=async(req,res)=>{
       }
       return;
     }
+    // 劳动换币 (bounty) 账本 独立路由 (赚钱回路新维度: 完成任务得币, 服务端证据校验防刷)
+    if(route.startsWith('/api/bounty')){
+      try{
+        const mod = require('../lib/bounty.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'bounty handler error: '+e.message});
+      }
+      return;
+    }
     send(404,{ok:false,error:'not found',route:route});
   }catch(e){send(500,{ok:false,error:e.message,stack:(e.stack||'').split('\n').slice(0,3)});}
 };
