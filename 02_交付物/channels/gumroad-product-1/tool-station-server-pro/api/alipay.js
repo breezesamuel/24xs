@@ -45,7 +45,11 @@ const WALLETS={
   payment_usdc:{chain:'Base',asset:'USDC',address:'0x047b2A7fc72862a0e3E772eb53b19d35929BEd46',role:'Payment(USDC on Base)'},
   evm_alipay:{chain:'EVM',asset:'USDC/ETH',address:'0xDe37cDc93fC425e14EBdB827086E2144b31E855a',role:'EVM 收款'},
   cn_wallet:{chain:'EVM',asset:'多币',address:'0x5D36F4c480F900F0E7Ad0DC4fA0402554b972bF8',role:'国内收款到钱包'},
-  solana_bounty:{chain:'Solana',asset:'SOL/usdc',address:'4moYJshT1bW71iESvwJHMynA5NFV534PJzFiKraydV6Z',role:'bounty 收款'}
+  solana_bounty:{chain:'Solana',asset:'SOL/usdc',address:'4moYJshT1bW71iESvwJHMynA5NFV534PJzFiKraydV6Z',role:'bounty 收款'},
+  // owner 指定 (2026-11-11): 币结算收款钱包 = Coinbase 自托管 (EVM, 40-hex 合法)
+  // 仅用于用户自己挣的币 (写作/返现/劳动/带宽渠道结算) -> 打款到此钱包
+  // 合规红线: 绝不接扫全网无主资金/airdrop 据为己有 -> 抽佣收进此钱包
+  owner_coinbase:{chain:'EVM',asset:'USDC/ETH/USDT',address:'0xe35b920Ba38bc83fb19D0b77871545C2F986093c',role:'owner coinbase 收款(币结算)',enabled:true}
 };
 function ladderPct(n){let pct=0;for(let i=0;i<LADDER.length;i++){if(n>=LADDER[i][0])pct=LADDER[i][1];}return Math.max(0,Math.min(100,pct));}
 
@@ -712,6 +716,32 @@ module.exports=async(req,res)=>{
       send(200,{ok:true,received:data,base:base,store:storeKind()});return;
     }
     if(route==='/api/config'){send(200,{ok:true,app_id:get('ALIPAY_APP_ID'),account:get('ALIPAY_ACCOUNT'),base:base,store:storeKind(),plans:PLANS,wallets:WALLETS,ready:!!(get('ALIPAY_APP_ID')&&getKey('ALIPAY_MERCHANT_PRIVATE_KEY')&&getKey('ALIPAY_ALIPAY_PUBLIC_KEY'))});return;}
+    // 币结算: 把「用户自己挣的币」结算到 owner 指定钱包 (coinbase)。
+    // 合规: 只生成「待人工确认」结算单, 不自动打款 (无付款密钥)。
+    // 红线: 拒扫全网无主资金/airdrop 据为己有 -> 抽佣收进此钱包。
+    if(route==='/api/coinsettle'){
+      const ref=String(data.ref||'').trim();
+      const amount=Number(data.amount||0);
+      const asset=String(data.asset||'USDC').toUpperCase();
+      const dest=String(data.dest||'owner_coinbase');
+      const destWallet=WALLETS[dest];
+      if(!ref)return send(400,{ok:false,error:'missing_ref'});
+      if(!(amount>0))return send(400,{ok:false,error:'invalid_amount',note:'金额须>0'});
+      if(!destWallet)return send(400,{ok:false,error:'unknown_dest_wallet',note:'目标钱包未配置'});
+      // 合规红线: dest 必须是 owner 指定钱包 (enabled 且角色含 owner)
+      if(!destWallet.enabled || String(destWallet.role||'').indexOf('owner')<0){
+        return send(400,{ok:false,error:'compliance_redline',note:'只能结算到 owner 指定收款钱包 (合规红线: 不接无主资金/airdrop 抽佣)'});
+      }
+      // 生成待人工确认结算单 (不自动打款)
+      const settleId='CS_'+ref+'_'+Date.now().toString(36).toUpperCase();
+      const entry={id:settleId,ref:ref,asset:asset,amount:amount,
+        dest:dest,dest_address:destWallet.address,dest_chain:destWallet.chain,
+        status:'pending_manual_confirmation',at:new Date().toISOString()};
+      // 落账 (CN 文件 / Vercel KV) — 诚实: 只记「待确认」, 不静默转账
+      try{ await dbSet('coinsettle:'+settleId, JSON.stringify(entry)); }catch(e){}
+      send(200,{ok:true,entry:entry,note:'已生成待人工确认结算单; 实际打款需 owner 付款密钥 + 合规确认, 服务端不自动转账'});
+      return;
+    }
     if(route==='/api/health'){send(200,{ok:true,env:{app:!!get('ALIPAY_APP_ID'),priv:!!getKey('ALIPAY_MERCHANT_PRIVATE_KEY'),pub:!!getKey('ALIPAY_ALIPAY_PUBLIC_KEY'),supabase:!!sb(),kv:!!kv()},store:storeKind()});return;}
     // Morning-Youth 独立路由
     // 注意：morning-youth.js 导出 {onRequest,plans} 非标准 Vercel handler，
