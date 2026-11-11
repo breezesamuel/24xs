@@ -724,6 +724,7 @@ module.exports=async(req,res)=>{
       const amount=Number(data.amount||0);
       const asset=String(data.asset||'USDC').toUpperCase();
       const dest=String(data.dest||'owner_coinbase');
+      const source=String(data.source||'').toLowerCase();   // earned | unowned | airdrop | unknown
       const destWallet=WALLETS[dest];
       if(!ref)return send(400,{ok:false,error:'missing_ref'});
       if(!(amount>0))return send(400,{ok:false,error:'invalid_amount',note:'金额须>0'});
@@ -732,10 +733,19 @@ module.exports=async(req,res)=>{
       if(!destWallet.enabled || String(destWallet.role||'').indexOf('owner')<0){
         return send(400,{ok:false,error:'compliance_redline',note:'只能结算到 owner 指定收款钱包 (合规红线: 不接无主资金/airdrop 抽佣)'});
       }
+      // 合规红线: 只有「用户自己挣的币」(source=earned) 才可结算; 无主/airdrop 一律拒
+      //   服务端无法验证链上来源, 故靠 source 声明 + 渠道账本来源 (写作/返现/劳动/带宽 都是 earned)。
+      //   unowned / airdrop / 缺 source -> 拒 (绝不据他人无主资金抽佣)。
+      if(source!=='earned' && source!==''){
+        return send(400,{ok:false,error:'compliance_redline',note:'只结算「自己挣的币」(source=earned); 无主资金/airdrop 据为己有=违法, 拒'});
+      }
+      if(source===''){
+        return send(400,{ok:false,error:'missing_source',note:'须 source=earned (自己挣的币); 缺来源拒 (合规红线)'});
+      }
       // 生成待人工确认结算单 (不自动打款)
       const settleId='CS_'+ref+'_'+Date.now().toString(36).toUpperCase();
       const entry={id:settleId,ref:ref,asset:asset,amount:amount,
-        dest:dest,dest_address:destWallet.address,dest_chain:destWallet.chain,
+        source:source,dest:dest,dest_address:destWallet.address,dest_chain:destWallet.chain,
         status:'pending_manual_confirmation',at:new Date().toISOString()};
       // 落账 (CN 文件 / Vercel KV) — 诚实: 只记「待确认」, 不静默转账
       try{ await dbSet('coinsettle:'+settleId, JSON.stringify(entry)); }catch(e){}
