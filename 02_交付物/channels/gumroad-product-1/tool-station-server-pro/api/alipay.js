@@ -837,6 +837,21 @@ module.exports=async(req,res)=>{
       }
       return;
     }
+    // 找回被遗忘资产 (recovery) 账本 独立路由 (赚钱回路新维度: 仅本人/已授权资产, 拒扫描他人无主资金)
+    if(route.startsWith('/api/recovery')){
+      try{
+        const mod = require('../lib/recovery.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'recovery handler error: '+e.message});
+      }
+      return;
+    }
     send(404,{ok:false,error:'not found',route:route});
   }catch(e){send(500,{ok:false,error:e.message,stack:(e.stack||'').split('\n').slice(0,3)});}
 };
