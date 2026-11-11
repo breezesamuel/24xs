@@ -181,19 +181,103 @@ function isSynthetic(o){
   const ref = String(o.ref || o.visitor || '');
   const out = String(o.out_trade_no || '');
   const subj = String(o.subject || '');
+  const slug = String(o.slug || '');
   const st = String(o.status || '');
   const amt = o.amount_cny != null ? o.amount_cny : (o.amount != null ? o.amount : null);
-  // 探测 ref/单号/主题特征: ci_ e2e_ probe_ sigtest_ dual_ cnv_ walltest_ entitleprobe_ bds-ci / ci probe / sig test / 巡检
-  var pat = /^(ci_|e2e_|probe_|sigtest_|dual_|cnv_|cnwrite_|cnact|cnok|cnfinal|walltest_|entitleprobe_|storwtest|fprobe_|legit_|_check|fin_|sweep_|cnv_)/;
-  if(pat.test(ref)) return true;
-  if(/^(BDS_|SIGTEST_|CNV_|PROBE_|SWEEP_|FIN_)[A-Za-z0-9_]*(ci_|e2e_|probe_|sigtest_|dual_|walltest_|entitleprobe_|fin_|sweep_)/i.test(out)) return true;
-  var sp = /ci probe|sig test|巡检|probe|selftest|self-test|billing-diag/i;
-  if(sp.test(subj)) return true;
-  // 第二类合成: 测试/void 状态 + 1 元测试单 (self-generated test/void cycles, 非真实客户单)
-  if(/^(void_test|test|cancelled_test|_test)$/.test(st)) return true;
-  if(st.indexOf('test') > -1 && amt === 1) return true;
-  if(amt === 1 && /test|probe|void|demo|sample/i.test(subj + ' ' + ref + ' ' + st)) return true;
+  // 合成/测试单判据 (综合): ref/slug/单号/主题 含探针/测试/CI/诊断标记, 或单号是测试网关前缀, 或 void/test 状态。
+  // 漏剔会让 zero_paid_streak 误报"有单无转化"。Vercel KV 实测 107 单全是合成 (BDS_/BDSW_ 测试网关 + probe/ci/sigtest/cnv + P1/T1 短 ref)。
+  // 1) ref 精确前缀
+  if(/^(ci_|e2e_|probe_|sigtest_|dual_|cnv_|cnwrite_|cnact|cnok|cnfinal|walltest_|entitleprobe_|storwtest|fprobe_|legit_|_check|fin_|sweep_|diag_|alipay_diag)/i.test(ref)) return true;
+  // 2) 探针短 ref (P1/T1/B1/A1 及数字/PROBEREF/TEST123 等)
+  if(/^(P[0-9]|T[0-9]|B[0-9]|A[0-9]|PROBEREF|TEST[0-9]*|PROBE|DIAG)/i.test(ref)) return true;
+  // 3) ref/slug/单号/主题 含探针/测试词 (中缀, 含 cnv_ sigtest_ probe_ _diag walltest)
+  var blob = (ref + ' ' + slug + ' ' + subj + ' ' + out).toLowerCase();
+  if(/(probe|selftest|self-test|巡检|ci probe|sig test|billing-diag|_diag|walltest|entitleprobe|sweep|legit_|storwtest|fprobe|sigtest|cnv_)/.test(blob)) return true;
+  // 4) 单号是测试网关前缀 (BDS_ 支付宝测试 / BDSW_ 微信测试 / PROBE_ / SIGTEST_ / CNV_ / SWEEP_ / FIN_ / CI_ / E2E_ / DUAL_)
+  if(/^(BDS|BDSW|PROBE|SIGTEST|CNV|SWEEP|FIN|CI|E2E|DUAL|WALLTEST)_/i.test(out)) return true;
+  // 5) slug 是探针/测试 slug
+  if(/^(probe|test-probe|paytest|diag|selftest)$/i.test(slug)) return true;
+  // 6) 第二类: 测试/void 状态 + 1 元测试单 (运营 void_test 循环)
+  if(/^(void_test|test|cancelled_test|_test|created_test)$/i.test(st)) return true;
+  if(st.indexOf('test') > -1 && Number(amt) <= 1) return true;
+  if(Number(amt) === 1 && /test|probe|void|demo|sample|diag/i.test(slug + ' ' + ref + ' ' + st)) return true;
   return false;
+}
+
+// ----------------------------------------------------------------------------
+// 赚钱回路 (money loop) 漏斗 + 对账
+//   引流发布 -> 注册 -> 免费试用 -> 付费调用 -> 支付宝收款 -> 对账
+// 全部读真实 KV 数据 (track_ 引流, subwall 试用/权益, bds_order 订单), 指标诚实。
+// ----------------------------------------------------------------------------
+async function loopStats(orders, real){
+  const out = {
+    at: new Date().toISOString(),
+    funnel: {},      // 各环节数量
+    revenue: {},     // 收款/对账
+    reconcile: {},   // 网关 <-> 账本 对账差异
+  };
+  // 1) 引流发布: 近 14 天 track_ 的 PV + 来源 + 注册类事件
+  const trackDays = 14;
+  const days = [];
+  for(let i=0;i<trackDays;i++){ const d=new Date(Date.now()-i*86400000); days.push(d.toISOString().slice(0,10).replace(/-/g,'')); }
+  let pv=0, regEvents=0, trialEvents=0, sourceMap={};
+  for(const dk of days){
+    const raw = await kvGet('track_'+dk);
+    if(!raw) continue;
+    let o=null; try{ o=JSON.parse(raw);}catch(e){}
+    if(!o) continue;
+    pv += (o.pv||0);
+    const ev=o.ev||{};
+    regEvents += (ev.register||0)+(ev.signup||0)+(ev.lead||0);
+    trialEvents += (ev.trial||0)+(ev.trial_start||0);
+    for(const s in (o.sources||{})){ sourceMap[s]=(sourceMap[s]||0)+(o.sources[s]||0); }
+  }
+  // 2) 注册/唯一用户: 从真实订单的 ref 统计 (有 ref 才算真注册过)
+  const realRefs = {};
+  (real||[]).forEach(function(o){ const r=String(o.ref||o.visitor||''); if(r && r.length>3) realRefs[r]=1; });
+  const uniqUsers = Object.keys(realRefs).length;
+  // 3) 免费试用: trial 计划的真实单 + 已激活
+  const trialOrders = (real||[]).filter(function(o){ return o.plan==='trial'; });
+  const trialPaid = trialOrders.filter(function(o){ return o.status==='paid'; });
+  // 4) 付费调用: 全部真实 paid 单 (含订阅+单次)
+  const paidReal = (real||[]).filter(function(o){ return o.status==='paid'; });
+  let revenueCny=0; paidReal.forEach(function(o){ revenueCny += parseFloat(o.amount)||0; });
+  // 5) 对账: 网关口径 (order.trade_status) vs 账本口径 (order.status) 一致性
+  let gatewayPaid=0, ledgerPaid=0, mismatch=[];
+  (real||[]).forEach(function(o){
+    const gs = String(o.trade_status||'').toUpperCase();
+    const ls = String(o.status||'').toLowerCase();
+    const gwPaid = (gs==='SUCCESS'||gs==='TRADE_SUCCESS'||gs==='TRADE_FINISHED');
+    const ledPaid = (ls==='paid');
+    if(gwPaid) gatewayPaid++;
+    if(ledPaid) ledgerPaid++;
+    // 差异: 网关说成功但账本没标 paid (漏激活) 或 账本标 paid 但网关不是成功 (假 paid)
+    if(gwPaid && !ledPaid && o.ref) mismatch.push({out_trade_no:o.out_trade_no, ref:o.ref, gw:gs, ledger:ls, type:'gw_paid_ledger_missed'});
+    if(ledPaid && !gwPaid && gs && gs.indexOf('SUCCESS')<0) mismatch.push({out_trade_no:o.out_trade_no, ref:o.ref, gw:gs||'(none)', ledger:ls, type:'ledger_paid_gw_unconfirmed'});
+  });
+  out.funnel = {
+    traffic_pv_14d: pv,
+    top_sources: Object.keys(sourceMap).sort(function(a,b){return sourceMap[b]-sourceMap[a];}).slice(0,5).map(function(s){return {s:s, n:sourceMap[s]};}),
+    register_events_14d: regEvents,
+    trial_events_14d: trialEvents,
+    unique_users: uniqUsers,
+    trial_orders: trialOrders.length,
+    trial_paid: trialPaid.length,
+    paid_orders: paidReal.length,
+  };
+  out.revenue = {
+    cny: Math.round(revenueCny*100)/100,
+    paid_real_orders: paidReal.length,
+    synthetic_excluded: (orders && orders.length != null) ? (orders.length - (real||[]).length) : null,
+  };
+  out.reconcile = {
+    gateway_paid: gatewayPaid,
+    ledger_paid: ledgerPaid,
+    mismatch_count: mismatch.length,
+    mismatch: mismatch.slice(0,20),
+    consistent: mismatch.length===0 && gatewayPaid===ledgerPaid,
+  };
+  return out;
 }
 
 async function stats(){
@@ -209,6 +293,7 @@ async function stats(){
     planDist[p] = (planDist[p] || 0) + 1;
   });
   const arcade = await arcadeStats();
+  const loop = await loopStats(orders, real);
   return {
     at: new Date().toISOString(),
     store: rest() ? 'kv-rest' : 'global-kv',
@@ -220,6 +305,7 @@ async function stats(){
       synthetic_excluded: synthetic,    // 透明: 剔除了多少合成探针单
       total_incl_probe: orders.length
     },
+    loop: loop,                        // 赚钱回路漏斗 + 对账
     arcade: arcade,
     recent: orders.slice(0, 20).map(function(o){
       return {
@@ -259,6 +345,13 @@ module.exports = async function(req, res){
       const n = Math.min(parseInt(u.searchParams.get('n'), 10) || 20, 50);
       const orders = await fetchOrders(400);
       return send(res, 200, { ok: true, count: orders.length, recent: orders.slice(0, n) });
+    }
+    if(a === 'loop'){
+      // 赚钱回路漏斗 + 对账 (引流->注册->试用->付费->收款->对账), 全读真实 KV
+      const orders = await fetchOrders(400);
+      const real = orders.filter(function(o){ return !isSynthetic(o); });
+      const loop = await loopStats(orders, real);
+      return send(res, 200, { ok: true, store: rest() ? 'kv-rest' : 'global-kv', loop: loop });
     }
     if(a === 'alerts'){
       const keys = await kvScan('bds_alert_*', 30);
