@@ -126,6 +126,12 @@ async function onRequest(req, res, data) {
   if (!okRef(ref)) return send(200, { ok: false, error: 'missing_or_invalid_ref' });
   try {
     if (action === 'summary') { var arr = await load(ref); return send(200, Object.assign({ ok: true, store: hasStore() ? storeName() : 'none' }, summarize(ref, arr))); }
+    if (action === 'post') {
+      // 公开投稿 (用户提交内容, 服务端质量门禁防刷: 字数/去重/单日上限)
+      var content = String((data && data.content) || '').slice(0, 20000);
+      var r = await record(ref, content, { title: data && data.title });
+      return send(r.ok ? 200 : 400, Object.assign({ ok: r.ok, store: hasStore() ? storeName() : 'none' }, r));
+    }
     if (action === 'ledger' || action === 'list') { var arr2 = await load(ref); arr2.sort(function (a, b) { return (b.at || 0) - (a.at || 0); }); return send(200, { ok: true, count: arr2.length, entries: arr2.slice(0, 200) }); }
     if (action === 'settle') {
       var secret = String((data && (data.secret || data.key)) || (req.headers && (req.headers['x-admin-secret'] || req.headers['x-admin-key'])) || '');
