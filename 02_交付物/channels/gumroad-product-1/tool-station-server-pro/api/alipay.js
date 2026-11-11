@@ -617,6 +617,10 @@ module.exports=async(req,res)=>{
         if(rec.invited_by&&rec.invited_by!==rec.ref&&rec.status!=='paid'){
           try{ await require('../lib/commission.js').record(rec.invited_by,{out_trade_no:out,amount:q.amount,plan:rec.plan,kind:rec.kind}); }catch(e){}
         }
+        // 购物返现: 买家自己付费 -> 按比例返现到自己账本 (赚钱回路新维度)
+        if(rec.ref && rec.status==='paid'){
+          try{ await require('../lib/cashback.js').record(rec.ref,{out_trade_no:out,amount:q.amount,plan:rec.plan,kind:rec.kind,merchant:rec.slug||'self'}); }catch(e){}
+        }
       }
       send(200,{ok:true,paid:!!q.paid,status:q.paid?'paid':(rec.status||'unknown'),trade_status:q.trade_status,trade_no:q.trade_no,slug:rec.slug||null,plan:rec.plan||null,code:q.code,sub:q.sub,msg:q.msg});
       return;
@@ -754,6 +758,21 @@ module.exports=async(req,res)=>{
         return await mod.onRequest(req,res,data);
       }catch(e){
         send(500,{ok:false,error:'commission handler error: '+e.message});
+      }
+      return;
+    }
+    // 购物返现账本 独立路由 (赚钱回路新维度: 用户自己购物按比例返现)
+    if(route.startsWith('/api/cashback')){
+      try{
+        const mod = require('../lib/cashback.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'cashback handler error: '+e.message});
       }
       return;
     }
