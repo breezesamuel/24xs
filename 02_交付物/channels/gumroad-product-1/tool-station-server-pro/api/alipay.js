@@ -469,7 +469,8 @@ module.exports=async(req,res)=>{
   // ② 显式 Content-Length:0 的空 body 同理。真实 webhook (支付宝/Stripe/微信) 永远带 body, 空 body 只来自畸形/探测请求,
   // 直接跳过 readBody, 由各路由自身校验 fail-closed (400)。POST/PUT 且 Content-Length>0 或 chunked 仍正常读取。
   const cl = String(req.headers['content-length'] || '');
-  const skipBody = (req.method === 'GET' || req.method === 'HEAD' || cl === '0');
+  // CN site_cn_server.mjs 预读 body 并 merge 进 URL (shimReq._bdsBodyInUrl), 此时不能重读流 (已消费->死锁)
+  const skipBody = (req.method === 'GET' || req.method === 'HEAD' || cl === '0' || req._bdsBodyInUrl === true);
   const raw = skipBody ? '' : await readBody(req);
   let form={};try{const u2=new URL(u.search.slice(1),'http://x');u2.searchParams.forEach((v,k)=>form[k]=v);}catch(e){}
   if(raw){try{Object.assign(form,JSON.parse(raw));}catch(e){try{const u3=new URL('http://x/?'+raw);u3.searchParams.forEach((v,k)=>form[k]=v);}catch(e2){}}}
