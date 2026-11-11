@@ -104,6 +104,39 @@ async function settle(ref, meta) {
   return { ok: true, settled_count: n, settled_amount: yuan(sumC) };
 }
 
+// payout: 创建 "返现提现请求" (admin only, fail-closed)。
+// 诚实原则: 只生成 *待人工确认* 的提现请求 (指向已配置 crypto 钱包), 不静默转账。
+// 真实打款需 owner 持钱包私钥 + 合规确认 (Alipay fund.trans 转账 API 受商户权限限制)。
+async function payout(ref, meta) {
+  if (!okRef(ref)) return { ok: false, error: 'missing_or_invalid_ref' };
+  if (!hasStore()) return { ok: false, error: 'store_failed' };
+  var arr = await load(ref);
+  var sum = summarize(ref, arr);
+  if (!sum.can_settle) return { ok: false, error: 'below_threshold', pending: sum.pending, threshold: sum.settle_threshold_yuan };
+  var pendingC = cents(sum.pending);
+  var wallet = String((meta && meta.wallet) || process.env.CASHBACK_PAYOUT_WALLET || 'payout_usdc').slice(0, 32);
+  // 生成提现请求记录 (status=pending, 待 owner 人工打款后置 done)
+  var req = {
+    id: 'PO' + Date.now().toString(36),
+    ref: ref,
+    amount: yuan(pendingC),
+    wallet: wallet,
+    asset: 'USDC',
+    status: 'pending',   // pending -> (owner 打款) -> done
+    requested_at: Date.now(),
+    note: 'cashback payout request; owner must confirm transfer (compliance)'
+  };
+  // 追加到独立 payout 请求账本 (按 ref 聚合)
+  var pk = 'cbk_payouts:' + ref;
+  var parrRaw = await dget(pk);
+  var parr = [];
+  try { parr = JSON.parse(parrRaw); if (!Array.isArray(parr)) parr = []; } catch (e) { parr = []; }
+  parr.push(req);
+  var ok = await dset(pk, JSON.stringify(parr));
+  if (!ok) return { ok: false, error: 'store_failed' };
+  return { ok: true, payout_request: req, note: '生成待确认提现请求; 实际打款需 owner 人工 + 合规' };
+}
+
 async function onRequest(req, res, data) {
   var send = function (c, o) { try { res.writeHead(c, { 'Content-Type': 'application/json;charset=utf-8' }); res.end(JSON.stringify(o)); } catch (e) { } };
   var p = String((data && data.path) || '').split('?')[0];
@@ -120,6 +153,12 @@ async function onRequest(req, res, data) {
       var r = await settle(ref, { txid: data && data.txid, method: data && data.method });
       return send(200, r);
     }
+    if (action === 'payout') {
+      var secret2 = String((data && (data.secret || data.key)) || (req.headers && (req.headers['x-admin-secret'] || req.headers['x-admin-key'])) || '');
+      if (!ADMIN_SECRET || secret2 !== ADMIN_SECRET) return send(403, { ok: false, error: 'forbidden' });
+      var r2 = await payout(ref, { wallet: data && data.wallet });
+      return send(200, r2);
+    }
     return send(404, { ok: false, error: 'no_route', action: action });
   } catch (e) { return send(500, { ok: false, error: 'exception', detail: String(e && e.message) }); }
 }
@@ -130,6 +169,7 @@ module.exports.onRequest = onRequest;
 module.exports.record = record;
 module.exports.summarize = summarize;
 module.exports.settle = settle;
+module.exports.payout = payout;
 module.exports.hasStore = hasStore;
 module.exports.load = load;
 module.exports.default = onRequest;

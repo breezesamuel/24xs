@@ -776,6 +776,21 @@ module.exports=async(req,res)=>{
       }
       return;
     }
+    // 写作赚币账本 独立路由 (赚钱回路新维度: 投稿内容得币, 服务端质量门禁防刷)
+    if(route.startsWith('/api/writerewards')){
+      try{
+        const mod = require('../lib/writerewards.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'writerewards handler error: '+e.message});
+      }
+      return;
+    }
     send(404,{ok:false,error:'not found',route:route});
   }catch(e){send(500,{ok:false,error:e.message,stack:(e.stack||'').split('\n').slice(0,3)});}
 };
