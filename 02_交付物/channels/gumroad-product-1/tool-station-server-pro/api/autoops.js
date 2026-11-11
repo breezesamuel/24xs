@@ -277,6 +277,30 @@ async function loopStats(orders, real){
     mismatch: mismatch.slice(0,20),
     consistent: mismatch.length===0 && gatewayPaid===ledgerPaid,
   };
+  // 6) 7 渠道进账聚合 (各账本沉淀 + 支付宝收款 = 总进账视图)
+  //    收款 (支付宝) 是"现金进账"; 各渠道账本是"待结算沉淀" (币/返现/服务费)。
+  out.channels_income = await aggregateChannelIncome(revenueCny);
+  return out;
+}
+
+// 聚合 7 渠道进账 (诚实: 只读真实 KV/账本, 无则 0; 不造数)
+async function aggregateChannelIncome(alipayCny){
+  const out = {
+    alipay_cny: Math.round((alipayCny||0)*100)/100,   // 真实现金进账
+    channels: {},
+    notes: "alipay_cny=现金进账; channels=各账本待结算沉淀 (币/返现/服务费, 非现金)"
+  };
+  // 公益全局总账 (dy:total)
+  let raw = await kvGet('dy:total');
+  let obj = null; try { obj = JSON.parse(raw); } catch(e){}
+  if (obj && obj.total_c != null){
+    out.channels.charity = { total_yuan: obj.total_c/100, count: obj.count||0, by_project: obj.by_project||{} };
+  } else {
+    out.channels.charity = null;   // 无捐赠记录 (诚实 0/空)
+  }
+  // 其余渠道 (cashback/writerewards/bounty/bandwidth/recovery) 按 ref 存储, 无全局总账;
+  // 单用户进账由前端 ?a=summary 查。这里标记 "需按 ref 查" (不造假总数)。
+  out.channels.by_ref = "cashback/writerewards/bounty/bandwidth/recovery 按 ref 存储, 经 /api/<ch>?action=summary&ref=X 查";
   return out;
 }
 
