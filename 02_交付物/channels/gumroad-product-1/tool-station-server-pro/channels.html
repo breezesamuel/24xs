@@ -116,6 +116,18 @@
     <div class="note">仅本人/已授权资产; <b>不</b>扫描他人无主资金 (合规红线)。未授权/无来源/金额非法 → 拒。</div>
   </div>
 
+  <!-- 8. 币结算 -> 我的 coinbase 钱包 (合规: 仅自己挣的币, 待人工确认, 不自动打款) -->
+  <div class="card">
+    <h3>💳 币结算到我的钱包 <span class="tag live">LIVE</span></h3>
+    <p class="d">把你 <b>自己挣的币</b> (劳动/写作/带宽) 结算到收款钱包; 仅 <code>source=earned</code>, 无主资金/airdrop 一律拒</p>
+    <div class="acts">
+      <button id="csBtn">结算到我的钱包</button>
+      <button id="csLedgerBtn">查我的结算单</button>
+    </div>
+    <div class="stat" id="csStat"></div>
+    <div class="note">服务端只生成 <b>待人工确认</b>结算单 (不自动打款); 实际链上打款需 owner 付款密钥 + 合规确认。</div>
+  </div>
+
   <h2>为什么可信</h2>
   <p class="sub" style="margin-bottom:0">
     ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 7 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线)<br>
@@ -186,6 +198,11 @@ function loadAll(){
   document.getElementById('donateLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=charity&amount=10&charity_project=general';
   j('/api/charity?action=total').then(function(r){ var s=r.body; document.getElementById('charityStat').innerHTML='累计捐赠 <b>'+(s.total_yuan||0)+'</b> 元 · '+(s.count||0)+' 笔'+(s.by_project&&s.by_project.length?' · 项目: '+s.by_project.map(function(x){return x.project+' '+x.yuan+'元';}).join(', '):''); }).catch(function(){});
   j('/api/bandwidth?ref='+encodeURIComponent(REF)).then(function(r){ var s=r.body; if(s.store){ document.getElementById('bwStat').innerHTML='已共享 <b>'+(s.total_gb||0)+'</b>GB · 币 <b>'+(s.tokens_total||0)+'</b>'+(s.can_settle?' · 可提现':''); } else { document.getElementById('bwStat').textContent='注册后共享带宽赚币'; } }).catch(function(){});
+  // 币结算: 汇总各"币"渠道 earned 余额 (诚实: 读真实账本)
+  coinTotal().then(function(total){
+    var can = total>=100;
+    document.getElementById('csStat').innerHTML='你挣的币共 <b>'+total+'</b> 币'+(can?' · <span style="color:#22c55e">可结算到钱包</span>':' · 需 ≥100 币才能结算');
+  });
   j('/api/recovery?ref='+encodeURIComponent(REF)).then(function(r){ var s=r.body; document.getElementById('rcStat').innerHTML='已找回 <b>'+(s.total_recovered||0)+'</b> 币 · 服务费 <b>'+(s.platform_fee||0)+'</b> ('+(s.recovered_count||0)+' 笔)'; }).catch(function(){});
 }
 
@@ -245,6 +262,56 @@ document.getElementById('rcBtn').onclick = function(){
     else if(b.error==='invalid_amount'){ toast('金额非法'); }
     else { toast('失败: '+(b.error||b.note||'未知')); }
     loadAll();
+  }).catch(function(){ toast('网络错误'); });
+};
+
+// 币结算: 把自己挣的币结算到 owner coinbase 钱包 (合规: 仅 source=earned, 待人工确认)
+function coinTotal(){
+  // 汇总各"币"渠道的 earned 余额 (劳动/写作/带宽), 诚实: 读真实账本
+  return new Promise(function(resolve){
+    var got=0, pending=0, done=0, total=0;
+    var srcs=[
+      '/api/bounty?action=summary&ref='+encodeURIComponent(REF),
+      '/api/writerewards?action=summary&ref='+encodeURIComponent(REF),
+      '/api/bandwidth?ref='+encodeURIComponent(REF)
+    ];
+    srcs.forEach(function(u){
+      j(u).then(function(r){
+        var s=r.body||{};
+        total += (s.tokens_total||0);
+        got++;
+        if(got===srcs.length) resolve(total);
+      }).catch(function(){ got++; if(got===srcs.length) resolve(total); });
+    });
+  });
+}
+document.getElementById('csBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  coinTotal().then(function(total){
+    if(total < 100){ toast('你挣的币 '+total+' 币 (需 ≥100 币才能结算)'); return; }
+    var amt = prompt('结算多少币? (你当前挣的 '+total+' 币, 默认全部):', String(total));
+    var n = parseFloat(amt);
+    if(!n || !(n>0)){ toast('金额非法'); return; }
+    if(n > total){ toast('超出你挣的币 ('+total+')'); return; }
+    j('/api/coinsettle', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ ref:REF, amount:n, asset:'USDC', source:'earned', dest:'owner_coinbase' }) }).then(function(r){
+      var b=r.body;
+      if(b.ok){ toast('✅ 已生成待确认结算单: '+b.entry.amount+' USDC → '+b.entry.dest_address.slice(0,10)+'… (不自动打款)'); track('coinsettle_request'); }
+      else if(b.error==='compliance_redline'){ toast('合规红线: 只结算自己挣的币'); }
+      else if(b.error==='missing_source'){ toast('缺来源 (须 earned)'); }
+      else if(b.error==='unknown_dest_wallet'){ toast('目标钱包未配置'); }
+      else if(b.error==='invalid_amount'){ toast('金额非法'); }
+      else { toast('失败: '+(b.error||b.note||'未知')); }
+      loadAll();
+    }).catch(function(){ toast('网络错误'); });
+  });
+};
+document.getElementById('csLedgerBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  // 查我生成的结算单 (服务端存 coinsettle:<id>; 前端按 ref 列 — 用 config 回显钱包 + 提示待确认)
+  j('/api/config').then(function(r){
+    var w=(r.body.wallets||{}).owner_coinbase;
+    toast('结算钱包: '+(w? w.address : '(未配置)')+' · 结算单状态=待人工确认 (不自动打款)');
   }).catch(function(){ toast('网络错误'); });
 };
 
