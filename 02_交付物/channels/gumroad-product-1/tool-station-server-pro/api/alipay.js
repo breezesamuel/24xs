@@ -738,8 +738,8 @@ module.exports=async(req,res)=>{
         // 3. ref 白名单 (owner 显式登记的 ref)
         const allow=(get('COINSETTLE_ALLOW_REFS')||'').split(',').map(x=>x.trim()).filter(Boolean);
         if(allow.length>0 && allow.indexOf(entry.ref)<0) return send(403,{ok:false,error:'ref_not_whitelisted',note:'该 ref 未登记打款白名单, 拒 (防任意人触发转账)'});
-        // 4. 付款密钥 (owner 指定付款钱包私钥)
-        const pkey=get('COINBASE_PAYOUT_PRIVATE_KEY');
+        // 4. 付款密钥 (owner 指定付款钱包私钥) — getKey 支持 env 或 _FILE (CN 自托管放文件, 不进 env)
+        const pkey=getKey('COINBASE_PAYOUT_PRIVATE_KEY');
         const live=String(data.live||'')==='true' && String(get('COINSETTLE_CONFIRM_LIVE')||'')==='true';
         if(!pkey){
           // 没密钥: 永远 dry-run (诚实: 不实转)
@@ -747,37 +747,70 @@ module.exports=async(req,res)=>{
             note:'未配置 COINBASE_PAYOUT_PRIVATE_KEY -> 仅 dry-run, 不转真钱; 需 owner 配密钥 + COINSETTLE_CONFIRM_LIVE=true 才实转',
             tx_plan:{chain:entry.dest_chain,from:'(owner payout wallet)',to:entry.dest_address,amount:entry.amount,asset:entry.asset}});
         }
-        // 5. dry-run (默认): 不实转, 只回报将发生的 tx
+        // 5. dry-run (默认): 不实转; 若配了密钥则做只读探查 (余额/nonce/地址), 让你确认付款钱包在对的链上有钱
         if(!live){
-          return send(200,{ok:true,dry_run:true,settle_id:settleId,key_configured:true,
-            note:'dry-run (默认): 未开 COINSETTLE_CONFIRM_LIVE=true, 不转真钱',
+          const probe={key_configured:true,chain:entry.dest_chain,usdc_amount:entry.amount,to:entry.dest_address};
+          // 只读: 用 viem 查付款钱包在目标链的 native 余额 + 派生地址 (不转账)
+          try{
+            const viem=require('viem');
+            const {createPublicClient,http,createChain}=viem;
+            const chainName=String(get('COINSETTLE_PAYOUT_CHAIN')||entry.dest_chain||'Base').toLowerCase();
+            const CFG={base:{id:8453,ca:'https://mainnet.base.org'},ethereum:{id:1,ca:'https://eth-mainnet.g.alchemy.com/v2/demo'},arbitrum:{id:42161,ca:'https://arb-mainnet.g.alchemy.com/v2/demo'}};
+            const cc=CFG[chainName]||CFG.base;
+            const chainDef=createChain?createChain({id:cc.id,ca:cc.ca,nativeCurrency:{name:'Native',symbol:'ETH',decimals:18},rpcs:[{http:[String(get('COINBASE_PAYOUT_RPC')||cc.ca)]}]}):undefined;
+            const pub=createPublicClient({transport:http(String(get('COINBASE_PAYOUT_RPC')||cc.ca)),chain:chainDef});
+            const addr=viem.publicKeyToAccount?viem.toAccount(viem.privateKeyToAccount(pkey)).address:null;
+            if(addr) probe.payout_wallet=addr;
+            const bal=await pub.getBalance({address:addr}).catch(function(){return null;});
+            if(bal!=null) probe.native_balance_wei=bal.toString();
+          }catch(e){ probe.probe_note='只读探查失败 (不影响 dry-run 不实转): '+String(e.message||e).slice(0,80); }
+          return send(200,{ok:true,dry_run:true,settle_id:settleId,
+            note:'dry-run (默认): 未开 COINSETTLE_CONFIRM_LIVE=true, 不转真钱; 付款钱包只读探查见 probe',
+            probe:probe,
             tx_plan:{chain:entry.dest_chain,to:entry.dest_address,amount:entry.amount,asset:entry.asset}});
         }
         // 6. LIVE 实转 (需密钥 + 白名单 + earned + 显式 live)
         //    USDC on EVM/Base: 用 viem 发 ERC-20 transfer (若未装 viem 则回 dry-run 诚实报错, 不误转)
         try{
+          // 按链选 USDC 合约 + RPC (Base / Ethereum / Arbitrum)
+          const chainName=String(get('COINSETTLE_PAYOUT_CHAIN')||entry.dest_chain||'Base').toLowerCase();
+          const USDC_CONTRACTS={
+            base:'0x833589fCD2e695B55A1C68A696f0810f2C3AD36C',
+            ethereum:'0xA0b86991c6218b36c1d19D4a2e9Eb0cEd3601E9C',
+            arbitrum:'0xaf88d065977e8652a169d3f608891cc4c3fd9d4c'
+          };
+          const usdcAddr=String(get('COINSETTLE_USDC_ADDRESS')||USDC_CONTRACTS[chainName]||USDC_CONTRACTS.base);
           const viem=require('viem');
-          const {createPublicClient,createWalletClient,http,parseAbiItem}=viem;
-          // chain: Base 主网
-          const chain = (entry.dest_chain==='Base') ? viem.base : (viem.sepolia||viem.base);
-          const wallet=createWalletClient({account:pkey,transport:http(String(get('COINBASE_PAYOUT_RPC')||'https://mainnet.base.org'))});
-          const usdcAddr=String(get('COINSETTLE_USDC_ADDRESS')||'0x833589fCD2e695B55A1C68A696f0810f2C3AD36C'); // Base USDC
-          const erc20=parseAbiItem('function transfer(address to, uint256 amount) view returns (bool)');
+          const {createWalletClient,http,parseAbiItem,createChain}=viem;
+          // 链配置 (viem 本装版可能不导出 base/mainnet 对象 -> 自建, 稳妥)
+          const CHAIN_CFG={
+            base:{id:8453,ca:'https://mainnet.base.org'},
+            ethereum:{id:1,ca:'https://eth-mainnet.g.alchemy.com/v2/demo'},
+            arbitrum:{id:42161,ca:'https://arb-mainnet.g.alchemy.com/v2/demo'}
+          };
+          const cc=CHAIN_CFG[chainName]||CHAIN_CFG.base;
+          const rpcUrl=String(get('COINBASE_PAYOUT_RPC')||cc.ca);
+          const chainDef=createChain?createChain({id:cc.id,ca:cc.ca,nativeCurrency:{name:'Native',symbol:'ETH',decimals:18},rpcs:[{http:[rpcUrl]}]}):undefined;
+          const wallet=createWalletClient({account:pkey, transport:http(rpcUrl), chain:chainDef});
+          const erc20=parseAbiItem('function transfer(address to, uint256 amount) returns (bool)');
           const to=entry.dest_address;
           const decimals=6; // USDC
           const rawAmt=String(Math.round(entry.amount*Math.pow(10,decimals)));
           const hash=await wallet.writeContract({
             address:usdcAddr,abi:[erc20],fn:'transfer',args:[to,rawAmt],
           });
-          const newStatus={...entry,status:'settled',tx_hash:hash,settled_at:new Date().toISOString()};
+          const newStatus={...entry,status:'settled',tx_hash:hash,settled_at:new Date().toISOString(),chain:chainName};
           try{ await dbSet('coinsettle:'+settleId,JSON.stringify(newStatus)); }catch(e){}
-          return send(200,{ok:true,dry_run:false,settle_id:settleId,tx_hash:hash,
-            note:'已上链打款 (USDC -> '+to+'), 结算单置 settled',
+          return send(200,{ok:true,dry_run:false,settle_id:settleId,tx_hash:hash,chain:chainName,
+            note:'已上链打款 ('+entry.asset+' -> '+to+'), 结算单置 settled',
             usdc_contract:usdcAddr,dest:to,amount:entry.amount});
         }catch(e){
-          // fail-closed: 任何链上错误 -> 不误转, 回 pending + 报错
+          // fail-closed: viem 未装 / 链上错误 -> 不误转, 回 pending + 报错
+          if(String(e.message||e).indexOf('Cannot find module')>=0){
+            return send(500,{ok:false,error:'viem_not_installed',note:'未装 viem, 无法实转 (fail-closed, 结算单保持 pending)',dry_run:false});
+          }
           return send(500,{ok:false,error:'payout_failed',detail:String(e.message||e),
-            note:'链上打款失败, 结算单保持 pending (fail-closed, 未扣款), 请查 RPC/余额/gas'});
+            note:'链上打款失败, 结算单保持 pending (fail-closed, 未扣款), 请查 RPC/余额/gas/nonce'});
         }
       }
       // ---- 主流程: 生成待确认结算单 (source=earned) ----
