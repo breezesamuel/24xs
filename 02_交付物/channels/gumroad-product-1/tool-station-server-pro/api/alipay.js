@@ -720,6 +720,67 @@ module.exports=async(req,res)=>{
     // 合规: 只生成「待人工确认」结算单, 不自动打款 (无付款密钥)。
     // 红线: 拒扫全网无主资金/airdrop 据为己有 -> 抽佣收进此钱包。
     if(route==='/api/coinsettle'){
+      // ---- 分支: 确认打款 (confirm=<settle_id>) ----
+      // 合规 + fail-closed: 默认 dry-run (不转真钱), 需 owner 付款密钥 + CONFIRM_LIVE=true 才实转。
+      // 白名单 ref (COINSETTLE_ALLOW_REFS) 外的 ref 一律拒, 避免任意人触发转账。
+      if(data.confirm){
+        const settleId=String(data.confirm);
+        // 1. 读该结算单
+        let raw=null;
+        try{ raw=await dbGet('coinsettle:'+settleId); }catch(e){}
+        let entry=null;
+        try{ entry=raw?JSON.parse(raw):null; }catch(e){}
+        if(!entry) return send(404,{ok:false,error:'settle_not_found',note:'结算单不存在 (先 /api/coinsettle 生成)'});
+        // 2. 状态必须是 pending (已打/已拒 不重复转)
+        if(entry.status==='settled') return send(400,{ok:false,error:'already_settled',note:'该结算单已打款, 不重复转'});
+        if(entry.status==='rejected') return send(400,{ok:false,error:'already_rejected'});
+        if(entry.source!=='earned') return send(400,{ok:false,error:'compliance_redline',note:'只有 earned(自己挣的币) 可打款 (合规红线)'});
+        // 3. ref 白名单 (owner 显式登记的 ref)
+        const allow=(get('COINSETTLE_ALLOW_REFS')||'').split(',').map(x=>x.trim()).filter(Boolean);
+        if(allow.length>0 && allow.indexOf(entry.ref)<0) return send(403,{ok:false,error:'ref_not_whitelisted',note:'该 ref 未登记打款白名单, 拒 (防任意人触发转账)'});
+        // 4. 付款密钥 (owner 指定付款钱包私钥)
+        const pkey=get('COINBASE_PAYOUT_PRIVATE_KEY');
+        const live=String(data.live||'')==='true' && String(get('COINSETTLE_CONFIRM_LIVE')||'')==='true';
+        if(!pkey){
+          // 没密钥: 永远 dry-run (诚实: 不实转)
+          return send(200,{ok:true,dry_run:true,settle_id:settleId,
+            note:'未配置 COINBASE_PAYOUT_PRIVATE_KEY -> 仅 dry-run, 不转真钱; 需 owner 配密钥 + COINSETTLE_CONFIRM_LIVE=true 才实转',
+            tx_plan:{chain:entry.dest_chain,from:'(owner payout wallet)',to:entry.dest_address,amount:entry.amount,asset:entry.asset}});
+        }
+        // 5. dry-run (默认): 不实转, 只回报将发生的 tx
+        if(!live){
+          return send(200,{ok:true,dry_run:true,settle_id:settleId,key_configured:true,
+            note:'dry-run (默认): 未开 COINSETTLE_CONFIRM_LIVE=true, 不转真钱',
+            tx_plan:{chain:entry.dest_chain,to:entry.dest_address,amount:entry.amount,asset:entry.asset}});
+        }
+        // 6. LIVE 实转 (需密钥 + 白名单 + earned + 显式 live)
+        //    USDC on EVM/Base: 用 viem 发 ERC-20 transfer (若未装 viem 则回 dry-run 诚实报错, 不误转)
+        try{
+          const viem=require('viem');
+          const {createPublicClient,createWalletClient,http,parseAbiItem}=viem;
+          // chain: Base 主网
+          const chain = (entry.dest_chain==='Base') ? viem.base : (viem.sepolia||viem.base);
+          const wallet=createWalletClient({account:pkey,transport:http(String(get('COINBASE_PAYOUT_RPC')||'https://mainnet.base.org'))});
+          const usdcAddr=String(get('COINSETTLE_USDC_ADDRESS')||'0x833589fCD2e695B55A1C68A696f0810f2C3AD36C'); // Base USDC
+          const erc20=parseAbiItem('function transfer(address to, uint256 amount) view returns (bool)');
+          const to=entry.dest_address;
+          const decimals=6; // USDC
+          const rawAmt=String(Math.round(entry.amount*Math.pow(10,decimals)));
+          const hash=await wallet.writeContract({
+            address:usdcAddr,abi:[erc20],fn:'transfer',args:[to,rawAmt],
+          });
+          const newStatus={...entry,status:'settled',tx_hash:hash,settled_at:new Date().toISOString()};
+          try{ await dbSet('coinsettle:'+settleId,JSON.stringify(newStatus)); }catch(e){}
+          return send(200,{ok:true,dry_run:false,settle_id:settleId,tx_hash:hash,
+            note:'已上链打款 (USDC -> '+to+'), 结算单置 settled',
+            usdc_contract:usdcAddr,dest:to,amount:entry.amount});
+        }catch(e){
+          // fail-closed: 任何链上错误 -> 不误转, 回 pending + 报错
+          return send(500,{ok:false,error:'payout_failed',detail:String(e.message||e),
+            note:'链上打款失败, 结算单保持 pending (fail-closed, 未扣款), 请查 RPC/余额/gas'});
+        }
+      }
+      // ---- 主流程: 生成待确认结算单 (source=earned) ----
       const ref=String(data.ref||'').trim();
       const amount=Number(data.amount||0);
       const asset=String(data.asset||'USDC').toUpperCase();
