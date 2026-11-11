@@ -131,7 +131,16 @@ function verifyNotify(form){
     if(dec){try{const j=JSON.parse(dec);Object.assign(eff,Object.fromEntries(Object.entries(j).filter(([k,v])=>eff[k]===undefined&&v!==undefined)));}catch(e){}}
   }
   const paid=ok&&eff.app_id===get('ALIPAY_APP_ID')&&(eff.trade_status==='TRADE_SUCCESS'||eff.trade_status==='TRADE_FINISHED')&&!!eff.out_trade_no;
-  return {ok:ok&&paid,verified:ok,paid:paid,out_trade_no:eff.out_trade_no,trade_status:eff.trade_status,trade_no:eff.trade_no,buyer:eff.buyer_logon_id||eff.buyer_id,total:eff.total_amount||eff.amount,subject:eff.subject,decrypted:eff.biz_content!==form.biz_content};
+  // 关键: 返回 passback_params (下单时传入的 slug/plan/ref/inv), 用于"订单记录丢失时重建", 避免"收钱不认账"
+  let passback={};
+  try{
+    const pp=eff.passback_params||form.passback_params;
+    if(pp){
+      const decoded=decodeURIComponent(String(pp));
+      try{ passback=JSON.parse(decoded); }catch(e2){ passback={raw:decoded}; }
+    }
+  }catch(e){}
+  return {ok:ok&&paid,verified:ok,paid:paid,out_trade_no:eff.out_trade_no,trade_status:eff.trade_status,trade_no:eff.trade_no,buyer:eff.buyer_logon_id||eff.buyer_id,total:eff.total_amount||eff.amount,subject:eff.subject,decrypted:eff.biz_content!==form.biz_content,passback:passback};
 }
 
 function privFingerprint(){
@@ -226,7 +235,9 @@ async function wxpayQueryOrder(outTradeNo) {
 async function wxpayHandleNotify(rawBody, headers) {
   const publicKeyPem = get('WECHAT_PUBLIC_KEY');
   if (!publicKeyPem) return {ok:false, error:'wxpay_public_key_missing'};
-  const publicKey = crypto.createPublicKey({key: publicKeyPem, format: 'pem'});
+  let publicKey;
+  try { publicKey = crypto.createPublicKey({key: publicKeyPem, format: 'pem'}); }
+  catch(e) { return {ok:false, error:'wxpay_public_key_invalid'}; } // 密钥 PEM 格式坏 -> fail-closed 400 (旧版直接 throw -> 500)
   if (!wxpayVerify(headers, rawBody, publicKey)) return {ok:false, error:'signature_invalid'};
   let j;
   try { j = JSON.parse(rawBody); } catch(e) { return {ok:false, error:'invalid_json'}; }
@@ -402,7 +413,48 @@ async function alipayQuery(outTradeNo,mode){
   const paid=(r.code==='10000'&&(r.trade_status==='TRADE_SUCCESS'||r.trade_status==='TRADE_FINISHED'));
   return {http:res.status,code:r.code,msg:r.msg,sub:r.sub_code,trade_status:r.trade_status,trade_no:r.trade_no,buyer:r.buyer_logon_id||r.buyer_user_id,amount:r.total_amount,paid:!!paid,detail:r,resp_encrypt:!!(j.encrypt_type||r.encrypt_type)};
 }
-function readBody(req){return new Promise(res=>{let d='';req.on('data',c=>d+=c);req.on('end',()=>res(d));});}
+// readBody: 健壮版 — 处理空 body / 'end' 早触发 / 流 error / 半开连接, 加 30s 超时兜底, 绝不让 await 永挂
+// (旧版只监听 'data'+'end', 空 body 或 end 早于监听 / 流 error 时 Promise 永不 resolve -> webhook 路由 hang, 真支付回调会卡死)
+function readBody(req){
+  return new Promise(function(resolve){
+    var chunks=[]; var settled=false;
+    var timer=setTimeout(function(){ finish(); }, 30000); // 兜底: 异常流/半开连接 30s 强制结束
+    function finish(){
+      if(settled) return; settled=true;
+      clearTimeout(timer);
+      try{ req.removeListener('data', onData); req.removeListener('end', onEnd); req.removeListener('error', onErr); }catch(e){}
+      resolve(Buffer.concat(chunks).toString('utf8'));
+    }
+    function onData(c){ if(!settled) chunks.push(c); }
+    function onEnd(){ finish(); }
+    function onErr(){ finish(); }
+    req.on('data', onData);
+    req.on('end', onEnd);
+    req.on('error', onErr);
+    // ⚠️ 不能用 readable===false 短路: CN 的 shimReq=Object.create(req) 会让 readable 恒为 false 而 body 未读完,
+    //    短路会让 readBody 立即返回空 -> POST body (plan/ref/amount) 全丢 -> 订单默认 m10 + 收钱认不到人。
+    //    空 body 的 GET/HEAD/Content-Length:0 由调用处 skipBody 守卫处理 (见下方 raw 赋值), 这里正常等 data/end + 30s 兜底。
+  });
+}
+// 权威激活 (绝不静默丢): 失败重试 3 次; 仍失败写 bds_alert_active_fail 留痕 (hidden_realops 可扫到补激活), 返回 {ok,error?}
+async function robustActivate(ref,plan,outTradeNo,gateway){
+  let actRes=null;
+  for(let attempt=0;attempt<3&&!actRes;attempt++){
+    try{ actRes=await require('../lib/subwall.js').activate(ref,plan,{out_trade_no:outTradeNo}); }
+    catch(e){ actRes={ok:false,error:String(e&&e.message||e)}; }
+  }
+  if(!actRes||!actRes.ok){
+    try{
+      const al=await dbGet('bds_alert_active_fail');
+      const arr=al?JSON.parse(al):[];
+      arr.push({at:new Date().toISOString(),out_trade_no:outTradeNo,ref:ref,plan:plan,gateway:gateway||'alipay',error:(actRes&&actRes.error)||'activate_failed'});
+      while(arr.length>50)arr.shift();
+      await dbSet('bds_alert_active_fail',JSON.stringify(arr));
+    }catch(e){}
+    console.error('['+(gateway||'alipay')+'.activate] 激活失败已留痕 bds_alert_active_fail:',outTradeNo,plan,(actRes&&actRes.error));
+  }
+  return actRes;
+}
 function esc(v){return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 
 module.exports=async(req,res)=>{
@@ -413,7 +465,12 @@ module.exports=async(req,res)=>{
   const base=baseFrom(req);
   const send=(c,o)=>{res.writeHead(c,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify(o));};
   const text=(c,s,ct)=>{res.writeHead(c,{'Content-Type':ct||'text/plain; charset=utf-8'});res.end(s);};
-  const raw=await readBody(req);
+  // 空 body 快速兜底: ① GET/HEAD 本无 body (Vercel @vercel/node 下 readBody 的 'end' 可能永不触发 -> 路由 hang);
+  // ② 显式 Content-Length:0 的空 body 同理。真实 webhook (支付宝/Stripe/微信) 永远带 body, 空 body 只来自畸形/探测请求,
+  // 直接跳过 readBody, 由各路由自身校验 fail-closed (400)。POST/PUT 且 Content-Length>0 或 chunked 仍正常读取。
+  const cl = String(req.headers['content-length'] || '');
+  const skipBody = (req.method === 'GET' || req.method === 'HEAD' || cl === '0');
+  const raw = skipBody ? '' : await readBody(req);
   let form={};try{const u2=new URL(u.search.slice(1),'http://x');u2.searchParams.forEach((v,k)=>form[k]=v);}catch(e){}
   if(raw){try{Object.assign(form,JSON.parse(raw));}catch(e){try{const u3=new URL('http://x/?'+raw);u3.searchParams.forEach((v,k)=>form[k]=v);}catch(e2){}}}
   const data=Object.assign(Object.fromEntries(u.searchParams),form);
@@ -459,7 +516,7 @@ module.exports=async(req,res)=>{
     // Stripe Webhook
     if(route==='/api/stripe/webhook'){
       const sig=req.headers['stripe-signature']||'';
-      const raw=await readBody(req);
+      // ⚠️ 请求流只能读一次: 顶部已 readBody 存入 raw, 这里必须用 raw, 不能再 readBody(req) (二次读已消费流 -> 永不 end -> 300s hang)
       const result=await stripeMod.verifyWebhook(raw,sig);
       if(!result.ok){send(400,{ok:false,error:result.error});return;}
       const handled=await stripeMod.handlePaymentSuccess(result.event,saveOrder,async(ref,plan,opts)=>require('../lib/subwall.js').activate(ref,plan,opts),async(inv,rec)=>require('../lib/commission.js').record(inv,rec));
@@ -485,7 +542,7 @@ module.exports=async(req,res)=>{
     }
     // WeChat Pay 回调
     if(route==='/api/wxpay/notify'){
-      const raw=await readBody(req);
+      // ⚠️ 请求流只能读一次: 顶部已 readBody 存入 raw, 这里用 raw (不能再 readBody(req) -> 二次读已消费流 -> 300s hang)
       const headers={};
       req.headers && Object.keys(req.headers).forEach(k=>{headers[k.toLowerCase()]=req.headers[k];});
       const result=await wxpayHandleNotify(raw,headers);
@@ -493,7 +550,7 @@ module.exports=async(req,res)=>{
         const prev=(await getOrder(result.out_trade_no))||{};
         await saveOrder(Object.assign({},prev,{out_trade_no:result.out_trade_no,trade_no:result.trade_no,buyer:result.buyer,amount:result.total,trade_status:result.trade_status,status:'paid',paid_at:new Date().toISOString(),currency:'cny'}));
         if(prev.kind==='sub'&&prev.ref&&prev.status!=='paid'){
-          try{ await require('../lib/subwall.js').activate(prev.ref,prev.plan,{out_trade_no:result.out_trade_no}); }catch(e){}
+          await robustActivate(prev.ref,prev.plan,result.out_trade_no,'wxpay');
         }
         if(prev.invited_by&&prev.invited_by!==prev.ref&&prev.status!=='paid'){
           try{ await require('../lib/commission.js').record(prev.invited_by,{out_trade_no:result.out_trade_no,amount:result.total,plan:prev.plan,kind:prev.kind}); }catch(e){}
@@ -502,20 +559,32 @@ module.exports=async(req,res)=>{
       }
       text(400,'FAIL');return;
     }
-    // 支付宝异步回调:验签 + 落库,必须返回纯文本 success
+    // 支付宝异步回调:验签 + 落库 + 权威激活(绝不静默丢激活), 必须返回纯文本 success
     if(route==='/api/notify'){
       const r=verifyNotify(data);
       if(r.ok){
-        const prev=(await getOrder(r.out_trade_no))||{};
-        await saveOrder(Object.assign({},prev,{out_trade_no:r.out_trade_no,trade_no:r.trade_no,buyer:r.buyer,amount:r.total,trade_status:r.trade_status,status:'paid',paid_at:new Date().toISOString()}));
-        // 订阅单：支付成功 → 服务端权威激活（幂等：仅首次由 created→paid 时激活一次）
-        if(prev.kind==='sub'&&prev.ref&&prev.status!=='paid'){
-          try{ await require('../lib/subwall.js').activate(prev.ref,prev.plan,{out_trade_no:r.out_trade_no}); }catch(e){}
+        // 读原订单记录; 若丢失/不完整, 用 passback (下单时传入 slug/plan/ref/inv) 重建, 避免"收钱不认账"
+        let prev=(await getOrder(r.out_trade_no))||{};
+        const pb=r.passback||{};
+        if(!prev.ref&&pb.ref)prev.ref=pb.ref;
+        if(!prev.plan&&pb.plan)prev.plan=pb.plan;
+        if(!prev.slug&&pb.slug)prev.slug=pb.slug;
+        if(!prev.invited_by&&pb.inv)prev.invited_by=pb.inv;
+        if(!prev.kind&&prev.plan){
+          const sp=PLANS[prev.plan];
+          prev.kind=(sp&&sp.cny>0)?'sub':'unlock';
         }
-        // 分佣：推荐人（invited_by）获得佣金入账（幂等：按 out_trade_no 去重）
+        // 落库(检查结果): 即使落库失败也要继续激活(权益优先), 但记下来
+        const saveRes=await saveOrder(Object.assign({},prev,{out_trade_no:r.out_trade_no,trade_no:r.trade_no,buyer:r.buyer,amount:r.total,trade_status:r.trade_status,status:'paid',paid_at:new Date().toISOString()}));
+        // 订阅单: 支付成功 → 服务端权威激活。绝不静默吞错: 失败重试, 仍失败留痕 (Alipay 重推 notify 兜底)
+        if(prev.kind==='sub'&&prev.ref&&prev.status!=='paid'){
+          await robustActivate(prev.ref,prev.plan,r.out_trade_no,'alipay');
+        }
+        // 分佣: 推荐人获得佣金(幂等按 out_trade_no), 失败不阻塞主流程但留痕
         if(prev.invited_by&&prev.invited_by!==prev.ref&&prev.status!=='paid'){
           try{ await require('../lib/commission.js').record(prev.invited_by,{out_trade_no:r.out_trade_no,amount:r.total,plan:prev.plan,kind:prev.kind}); }catch(e){}
         }
+        // 始终回 success (Alipay 要求纯文本 success 才停推; 激活失败已留痕待补, 靠重试/补激活兜底)
         text(200,'success');return;
       }
       text(400,'fail');return;
@@ -531,7 +600,7 @@ module.exports=async(req,res)=>{
         if(wq.paid){
           await saveOrder(Object.assign({},rec0,{out_trade_no:out,trade_status:'SUCCESS',amount:wq.amount||rec0.amount,status:'paid',paid_at:(rec0&&rec0.paid_at)||new Date().toISOString()}));
           if(rec0.kind==='sub'&&rec0.ref&&rec0.status!=='paid'){
-            try{ await require('../lib/subwall.js').activate(rec0.ref,rec0.plan,{out_trade_no:out}); }catch(e){}
+            await robustActivate(rec0.ref,rec0.plan,out,'wxpay');
           }
         }
         send(200,{ok:true,paid:!!wq.paid,status:wq.paid?'paid':(rec0.status||'unknown'),trade_state:wq.trade_state||null,slug:rec0.slug||null,plan:rec0.plan||null,gateway:'wxpay'});
@@ -543,7 +612,7 @@ module.exports=async(req,res)=>{
         await saveOrder(Object.assign({},rec,{out_trade_no:out,trade_no:q.trade_no,buyer:q.buyer,amount:q.amount,trade_status:q.trade_status,status:'paid',paid_at:(rec&&rec.paid_at)||new Date().toISOString()}));
         // 订阅单：查单确认支付成功同样激活（幂等，覆盖 notify 未达的情形）
         if(rec.kind==='sub'&&rec.ref&&rec.status!=='paid'){
-          try{ await require('../lib/subwall.js').activate(rec.ref,rec.plan,{out_trade_no:out}); }catch(e){}
+          await robustActivate(rec.ref,rec.plan,out,'alipay');
         }
         if(rec.invited_by&&rec.invited_by!==rec.ref&&rec.status!=='paid'){
           try{ await require('../lib/commission.js').record(rec.invited_by,{out_trade_no:out,amount:q.amount,plan:rec.plan,kind:rec.kind}); }catch(e){}
