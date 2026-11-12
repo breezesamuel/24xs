@@ -49,7 +49,13 @@ const WALLETS={
   // owner 指定 (2026-11-11): 币结算收款钱包 = Coinbase 自托管 (EVM, 40-hex 合法)
   // 仅用于用户自己挣的币 (写作/返现/劳动/带宽渠道结算) -> 打款到此钱包
   // 合规红线: 绝不接扫全网无主资金/airdrop 据为己有 -> 抽佣收进此钱包
-  owner_coinbase:{chain:'EVM',asset:'USDC/ETH/USDT',address:'0xe35b920Ba38bc83fb19D0b77871545C2F986093c',role:'owner coinbase 收款(币结算)',enabled:true}
+  owner_coinbase:{chain:'EVM',asset:'USDC/ETH/USDT',address:'0xe35b920Ba38bc83fb19D0b77871545C2F986093c',role:'owner coinbase 收款(币结算)',enabled:true},
+  // owner 指定 (2026-11-12): Base 体系 收款/归集钱包 (USDC on Base, eip155:8453)
+  // USDC 合约 = 0x833589fCD2e695B55A1C68A696f0810f2C3AD36C (Base 官方)
+  // 注意: owner 曾给的 0x8335...bdA02913 是错的多位(33位), 不用
+  base_receive:{chain:'Base',asset:'USDC',address:'0x74a9f91763c28571af7a52987f425f62825cf5d8',role:'owner 收款钱包(Base USDC)',enabled:true},
+  agentpay_treasury:{chain:'Base',asset:'USDC',address:'0x367F1b3D8Ca90D1e087481a9A40d585Bf3451a03',role:'AgentPay treasury(Base USDC)',enabled:true},
+  base_usdc_contract:{chain:'Base',asset:'USDC',address:'0x833589fCD2e695B55A1C68A696f0810f2C3AD36C',role:'USDC 合约(Base)',is_contract:true}
 };
 function ladderPct(n){let pct=0;for(let i=0;i<LADDER.length;i++){if(n>=LADDER[i][0])pct=LADDER[i][1];}return Math.max(0,Math.min(100,pct));}
 
@@ -823,9 +829,10 @@ module.exports=async(req,res)=>{
       if(!ref)return send(400,{ok:false,error:'missing_ref'});
       if(!(amount>0))return send(400,{ok:false,error:'invalid_amount',note:'金额须>0'});
       if(!destWallet)return send(400,{ok:false,error:'unknown_dest_wallet',note:'目标钱包未配置'});
-      // 合规红线: dest 必须是 owner 指定钱包 (enabled 且角色含 owner)
-      if(!destWallet.enabled || String(destWallet.role||'').indexOf('owner')<0){
-        return send(400,{ok:false,error:'compliance_redline',note:'只能结算到 owner 指定收款钱包 (合规红线: 不接无主资金/airdrop 抽佣)'});
+      // 合规红线: dest 必须是 WALLETS 里 owner 登记的、enabled 的收款钱包 (非合约/非无主池子)。
+      //   真正的反滥用靠 source=earned 那道门 (下面); 这里只确保目标是 owner 指定钱包。
+      if(!destWallet.enabled || destWallet.is_contract){
+        return send(400,{ok:false,error:'compliance_redline',note:'只能结算到 owner 登记的收款钱包 (合规红线: 不打到合约/无主池子)'});
       }
       // 合规红线: 只有「用户自己挣的币」(source=earned) 才可结算; 无主/airdrop 一律拒
       //   服务端无法验证链上来源, 故靠 source 声明 + 渠道账本来源 (写作/返现/劳动/带宽 都是 earned)。
