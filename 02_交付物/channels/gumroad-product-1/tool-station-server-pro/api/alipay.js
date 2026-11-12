@@ -777,11 +777,11 @@ module.exports=async(req,res)=>{
             const rpc=String(get('COINBASE_PAYOUT_RPC')||RPCS[chainName]||RPCS.base);
             const USDC_MAP={base:'0x833589fCD2e695B55A1C68A696f0810f2C3AD36C',ethereum:'0xA0b86991c6218b36c1d19D4a2e9Eb0cEd3601E9C',arbitrum:'0xaf88d065977e8652a169d3f608891cc4c3fd9d4c'};
             const usdcC=USDC_MAP[chainName]||USDC_MAP.base;
-            // 派生付款地址: viem.createWalletClient({account: pk}) -> wallet.account (含 .address, 已验证)
+            // 派生付款地址: 用 ethers (CN 已装, 权威正确派生), viem build 缺本地签 API
             let addr=null;
             try{
-              const w=viem.createWalletClient({account:pkey,transport:viem.http(rpc)});
-              if(w.account&&typeof w.account==='object'&&w.account.address) addr=w.account.address;
+              const ethers=require('ethers');
+              addr=new ethers.Wallet(pkey.replace(/^0x/,'')).address.toLowerCase();
             }catch(e2){}
             if(addr){
               probe.payout_wallet=addr;
@@ -799,58 +799,57 @@ module.exports=async(req,res)=>{
             tx_plan:{chain:entry.dest_chain,to:entry.dest_address,amount:entry.amount,asset:entry.asset}});
         }
         // 6. LIVE 实转 (需密钥 + 白名单 + earned + 显式 live)
-        //    USDC on EVM/Base: 用 viem 发 ERC-20 transfer (若未装 viem 则回 dry-run 诚实报错, 不误转)
+        //    突破: 本 viem build 不能本地私钥签名 -> 改用 ethers (CN 已装) 权威本地签 + 广播。
+        //    fail-closed: 余额不足 / 签名库缺失 / RPC 错 / 地址不符 -> 不动账, 结算单保持 pending。
         try{
-          // 按链选 USDC 合约 + RPC (Base / Ethereum / Arbitrum)
           const chainName=String(get('COINSETTLE_PAYOUT_CHAIN')||entry.dest_chain||'Base').toLowerCase();
           const USDC_CONTRACTS={
             base:'0x833589fCD2e695B55A1C68A696f0810f2C3AD36C',
             ethereum:'0xA0b86991c6218b36c1d19D4a2e9Eb0cEd3601E9C',
             arbitrum:'0xaf88d065977e8652a169d3f608891cc4c3fd9d4c'
           };
+          const CHAIN_ID={base:8453,ethereum:1,arbitrum:42161};
+          const RPCS={base:'https://mainnet.base.org',ethereum:'https://eth-mainnet.g.alchemy.com/v2/demo',arbitrum:'https://arb-mainnet.g.alchemy.com/v2/demo'};
+          const chainId=Number(get('COINSETTLE_PAYOUT_CHAIN_ID')||(CHAIN_ID[chainName]||8453));
+          const rpcUrl=String(get('COINBASE_PAYOUT_RPC')||RPCS[chainName]||RPCS.base);
           const usdcAddr=String(get('COINSETTLE_USDC_ADDRESS')||USDC_CONTRACTS[chainName]||USDC_CONTRACTS.base);
-          const viem=require('viem');
-          const {createWalletClient,http,parseAbiItem,createChain}=viem;
-          // 链配置 (viem 本装版可能不导出 base/mainnet 对象 -> 自建, 稳妥)
-          const CHAIN_CFG={
-            base:{id:8453,ca:'https://mainnet.base.org'},
-            ethereum:{id:1,ca:'https://eth-mainnet.g.alchemy.com/v2/demo'},
-            arbitrum:{id:42161,ca:'https://arb-mainnet.g.alchemy.com/v2/demo'}
-          };
-          const cc=CHAIN_CFG[chainName]||CHAIN_CFG.base;
-          const rpcUrl=String(get('COINBASE_PAYOUT_RPC')||cc.ca);
-          const chainDef=createChain?createChain({id:cc.id,ca:cc.ca,nativeCurrency:{name:'Native',symbol:'ETH',decimals:18},rpcs:[{http:[rpcUrl]}]}):undefined;
-          const wallet=createWalletClient({account:pkey, transport:http(rpcUrl), chain:chainDef});
-          const decimals=6; // USDC
-          const rawAmt=String(Math.round(entry.amount*Math.pow(10,decimals)));
-          // 转账前查付款钱包 USDC 余额 (防空钱包发注定失败 tx / 浪费 nonce)
-          let fromAddr=null;
-          try{ const wa=createWalletClient({account:pkey,transport:http(rpcUrl)}); if(wa.account&&wa.account.address)fromAddr=wa.account.address; }catch(e2){}
-          const pub=viem.createPublicClient({transport:http(rpcUrl),chain:chainDef});
-          const ercQ=parseAbiItem('function balanceOf(address a) view returns (uint256)');
-          if(fromAddr){
-            const bal=await pub.readContract({address:usdcAddr,abi:[ercQ],fn:'balanceOf',args:[fromAddr]}).catch(function(){return null;});
-            if(bal!=null && BigInt(bal)<BigInt(rawAmt)){
-              return send(500,{ok:false,error:'insufficient_usdc',from:fromAddr,have:bal,want:rawAmt,
-                note:'付款钱包 USDC 不足 (fail-closed, 未发 tx, 结算单保持 pending), 先充 '+entry.asset});
-            }
+          const Dhex=pkey.replace(/^0x/,'');
+          // (a) ethers 本地钱包: 正确派生地址 + 本地签
+          const ethers=require('ethers');
+          const w=new ethers.Wallet(Dhex);
+          const fromAddr=w.address.toLowerCase();
+          // 自洽: 若登记了预期付款地址, 必须一致 (防密钥放错)
+          const expectFrom=String(get('COINSETTLE_PAYOUT_ADDRESS')||'').toLowerCase();
+          if(expectFrom && fromAddr!==expectFrom){
+            return send(500,{ok:false,error:'payout_addr_mismatch',got:fromAddr,expected:expectFrom,
+              note:'派生付款地址与登记不符 (fail-closed, 未发 tx); 核对 COINBASE_PAYOUT_PRIVATE_KEY'});
           }
-          const to=entry.dest_address;
-          const hash=await wallet.writeContract({
-            address:usdcAddr,abi:[parseAbiItem('function transfer(address to, uint256 amount) returns (bool)')],fn:'transfer',args:[to,rawAmt],
-          });
-          const newStatus={...entry,status:'settled',tx_hash:hash,settled_at:new Date().toISOString(),chain:chainName};
+          // (b) 查付款钱包 USDC 余额 (防空钱包发注定失败 tx)
+          const provider=new ethers.JsonRpcProvider(rpcUrl, chainId);
+          const erc=new ethers.Contract(usdcAddr,['function balanceOf(address) view returns (uint256)','function transfer(address,uint256) returns (bool)'],provider);
+          const rawAmt=String(Math.round(entry.amount*Math.pow(10,6)));
+          const bal=await erc.balanceOf(fromAddr).catch(function(){return null;});
+          if(bal!=null && BigInt(bal)<BigInt(rawAmt)){
+            return send(500,{ok:false,error:'insufficient_usdc',from:fromAddr,have:bal.toString(),want:rawAmt,
+              note:'付款钱包 USDC 不足 (fail-closed, 未发 tx, 结算单保持 pending), 先充 '+entry.asset+' 到 '+fromAddr});
+          }
+          // (c) 收款目标合法校验
+          const to=String(entry.dest_address);
+          if(!ethers.isAddress(to))return send(500,{ok:false,error:'bad_dest',note:'收款地址非法 (fail-closed)'});
+          // (d) 本地签 + 广播
+          const tx=await erc.connect(w).transfer(to,BigInt(rawAmt));
+          await tx.wait();
+          const newStatus={...entry,status:'settled',tx_hash:tx.hash,from:fromAddr,settled_at:new Date().toISOString(),chain:chainName};
           try{ await dbSet('coinsettle:'+settleId,JSON.stringify(newStatus)); }catch(e){}
-          return send(200,{ok:true,dry_run:false,settle_id:settleId,tx_hash:hash,chain:chainName,
-            note:'已上链打款 ('+entry.asset+' -> '+to+'), 结算单置 settled',
+          return send(200,{ok:true,dry_run:false,settle_id:settleId,tx_hash:tx.hash,chain:chainName,from:fromAddr,
+            note:'已上链打款 ('+entry.asset+' -> '+to+'), 结算单置 settled; from='+fromAddr,
             usdc_contract:usdcAddr,dest:to,amount:entry.amount});
         }catch(e){
-          // fail-closed: viem 未装 / 链上错误 -> 不误转, 回 pending + 报错
           if(String(e.message||e).indexOf('Cannot find module')>=0){
-            return send(500,{ok:false,error:'viem_not_installed',note:'未装 viem, 无法实转 (fail-closed, 结算单保持 pending)',dry_run:false});
+            return send(500,{ok:false,error:'signer_unavailable',note:'缺 ethers 签名库 (fail-closed, 未发 tx), 结算单保持 pending'});
           }
-          return send(500,{ok:false,error:'payout_failed',detail:String(e.message||e),
-            note:'链上打款失败, 结算单保持 pending (fail-closed, 未扣款), 请查 RPC/余额/gas/nonce'});
+          return send(500,{ok:false,error:'payout_failed',detail:String(e.message||e).slice(0,200),
+            note:'链上打款失败, 结算单保持 pending (fail-closed, 未扣款)'});
         }
       }
       // ---- 主流程: 生成待确认结算单 (source=earned) ----
