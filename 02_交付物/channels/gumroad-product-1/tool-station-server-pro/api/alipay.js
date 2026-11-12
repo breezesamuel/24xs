@@ -777,10 +777,12 @@ module.exports=async(req,res)=>{
             const rpc=String(get('COINBASE_PAYOUT_RPC')||RPCS[chainName]||RPCS.base);
             const USDC_MAP={base:'0x833589fCD2e695B55A1C68A696f0810f2C3AD36C',ethereum:'0xA0b86991c6218b36c1d19D4a2e9Eb0cEd3601E9C',arbitrum:'0xaf88d065977e8652a169d3f608891cc4c3fd9d4c'};
             const usdcC=USDC_MAP[chainName]||USDC_MAP.base;
-            // 派生付款地址: 本 viem build 无 privateKeyToAccount -> 用 createWalletClient({account:pk}).account 或 getAddress(公钥)
+            // 派生付款地址: viem.createWalletClient({account: pk}) -> wallet.account (含 .address, 已验证)
             let addr=null;
-            try{ const w=viem.createWalletClient({account:pkey,transport:viem.http(rpc)}); if(w.account&&w.account.address) addr=w.account.address; }catch(e2){}
-            if(!addr && viem.getAddress){ /* 需公钥, 跳过 */ }
+            try{
+              const w=viem.createWalletClient({account:pkey,transport:viem.http(rpc)});
+              if(w.account&&typeof w.account==='object'&&w.account.address) addr=w.account.address;
+            }catch(e2){}
             if(addr){
               probe.payout_wallet=addr;
               const pub=viem.createPublicClient({transport:viem.http(rpc)});
