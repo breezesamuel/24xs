@@ -769,19 +769,27 @@ module.exports=async(req,res)=>{
         // 5. dry-run (默认): 不实转; 若配了密钥则做只读探查 (余额/nonce/地址), 让你确认付款钱包在对的链上有钱
         if(!live){
           const probe={key_configured:true,chain:entry.dest_chain,usdc_amount:entry.amount,to:entry.dest_address};
-          // 只读: 用 viem 查付款钱包在目标链的 native 余额 + 派生地址 (不转账)
+          // 只读: 用 viem 查付款钱包在目标链的 native 余额 + USDC 余额 + 派生地址 (不转账)
           try{
             const viem=require('viem');
-            const {createPublicClient,http,createChain}=viem;
             const chainName=String(get('COINSETTLE_PAYOUT_CHAIN')||entry.dest_chain||'Base').toLowerCase();
-            const CFG={base:{id:8453,ca:'https://mainnet.base.org'},ethereum:{id:1,ca:'https://eth-mainnet.g.alchemy.com/v2/demo'},arbitrum:{id:42161,ca:'https://arb-mainnet.g.alchemy.com/v2/demo'}};
-            const cc=CFG[chainName]||CFG.base;
-            const chainDef=createChain?createChain({id:cc.id,ca:cc.ca,nativeCurrency:{name:'Native',symbol:'ETH',decimals:18},rpcs:[{http:[String(get('COINBASE_PAYOUT_RPC')||cc.ca)]}]}):undefined;
-            const pub=createPublicClient({transport:http(String(get('COINBASE_PAYOUT_RPC')||cc.ca)),chain:chainDef});
-            const addr=viem.publicKeyToAccount?viem.toAccount(viem.privateKeyToAccount(pkey)).address:null;
-            if(addr) probe.payout_wallet=addr;
-            const bal=await pub.getBalance({address:addr}).catch(function(){return null;});
-            if(bal!=null) probe.native_balance_wei=bal.toString();
+            const RPCS={base:'https://mainnet.base.org',ethereum:'https://eth-mainnet.g.alchemy.com/v2/demo',arbitrum:'https://arb-mainnet.g.alchemy.com/v2/demo'};
+            const rpc=String(get('COINBASE_PAYOUT_RPC')||RPCS[chainName]||RPCS.base);
+            const USDC_MAP={base:'0x833589fCD2e695B55A1C68A696f0810f2C3AD36C',ethereum:'0xA0b86991c6218b36c1d19D4a2e9Eb0cEd3601E9C',arbitrum:'0xaf88d065977e8652a169d3f608891cc4c3fd9d4c'};
+            const usdcC=USDC_MAP[chainName]||USDC_MAP.base;
+            // 派生付款地址: 本 viem build 无 privateKeyToAccount -> 用 createWalletClient({account:pk}).account 或 getAddress(公钥)
+            let addr=null;
+            try{ const w=viem.createWalletClient({account:pkey,transport:viem.http(rpc)}); if(w.account&&w.account.address) addr=w.account.address; }catch(e2){}
+            if(!addr && viem.getAddress){ /* 需公钥, 跳过 */ }
+            if(addr){
+              probe.payout_wallet=addr;
+              const pub=viem.createPublicClient({transport:viem.http(rpc)});
+              const bal=await pub.getBalance({address:addr}).catch(function(){return null;});
+              if(bal!=null) probe.native_balance_wei=bal.toString();
+              const erc=viem.parseAbiItem('function balanceOf(address a) view returns (uint256)');
+              const ub=await pub.readContract({address:usdcC,abi:[erc],fn:'balanceOf',args:[addr]}).catch(function(){return null;});
+              if(ub!=null) probe.usdc_balance=String(ub);
+            } else { probe.probe_note='未能派生付款地址 (viem build 缺 privateKeyToAccount), 余额未查; 不影响 dry-run 不实转'; }
           }catch(e){ probe.probe_note='只读探查失败 (不影响 dry-run 不实转): '+String(e.message||e).slice(0,80); }
           return send(200,{ok:true,dry_run:true,settle_id:settleId,
             note:'dry-run (默认): 未开 COINSETTLE_CONFIRM_LIVE=true, 不转真钱; 付款钱包只读探查见 probe',
@@ -811,12 +819,23 @@ module.exports=async(req,res)=>{
           const rpcUrl=String(get('COINBASE_PAYOUT_RPC')||cc.ca);
           const chainDef=createChain?createChain({id:cc.id,ca:cc.ca,nativeCurrency:{name:'Native',symbol:'ETH',decimals:18},rpcs:[{http:[rpcUrl]}]}):undefined;
           const wallet=createWalletClient({account:pkey, transport:http(rpcUrl), chain:chainDef});
-          const erc20=parseAbiItem('function transfer(address to, uint256 amount) returns (bool)');
-          const to=entry.dest_address;
           const decimals=6; // USDC
           const rawAmt=String(Math.round(entry.amount*Math.pow(10,decimals)));
+          // 转账前查付款钱包 USDC 余额 (防空钱包发注定失败 tx / 浪费 nonce)
+          let fromAddr=null;
+          try{ const wa=createWalletClient({account:pkey,transport:http(rpcUrl)}); if(wa.account&&wa.account.address)fromAddr=wa.account.address; }catch(e2){}
+          const pub=viem.createPublicClient({transport:http(rpcUrl),chain:chainDef});
+          const ercQ=parseAbiItem('function balanceOf(address a) view returns (uint256)');
+          if(fromAddr){
+            const bal=await pub.readContract({address:usdcAddr,abi:[ercQ],fn:'balanceOf',args:[fromAddr]}).catch(function(){return null;});
+            if(bal!=null && BigInt(bal)<BigInt(rawAmt)){
+              return send(500,{ok:false,error:'insufficient_usdc',from:fromAddr,have:bal,want:rawAmt,
+                note:'付款钱包 USDC 不足 (fail-closed, 未发 tx, 结算单保持 pending), 先充 '+entry.asset});
+            }
+          }
+          const to=entry.dest_address;
           const hash=await wallet.writeContract({
-            address:usdcAddr,abi:[erc20],fn:'transfer',args:[to,rawAmt],
+            address:usdcAddr,abi:[parseAbiItem('function transfer(address to, uint256 amount) returns (bool)')],fn:'transfer',args:[to,rawAmt],
           });
           const newStatus={...entry,status:'settled',tx_hash:hash,settled_at:new Date().toISOString(),chain:chainName};
           try{ await dbSet('coinsettle:'+settleId,JSON.stringify(newStatus)); }catch(e){}
