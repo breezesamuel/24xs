@@ -726,6 +726,19 @@ module.exports=async(req,res)=>{
     // 合规: 只生成「待人工确认」结算单, 不自动打款 (无付款密钥)。
     // 红线: 拒扫全网无主资金/airdrop 据为己有 -> 抽佣收进此钱包。
     if(route==='/api/coinsettle'){
+      // ---- 预览: 看「结算会打到哪」(不需密钥, 只回显可用目标 + 默认 + 合规门) ----
+      if(data.preview||data.dest==='preview'){
+        const validDest=Object.keys(WALLETS).filter(function(k){ return WALLETS[k].enabled && !WALLETS[k].is_contract; });
+        return send(200,{ok:true,
+          default_dest:String(get('COINSETTLE_DEFAULT_DEST')||'owner_coinbase'),
+          valid_dests:validDest.map(function(k){ return {key:k, chain:WALLETS[k].chain, addr:WALLETS[k].address, role:WALLETS[k].role}; }),
+          usdc_base_contract:'0x833589fCD2e695B55A1C68A696f0810f2C3AD36C',
+          payout_chain:String(get('COINSETTLE_PAYOUT_CHAIN')||'base'),
+          live:String(get('COINSETTLE_CONFIRM_LIVE')||'false'),
+          key_file:String(get('COINBASE_PAYOUT_PRIVATE_KEY_FILE')||'(none)'),
+          note:'未配密钥时 confirm 走 dry-run; 实转需 key_file 存在 + live=true + 白名单 ref + 请求 live=true',
+        });
+      }
       // ---- 分支: 确认打款 (confirm=<settle_id>) ----
       // 合规 + fail-closed: 默认 dry-run (不转真钱), 需 owner 付款密钥 + CONFIRM_LIVE=true 才实转。
       // 白名单 ref (COINSETTLE_ALLOW_REFS) 外的 ref 一律拒, 避免任意人触发转账。
@@ -823,7 +836,8 @@ module.exports=async(req,res)=>{
       const ref=String(data.ref||'').trim();
       const amount=Number(data.amount||0);
       const asset=String(data.asset||'USDC').toUpperCase();
-      const dest=String(data.dest||'owner_coinbase');
+      // 默认收款目标: 优先 COINSETTLE_DEFAULT_DEST (CN 设为 base_receive), 否则 owner_coinbase
+      const dest=String(data.dest||get('COINSETTLE_DEFAULT_DEST')||'owner_coinbase');
       const source=String(data.source||'').toLowerCase();   // earned | unowned | airdrop | unknown
       const destWallet=WALLETS[dest];
       if(!ref)return send(400,{ok:false,error:'missing_ref'});
