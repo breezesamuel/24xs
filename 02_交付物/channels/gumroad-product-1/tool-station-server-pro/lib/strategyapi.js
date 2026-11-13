@@ -119,6 +119,24 @@ async function onRequest(req, res, data) {
       var r3 = await consume(ref);
       return send(r3.ok ? 200 : 400, r3);
     }
+    if (action === 'run') {
+      // 付费调用一次回测 API: 查额度 -> 调 backtest.js 出真指标 -> 扣 1 次 (无额度 fail-closed 402)
+      var haveQuota = st.quota > 0;
+      if (!haveQuota) {
+        return send(402, { ok: false, error: 'quota_exhausted', need: { yuan: PRICE_YUAN, coin: PRICE_COIN, calls: CALLS_PER_PACK, pay_entry: '/api/pay?plan=trial&slug=api&amount=' + PRICE_YUAN } });
+      }
+      var bt;
+      try { bt = require('./backtest.js'); } catch (e) { return send(500, { ok: false, error: 'engine_unavailable', note: '回测引擎不可用, 未扣额度 (fail-closed)' }); }
+      var rr = await bt.run({ symbol: (data && data.symbol) || 'BTCUSDT', interval: (data && data.interval) || '1d', limit: (data && data.limit) || 90, strategy: (data && data.strategy_id) || 'buy_hold' });
+      if (!rr.ok) return send(500, { ok: false, error: rr.error, detail: rr.detail, note: '数据获取失败, 未扣额度 (fail-closed, 不造假)' });
+      var ck = await consume(ref);
+      var st2 = await load(ref);
+      return send(200, {
+        ok: true, result: rr, report: bt.buildReport(rr, { strategy_id: (data && data.strategy_id) || 'default' }),
+        consumed: !ck.ok ? 1 : 0, quota_left: st2 ? st2.quota : 0,
+        compliance: rr.compliance, note: '已扣 1 次调用额度, 出真指标回测 (基于公开K线简化回测, 非策略代码级)'
+      });
+    }
     return send(404, { ok: false, error: 'no_route', action: action });
   } catch (e) { return send(500, { ok: false, error: 'exception', detail: String(e && e.message) }); }
 }

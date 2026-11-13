@@ -89,7 +89,7 @@ async function isUnlocked(ref, payload) {
   return null;
 }
 
-// generate: 只有已付费解锁才放行, 返回"报告就绪"元数据 (真实 PDF/CSV 生成由策略回测引擎产出, 这里只授权 + 记账)
+// generate: 只有已付费解锁才放行; 已付费则调 backtest.js 出真指标报告 (基于公开K线的简化回测, 不造假)
 async function generate(ref, payload) {
   ref = String(ref || '').slice(0, 64);
   if (!okRef(ref)) return { ok: false, error: 'missing_or_invalid_ref' };
@@ -100,12 +100,21 @@ async function generate(ref, payload) {
   if (!unlocked) {
     return { ok: false, error: 'need_payment', need: { yuan: PRICE_YUAN, coin: PRICE_COIN, format: (payload && payload.format) || 'pdf', pay_entry: '/api/pay?plan=trial&slug=report&amount=' + PRICE_YUAN } };
   }
+  // 已付费 -> 出真回测报告 (调 backtest.js, 拉公开K线真算指标; fail-closed)
+  var reportBody = null;
+  try {
+    var bt = require('./backtest.js');
+    var rr = await bt.run({ symbol: (payload && payload.symbol) || 'BTCUSDT', interval: (payload && payload.interval) || '1d', limit: (payload && payload.limit) || 90, strategy: sid });
+    if (rr.ok) reportBody = bt.buildReport(rr, { strategy_id: sid, strategy_name: sid });
+  } catch (e) { /* 引擎不可用则只给解锁token, 不造假 */ }
   return {
     ok: true, entry: unlocked,
     report_ready: true,
     download_token: 'RPXDL_' + unlocked.id,
-    compliance: complianceFooter(),
-    note: '已解锁该报告导出; 实际 PDF/CSV 文件由回测引擎生成后按 token 下发'
+    report: reportBody, // 真回测报告体 (若引擎成功); 否则 null (前端降级显示"引擎生成中")
+    format: (payload && payload.format) || 'pdf',
+    compliance: reportBody ? reportBody.compliance : complianceFooter(),
+    note: reportBody ? '已出真指标回测报告 (基于公开K线简化回测, 非策略代码级)' : '已解锁导出权; 回测引擎暂不可用, 报告稍后按 token 下发'
   };
 }
 

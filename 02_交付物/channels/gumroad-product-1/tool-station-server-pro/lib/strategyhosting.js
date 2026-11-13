@@ -129,6 +129,19 @@ async function onRequest(req, res, data) {
       var rh = await host(ref, data || {});
       return send(rh.ok ? 200 : (rh.error === 'need_payment' ? 402 : 400), rh);
     }
+    if (action === 'run_report') {
+      // 托管有效期内: 跑一次真回测 + 记一笔 (调 backtest.js, fail-closed)
+      var active = await isActive(ref);
+      if (!active) {
+        return send(402, { ok: false, error: 'need_payment', need: { yuan: PRICE_YUAN, coin: PRICE_COIN, weeks: HOST_WEEKS, pay_entry: '/api/pay?plan=trial&slug=host&amount=' + PRICE_YUAN } });
+      }
+      var bt;
+      try { bt = require('./backtest.js'); } catch (e) { return send(500, { ok: false, error: 'engine_unavailable', note: '回测引擎不可用 (fail-closed)' }); }
+      var rr = await bt.run({ symbol: (data && data.symbol) || 'BTCUSDT', interval: (data && data.interval) || '1d', limit: (data && data.limit) || 90, strategy: (data && data.strategy_id) || 'buy_hold' });
+      if (!rr.ok) return send(500, { ok: false, error: rr.error, detail: rr.detail, note: '数据获取失败, 未出报告 (fail-closed, 不造假)' });
+      var rec = await recordReport(ref, { out_trade_no: rr.range.end });
+      return send(200, { ok: true, result: rr, report: bt.buildReport(rr, { strategy_id: (data && data.strategy_id) || 'default', strategy_name: (data && data.strategy_id) || '托管策略' }), reports_total: rec.reports_total, compliance: rr.compliance, note: '托管自动回测已出真报告 (基于公开K线简化回测, 非策略代码级)' });
+    }
     if (action === 'record_report') {
       var secret = String((data && (data.secret || data.key)) || (req.headers && (req.headers['x-admin-secret'] || req.headers['x-admin-key'])) || '');
       if (!ADMIN_SECRET || secret !== ADMIN_SECRET) return send(403, { ok: false, error: 'forbidden', note: 'record_report 需 admin secret (托管引擎服务端记笔)' });
