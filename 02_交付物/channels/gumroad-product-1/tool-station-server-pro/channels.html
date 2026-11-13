@@ -141,9 +141,45 @@
     <div class="note">报告一律附「<b>非投资建议 · 历史回测不代表未来收益 · 数据来自公开行情源</b>」免责。付费后服务端解锁导出权 (¥ 走支付宝 / 币走 coinsettle 结算)。</div>
   </div>
 
+  <!-- 10. C4 合规渠道: 付费策略回测 API (按调用量购买, 币/¥双付) -->
+  <div class="card">
+    <h3>⚡ 付费策略回测 API <span class="tag live">NEW</span></h3>
+    <p class="d">把你的策略接入 <b>回测 API</b> (按调用量购买调用包, 每次回测 1 次调用) · <b>¥49 / 500币 买 10 次</b></p>
+    <div class="acts">
+      <a id="sqaPayLink" class="cta" href="#">¥49 买 10 次</a>
+      <button id="sqaBtn">查我的额度</button>
+    </div>
+    <div class="stat" id="sqaStat"></div>
+    <div class="note">每次回测结果附「非投资建议 · 历史回测不代表未来 · 数据来自公开源」。购买调用包需 admin 校验, 防伪造。</div>
+  </div>
+
+  <!-- 11. C5 合规渠道: 行情/市场情报数据订阅 (按月, 币/¥双付) -->
+  <div class="card">
+    <h3>📊 行情·市场情报订阅 <span class="tag live">NEW</span></h3>
+    <p class="d">接入 <b>行情/市场情报数据 API</b> (按月订阅, 含 K 线/舆情/资金流向标注) · <b>¥19.9 / 200币 每月</b></p>
+    <div class="acts">
+      <a id="mdPayLink" class="cta" href="#">¥19.9 订阅 30 天</a>
+      <button id="mdBtn">查我的订阅</button>
+    </div>
+    <div class="stat" id="mdStat"></div>
+    <div class="note">数据一律附「来自公开行情源 · 不构成投资建议 · 实时性以源为准」。到期自动失效, 需续费。</div>
+  </div>
+
+  <!-- 12. C6 合规渠道: 付费策略托管 + 每周自动回测 + 推送报告 (订阅制, 币/¥双付) -->
+  <div class="card">
+    <h3>🤖 策略托管·自动回测订阅 <span class="tag live">NEW</span></h3>
+    <p class="d">托管你的策略, <b>每周自动回测 + 推送 C3 专业报告</b> (订阅制, 4 周起) · <b>¥79 / 800币 每 4 周</b></p>
+    <div class="acts">
+      <a id="shPayLink" class="cta" href="#">¥79 托管 4 周</a>
+      <button id="shBtn">查我的托管</button>
+    </div>
+    <div class="stat" id="shStat"></div>
+    <div class="note">托管仅按你的参数执行回测, 附「非投资建议 · 不代客决策 · 数据来自公开源」。只托管本人已注册策略。</div>
+  </div>
+
   <h2>为什么可信</h2>
   <p class="sub" style="margin-bottom:0">
-    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 8 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告导出内置合规免责<br>
+    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 11 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告/API/数据/托管 4 类付费渠道内置合规免责<br>
     所有指标读真实账本, 无假数据。提现需达门槛 (返现 10 元 / 币 100), 由平台结算。
   </p>
 </div>
@@ -220,6 +256,15 @@ function loadAll(){
   // C3 付费导出报告: 付费链接 + 已解锁统计
   document.getElementById('rpxPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=report&amount=9.9&report_format=pdf';
   j('/api/reportexport?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('rpxStat').innerHTML='已解锁报告 <b>'+(s.unlocked||0)+'</b> 份 · 可下载 '+(s.can_download?'是':'否')+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币':''); }).catch(function(){});
+  // C4 策略回测 API: 付费链接 + 额度统计
+  document.getElementById('sqaPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=api&amount=49';
+  j('/api/strategyapi?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('sqaStat').innerHTML='剩余调用 <b>'+(s.quota_left||0)+'</b> 次 · 已购 <b>'+(s.packs||0)+'</b> 包'+(s.can_call?' · 可调用':' · 需续费')+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 买 '+s.calls_per_pack+'次':''); }).catch(function(){});
+  // C5 行情/市场情报订阅: 付费链接 + 订阅状态
+  document.getElementById('mdPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=market&amount=19.9';
+  j('/api/marketdata?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){ var s=r.body||{}; var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未订阅)'; document.getElementById('mdStat').innerHTML='数据订阅 <b>'+(s.active?'有效':'已到期')+'</b> · 到期 <b>'+(s.active?u:'-')+'</b> · 已订阅 '+(s.periods||0)+' 期'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 每月':''); }).catch(function(){});
+  // C6 策略托管+自动回测: 付费链接 + 托管状态
+  document.getElementById('shPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=host&amount=79';
+  j('/api/strategyhosting?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){ var s=r.body||{}; var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未托管)'; document.getElementById('shStat').innerHTML='策略托管 <b>'+(s.active?'有效':'已到期')+'</b> · 到期 <b>'+(s.active?u:'-')+'</b> · 已出报告 '+(s.reports||0)+' 份'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 每 '+s.host_weeks+'周':''); }).catch(function(){});
 }
 
 function claimTask(t){
@@ -357,6 +402,33 @@ document.getElementById('rpxLedgerBtn').onclick = function(){
   j('/api/reportexport?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){
     var s=r.body||{};
     toast('已解锁报告 '+(s.unlocked||0)+' 份 · 可下载 '+(s.can_download?'是':'否'));
+  }).catch(function(){ toast('网络错误'); });
+};
+
+// C4 策略回测 API (按调用量, 合规免责)
+document.getElementById('sqaBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  j('/api/strategyapi?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){
+    var s=r.body||{};
+    toast('API 剩余调用 '+(s.quota_left||0)+' 次 · 已购 '+(s.packs||0)+' 包'+(s.can_call?' · 可调用':' · 需续费'));
+  }).catch(function(){ toast('网络错误'); });
+};
+// C5 行情/市场情报订阅 (按月, 合规免责)
+document.getElementById('mdBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  j('/api/marketdata?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){
+    var s=r.body||{};
+    var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未订阅)';
+    toast('数据订阅 '+(s.active?'有效':'已到期')+' · 到期 '+(s.active?u:'-')+' · 已订阅 '+(s.periods||0)+' 期');
+  }).catch(function(){ toast('网络错误'); });
+};
+// C6 策略托管+自动回测 (订阅制, 合规免责)
+document.getElementById('shBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  j('/api/strategyhosting?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){
+    var s=r.body||{};
+    var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未托管)';
+    toast('策略托管 '+(s.active?'有效':'已到期')+' · 到期 '+(s.active?u:'-')+' · 已出报告 '+(s.reports||0)+' 份');
   }).catch(function(){ toast('网络错误'); });
 };
 

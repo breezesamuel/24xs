@@ -643,6 +643,24 @@ module.exports=async(req,res)=>{
             });
           }catch(e){}
         }
+        // C4 策略回测 API: slug=api 的付费订单 -> 充值该 ref 的 API 调用包额度
+        if(rec.ref && rec.slug==='api' && rec.status==='paid'){
+          try{
+            await require('../lib/strategyapi.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
+          }catch(e){}
+        }
+        // C5 行情/市场情报订阅: slug=market 的付费订单 -> 充值该 ref 的订阅有效期
+        if(rec.ref && rec.slug==='market' && rec.status==='paid'){
+          try{
+            await require('../lib/marketdata.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
+          }catch(e){}
+        }
+        // C6 策略托管+自动回测: slug=host 的付费订单 -> 充值该 ref 的托管有效期
+        if(rec.ref && rec.slug==='host' && rec.status==='paid'){
+          try{
+            await require('../lib/strategyhosting.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
+          }catch(e){}
+        }
       }
       send(200,{ok:true,paid:!!q.paid,status:q.paid?'paid':(rec.status||'unknown'),trade_status:q.trade_status,trade_no:q.trade_no,slug:rec.slug||null,plan:rec.plan||null,code:q.code,sub:q.sub,msg:q.msg});
       return;
@@ -1050,6 +1068,51 @@ module.exports=async(req,res)=>{
         return await mod.onRequest(req,res,data);
       }catch(e){
         send(500,{ok:false,error:'reportexport handler error: '+e.message});
+      }
+      return;
+    }
+    // 付费策略回测 API (strategyapi) — C4 合规渠道: 按调用量购买, 币/¥双付, 内置合规免责
+    if(route.startsWith('/api/strategyapi')){
+      try{
+        const mod = require('../lib/strategyapi.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'strategyapi handler error: '+e.message});
+      }
+      return;
+    }
+    // 行情/市场情报数据订阅 (marketdata) — C5 合规渠道: 按月订阅, 币/¥双付, 内置合规免责
+    if(route.startsWith('/api/marketdata')){
+      try{
+        const mod = require('../lib/marketdata.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'marketdata handler error: '+e.message});
+      }
+      return;
+    }
+    // 付费策略托管+自动回测 (strategyhosting) — C6 合规渠道: 订阅制, 币/¥双付, 内置合规免责
+    if(route.startsWith('/api/strategyhosting')){
+      try{
+        const mod = require('../lib/strategyhosting.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'strategyhosting handler error: '+e.message});
       }
       return;
     }
