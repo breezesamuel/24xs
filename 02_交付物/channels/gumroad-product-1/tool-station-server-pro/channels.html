@@ -32,6 +32,20 @@
   .task button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:7px 11px;font-size:12px;cursor:pointer}
   .task button:disabled{opacity:.5}
   .note{font-size:12px;color:var(--mut);margin-top:8px}
+  .pick{background:#0d1420;border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin:8px 0}
+  .pick .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .pick label{font-size:12px;color:var(--mut);min-width:52px}
+  .pick select,.pick input{background:#0b0f17;border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:8px 10px;font-size:13px;flex:1;min-width:0}
+  .pick select{cursor:pointer}
+  .pick .addrow{display:flex;gap:6px;margin-top:8px}
+  .pick .addrow input{flex:1;min-width:0}
+  .pick .addrow button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer}
+  .pick .stratlist{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .pick .chip{font-size:12px;background:#0b0f17;border:1px solid var(--bd);border-radius:999px;padding:4px 10px;color:var(--tx);cursor:pointer}
+  .pick .chip.sel{border-color:var(--ac);color:var(--ac);font-weight:600}
+  .pick .chip .rm{margin-left:6px;color:var(--mut);font-size:11px;cursor:pointer}
+  .pick .chip .rm:hover{color:var(--warn)}
+  .pick .hint{font-size:11px;color:var(--mut);margin-top:6px}
   #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 16px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:99}
   #toast.show{opacity:1}
 </style>
@@ -128,6 +142,28 @@
     <div class="note">服务端只生成 <b>待人工确认</b>结算单 (不自动打款); 实际链上打款需 owner 付款密钥 + 合规确认。</div>
   </div>
 
+  <!-- 策略/数据源 选择器面板 (C3~C6 共用, 本地按 ref 持久化) -->
+  <div class="card" id="pickCard">
+    <h3>🎯 我的策略 & 数据源 <span class="tag live">选择器</span></h3>
+    <p class="d">C3~C6 付费渠道共用此面板: 选策略 → 导出报告/回测API/托管; 选数据源 → 行情订阅。数据存本地, 按 ref 区分, 不上传服务端。</p>
+    <div class="pick">
+      <div class="row"><label>策略</label><div id="stratChips" class="stratlist" style="flex:1"></div></div>
+      <div class="addrow">
+        <input id="stratAdd" placeholder="添加你的策略 ID (如 my_mom_v3 / dual_ma_5_20)">
+        <button id="stratAddBtn">添加策略</button>
+      </div>
+      <div class="hint">内置示例策略可点选; 也可自己添加。选中策略用于 C3 报告 / C4 回测 / C6 托管。</div>
+    </div>
+    <div class="pick">
+      <div class="row"><label>数据源</label><select id="dsPick"></select></div>
+      <div class="hint">C5 行情/市场情报订阅按此数据源开通。内置公开源, 实时性以源为准。</div>
+    </div>
+    <div class="pick">
+      <div class="row"><label>报告格式</label><select id="fmtPick"><option value="pdf">PDF</option><option value="csv">CSV</option></select></div>
+      <div class="hint">C3 报告导出 / C6 自动推送默认格式。</div>
+    </div>
+  </div>
+
   <!-- 9. C3 合规渠道: 付费导出专业回测报告 (PDF/CSV, 内置合规免责) -->
   <div class="card">
     <h3>📄 付费导出专业回测报告 <span class="tag live">NEW</span></h3>
@@ -203,6 +239,78 @@ track('channels_view');            // 进入赚钱回路页
 function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.className='show'; setTimeout(function(){t.className='';},2600); }
 function j(url, opts){ return fetch(BASE+url, opts).then(function(r){ return r.json().then(function(b){ return {code:r.status, body:b}; }); }); }
 
+// ---- 策略/数据源 选择器 (C3~C6 共用, 按 ref 持久化到 localStorage, 不上传服务端) ----
+var BUILTIN_STRATS = ['my_mom_v3','dual_ma_5_20','rsi_reversal','breakout_20d','grid_btcusd','trend_follow'];
+var BUILTIN_DS = [
+  { id:'public_candles', label:'公开 K 线 (日线/小时, 公开源)' },
+  { id:'public_funding', label:'资金费率/基差 (公开源)' },
+  { id:'public_sentiment', label:'市场舆情 (公开源, 延迟)' },
+  { id:'public_funding_flow', label:'资金流向 (公开源)' },
+  { id:'multi_asset', label:'多资产横截面 (公开源)' }
+];
+function stratKey(){ return 'bds_strats_' + (REF || 'anon'); }
+function loadStrats(){
+  try{ var s = JSON.parse(localStorage.getItem(stratKey()) || 'null'); if(Array.isArray(s)) return s; }catch(e){}
+  return BUILTIN_STRATS.slice();
+}
+function saveStrats(arr){ try{ localStorage.setItem(stratKey(), JSON.stringify(arr)); }catch(e){} }
+function selStrat(){ return localStorage.getItem('bds_selstrat_' + (REF||'anon')) || ''; }
+function setSelStrat(v){ localStorage.setItem('bds_selstrat_' + (REF||'anon'), v); }
+function dsSel(){ return localStorage.getItem('bds_ds_' + (REF||'anon')) || BUILTIN_DS[0].id; }
+function fmtSel(){ return localStorage.getItem('bds_fmt_' + (REF||'anon')) || 'pdf'; }
+function renderStratChips(){
+  var el = document.getElementById('stratChips'); if(!el) return;
+  el.innerHTML = '';
+  var cur = selStrat();
+  loadStrats().forEach(function(s){
+    var chip = document.createElement('span');
+    chip.className = 'chip' + (s===cur ? ' sel' : '');
+    chip.textContent = s;
+    chip.onclick = function(){ setSelStrat(s); renderStratChips(); toast('已选策略: '+s); };
+    if(loadStrats().indexOf(s) >= BUILTIN_STRATS.length){ // 自定义策略可删
+      var rm = document.createElement('span'); rm.className='rm'; rm.textContent='✕';
+      rm.title='删除此策略';
+      rm.onclick = function(ev){ ev.stopPropagation(); removeStrat(s); };
+      chip.appendChild(rm);
+    }
+    el.appendChild(chip);
+  });
+}
+function addStrat(){
+  var v = (document.getElementById('stratAdd').value || '').trim().slice(0,64);
+  if(!v) return;
+  if(!/^[A-Za-z0-9_.:-]+$/.test(v)){ toast('策略 ID 需字母/数字/._:-'); return; }
+  var arr = loadStrats();
+  if(arr.indexOf(v) < 0) arr.push(v);
+  saveStrats(arr); setSelStrat(v);
+  document.getElementById('stratAdd').value='';
+  renderStratChips(); track('strategy_add');
+  toast('✅ 已添加策略 '+v);
+}
+function removeStrat(s){
+  var arr = loadStrats().filter(function(x){ return x!==s; });
+  saveStrats(arr);
+  if(selStrat()===s) setSelStrat('');
+  renderStratChips();
+  toast('已删除策略 '+s);
+}
+function initPickers(){
+  var ds = document.getElementById('dsPick');
+  ds.innerHTML='';
+  BUILTIN_DS.forEach(function(d){
+    var o=document.createElement('option'); o.value=d.id; o.textContent=d.label;
+    if(d.id===dsSel()) o.selected=true;
+    ds.appendChild(o);
+  });
+  ds.onchange = function(){ localStorage.setItem('bds_ds_' + (REF||'anon'), ds.value); toast('数据源: '+ds.options[ds.selectedIndex].text); };
+  var fmt = document.getElementById('fmtPick');
+  fmt.value = fmtSel();
+  fmt.onchange = function(){ localStorage.setItem('bds_fmt_' + (REF||'anon'), fmt.value); toast('报告格式: '+fmt.value.toUpperCase()); };
+}
+document.getElementById('stratAddBtn').onclick = addStrat;
+document.getElementById('stratAdd').addEventListener('keydown', function(e){ if(e.key==='Enter') addStrat(); });
+function selectedStrategy(){ var s = selStrat(); if(!s) s = loadStrats()[0] || ''; return s; }
+
 // ---- 注册 (存 ref 到 localStorage, 后续所有渠道用它记账) ----
 function doReg(){
   var v = document.getElementById('ref').value.trim().slice(0,64);
@@ -217,7 +325,8 @@ document.getElementById('ref').addEventListener('keydown', function(e){ if(e.key
 
 // ---- 各渠道数据加载 (都带 ?ref=) ----
 function loadAll(){
-  if(!REF){ document.getElementById('bountyStat').textContent='先注册 ID'; document.getElementById('bountyTag').className='tag'; document.getElementById('bountyTag').textContent='需注册'; return; }
+  if(!REF){ document.getElementById('bountyStat').textContent='先注册 ID'; document.getElementById('bountyTag').className='tag'; document.getElementById('bountyTag').textContent='需注册'; initPickers(); renderStratChips(); return; }
+  initPickers(); renderStratChips();
   // bounty 任务目录 + summary
   j('/api/bounty?action=tasks').then(function(r){
     var tasks=(r.body.tasks||[]);
@@ -253,18 +362,20 @@ function loadAll(){
     document.getElementById('csStat').innerHTML='你挣的币共 <b>'+total+'</b> 币'+(can?' · <span style="color:#22c55e">可结算到钱包</span>':' · 需 ≥100 币才能结算');
   });
   j('/api/recovery?ref='+encodeURIComponent(REF)).then(function(r){ var s=r.body; document.getElementById('rcStat').innerHTML='已找回 <b>'+(s.total_recovered||0)+'</b> 币 · 服务费 <b>'+(s.platform_fee||0)+'</b> ('+(s.recovered_count||0)+' 笔)'; }).catch(function(){});
-  // C3 付费导出报告: 付费链接 + 已解锁统计
-  document.getElementById('rpxPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=report&amount=9.9&report_format=pdf';
+  // C3 付费导出报告: 付费链接 + 已解锁统计 (带选中策略+格式+数据源)
+  document.getElementById('rpxPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=report&amount=9.9&strategy_id='+encodeURIComponent(selectedStrategy()||'default')+'&report_format='+encodeURIComponent(fmtSel())+'&data_source='+encodeURIComponent(dsSel());
   j('/api/reportexport?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('rpxStat').innerHTML='已解锁报告 <b>'+(s.unlocked||0)+'</b> 份 · 可下载 '+(s.can_download?'是':'否')+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币':''); }).catch(function(){});
-  // C4 策略回测 API: 付费链接 + 额度统计
-  document.getElementById('sqaPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=api&amount=49';
-  j('/api/strategyapi?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('sqaStat').innerHTML='剩余调用 <b>'+(s.quota_left||0)+'</b> 次 · 已购 <b>'+(s.packs||0)+'</b> 包'+(s.can_call?' · 可调用':' · 需续费')+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 买 '+s.calls_per_pack+'次':''); }).catch(function(){});
-  // C5 行情/市场情报订阅: 付费链接 + 订阅状态
-  document.getElementById('mdPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=market&amount=19.9';
-  j('/api/marketdata?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){ var s=r.body||{}; var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未订阅)'; document.getElementById('mdStat').innerHTML='数据订阅 <b>'+(s.active?'有效':'已到期')+'</b> · 到期 <b>'+(s.active?u:'-')+'</b> · 已订阅 '+(s.periods||0)+' 期'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 每月':''); }).catch(function(){});
-  // C6 策略托管+自动回测: 付费链接 + 托管状态
-  document.getElementById('shPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=host&amount=79';
-  j('/api/strategyhosting?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){ var s=r.body||{}; var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未托管)'; document.getElementById('shStat').innerHTML='策略托管 <b>'+(s.active?'有效':'已到期')+'</b> · 到期 <b>'+(s.active?u:'-')+'</b> · 已出报告 '+(s.reports||0)+' 份'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 每 '+s.host_weeks+'周':''); }).catch(function(){});
+  // C4 策略回测 API: 付费链接 + 额度统计 (带选中策略)
+  document.getElementById('sqaPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=api&amount=49&strategy_id='+encodeURIComponent(selectedStrategy()||'default');
+  j('/api/strategyapi?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('sqaStat').innerHTML='剩余调用 <b>'+(s.quota_left||0)+'</b> 次 · 已购 <b>'+(s.packs||0)+'</b> 包 · 策略 ['+(selectedStrategy()||'未选')+']'+(s.can_call?' · 可调用':' · 需续费')+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 买 '+s.calls_per_pack+'次':''); }).catch(function(){});
+  // C5 行情/市场情报订阅: 付费链接 + 订阅状态 (带选中数据源)
+  document.getElementById('mdPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=market&amount=19.9&data_source='+encodeURIComponent(dsSel());
+  j('/api/marketdata?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){ var s=r.body||{}; var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未订阅)'; document.getElementById('mdStat').innerHTML='数据订阅 <b>'+(s.active?'有效':'已到期')+'</b> · 到期 <b>'+(s.active?u:'-')+'</b> · 数据源 ['+(BUILTIN_DS.filter(function(d){return d.id===dsSel();})[0].label||dsSel())+']'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 每月':''); }).catch(function(){});
+  // C6 策略托管+自动回测: 付费链接 + 托管状态 (带托管策略)
+  document.getElementById('shPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=host&amount=79&strategy_id='+encodeURIComponent(selectedStrategy()||'default')+'&report_format='+encodeURIComponent(fmtSel());
+  j('/api/strategyhosting?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){ var s=r.body||{}; var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未托管)'; document.getElementById('shStat').innerHTML='策略托管 <b>'+(s.active?'有效':'已到期')+'</b> · 到期 <b>'+(s.active?u:'-')+'</b> · 已出 '+(s.reports||0)+' 份 · 策略 ['+(selectedStrategy()||'未选')+']'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 每 '+s.host_weeks+'周':''); }).catch(function(){});
+  // 策略/数据源/格式 变化时刷新 C4/C5/C6 付费链接 (让选择即时生效)
+  window.addEventListener('storage', function(){ renderStratChips(); });
 }
 
 function claimTask(t){
@@ -376,15 +487,14 @@ document.getElementById('csLedgerBtn').onclick = function(){
   }).catch(function(){ toast('网络错误'); });
 };
 
-// C3 付费导出专业回测报告 (PDF/CSV, 合规免责)
+// C3 付费导出专业回测报告 (PDF/CSV, 合规免责) — 用选择器面板的策略+格式
 document.getElementById('rpxBtn').onclick = function(){
   if(!REF){ toast('先注册 ID'); return; }
-  var strat = (prompt('策略 ID (你的回测策略, 如 my_mom_strategy):') || '').trim().slice(0,64);
-  if(!strat){ toast('需策略 ID'); return; }
-  var fmt = (prompt('格式 (pdf/csv, 默认 pdf):','pdf')||'pdf').trim().toLowerCase();
-  if(fmt!=='pdf'&&fmt!=='csv') fmt='pdf';
+  var strat = selectedStrategy();
+  if(!strat){ toast('先在「我的策略」选/加一个策略'); document.getElementById('pickCard').scrollIntoView({behavior:'smooth'}); return; }
+  var fmt = fmtSel();
   j('/api/reportexport?ref='+encodeURIComponent(REF), { method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ ref:REF, action:'generate', strategy_id:strat, format:fmt, version:1 }) }).then(function(r){
+    body: JSON.stringify({ ref:REF, action:'generate', strategy_id:strat, format:fmt, version:1, data_source:dsSel() }) }).then(function(r){
     var b=r.body;
     if(b.ok){ toast('✅ 已解锁报告导出: '+b.entry.format.toUpperCase()+' · 合规免责已附'); track('report_generate'); }
     else if(b.error==='need_payment'){
@@ -405,30 +515,35 @@ document.getElementById('rpxLedgerBtn').onclick = function(){
   }).catch(function(){ toast('网络错误'); });
 };
 
-// C4 策略回测 API (按调用量, 合规免责)
+// C4 策略回测 API (按调用量, 合规免责) — 显示选中策略 + 额度
 document.getElementById('sqaBtn').onclick = function(){
   if(!REF){ toast('先注册 ID'); return; }
+  var strat = selectedStrategy();
   j('/api/strategyapi?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){
     var s=r.body||{};
-    toast('API 剩余调用 '+(s.quota_left||0)+' 次 · 已购 '+(s.packs||0)+' 包'+(s.can_call?' · 可调用':' · 需续费'));
+    toast('API 剩余 '+(s.quota_left||0)+' 次 · 已购 '+(s.packs||0)+' 包 · 选中策略 ['+(strat||'未选')+']'+(s.can_call?' · 可调用':' · 需续费'));
+    if(!strat){ document.getElementById('pickCard').scrollIntoView({behavior:'smooth'}); }
   }).catch(function(){ toast('网络错误'); });
 };
-// C5 行情/市场情报订阅 (按月, 合规免责)
+// C5 行情/市场情报订阅 (按月, 合规免责) — 显示选中数据源 + 订阅状态
 document.getElementById('mdBtn').onclick = function(){
   if(!REF){ toast('先注册 ID'); return; }
+  var dsLbl = BUILTIN_DS.filter(function(d){return d.id===dsSel();})[0].label || dsSel();
   j('/api/marketdata?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){
     var s=r.body||{};
     var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未订阅)';
-    toast('数据订阅 '+(s.active?'有效':'已到期')+' · 到期 '+(s.active?u:'-')+' · 已订阅 '+(s.periods||0)+' 期');
+    toast('数据订阅 '+(s.active?'有效':'已到期')+' · 到期 '+(s.active?u:'-')+' · 已订阅 '+(s.periods||0)+' 期 · 数据源 ['+dsLbl+']');
   }).catch(function(){ toast('网络错误'); });
 };
-// C6 策略托管+自动回测 (订阅制, 合规免责)
+// C6 策略托管+自动回测 (订阅制, 合规免责) — 显示托管策略 + 状态
 document.getElementById('shBtn').onclick = function(){
   if(!REF){ toast('先注册 ID'); return; }
+  var strat = selectedStrategy();
   j('/api/strategyhosting?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){
     var s=r.body||{};
     var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未托管)';
-    toast('策略托管 '+(s.active?'有效':'已到期')+' · 到期 '+(s.active?u:'-')+' · 已出报告 '+(s.reports||0)+' 份');
+    toast('策略托管 '+(s.active?'有效':'已到期')+' · 到期 '+(s.active?u:'-')+' · 已出 '+(s.reports||0)+' 份 · 托管策略 ['+(strat||'未选')+']');
+    if(!strat){ document.getElementById('pickCard').scrollIntoView({behavior:'smooth'}); }
   }).catch(function(){ toast('网络错误'); });
 };
 

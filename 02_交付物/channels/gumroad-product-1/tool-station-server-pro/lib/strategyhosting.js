@@ -57,6 +57,8 @@ async function purchase(ref, payload) {
   var entry = {
     id: 'SH' + now.toString(36) + Math.floor(Math.random() * 1e6).toString(36),
     out_trade_no: outNo, via: via, weeks: HOST_WEEKS,
+    strategy_id: String(payload.strategy_id || 'default').slice(0, 64),
+    report_format: String(payload.report_format || 'pdf').slice(0, 4),
     price_yuan: PRICE_YUAN, price_coin: PRICE_COIN, status: 'active', at: now
   };
   st.entries.push(entry);

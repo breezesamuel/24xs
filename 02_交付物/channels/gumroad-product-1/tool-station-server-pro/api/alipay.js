@@ -503,7 +503,12 @@ module.exports=async(req,res)=>{
       if(cnt!==null){pct=ladderPct(cnt);}
       else{const cp=parseInt(data.pct,10);pct=(isFinite(cp)?Math.max(0,Math.min(70,cp)):0);}
       const amount=(price*(1-pct/100)).toFixed(2);
-      await saveOrder({out_trade_no:out,slug:slug,ref:ref,invited_by:inv,plan:plan,kind:isSub?'sub':'unlock',list_price:String(price),pct:pct,amount:amount,status:'created'});
+      // 付费渠道选择器状态 (C3~C6): 把选中策略/数据源/格式 持久化进订单, 供 record/purchase hook 读取
+      const selRec={ out_trade_no:out,slug:slug,ref:ref,invited_by:inv,plan:plan,kind:isSub?'sub':'unlock',list_price:String(price),pct:pct,amount:amount,status:'created' };
+      if(data.strategy_id) selRec.strategy_id=String(data.strategy_id).slice(0,64);
+      if(data.data_source) selRec.data_source=String(data.data_source).slice(0,64);
+      if(data.report_format) selRec.report_format=String(data.report_format).slice(0,8);
+      await saveOrder(selRec);
       const r=alipayParams({out_trade_no:out,total_amount:amount,subject:String(data.subject||('bingdashan '+plan+' unlock')).replace(/[^\x20-\x7e]/g,'').slice(0,120)||('bingdashan '+plan),product_code:'FAST_INSTANT_TRADE_PAY',timeout_express:'15m'},'alipay.trade.page.pay',base,{passback_params:encodeURIComponent(JSON.stringify({slug:slug,plan:plan,ref:ref,inv:inv}))});
       if(r.error){send(200,{ok:false,error:r.error});return;}
       const html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>正在跳转支付宝…</title></head><body style="font-family:system-ui;text-align:center;padding:40px">正在跳转支付宝收银台…<form id="f" action="https://openapi.alipay.com/gateway.do" method="POST" accept-charset="utf-8">'+Object.keys(r.params).map(k=>'<input type="hidden" name="'+k+'" value="'+esc(r.params[k])+'"/>').join('')+'</form><script>document.getElementById("f").submit();</script></body></html>';
@@ -643,22 +648,22 @@ module.exports=async(req,res)=>{
             });
           }catch(e){}
         }
-        // C4 策略回测 API: slug=api 的付费订单 -> 充值该 ref 的 API 调用包额度
+        // C4 策略回测 API: slug=api 的付费订单 -> 充值该 ref 的 API 调用包额度 (带选中策略)
         if(rec.ref && rec.slug==='api' && rec.status==='paid'){
           try{
-            await require('../lib/strategyapi.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
+            await require('../lib/strategyapi.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out, strategy_id: rec.strategy_id||'default' });
           }catch(e){}
         }
-        // C5 行情/市场情报订阅: slug=market 的付费订单 -> 充值该 ref 的订阅有效期
+        // C5 行情/市场情报订阅: slug=market 的付费订单 -> 充值该 ref 的订阅有效期 (带选中数据源)
         if(rec.ref && rec.slug==='market' && rec.status==='paid'){
           try{
-            await require('../lib/marketdata.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
+            await require('../lib/marketdata.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out, data_source: rec.data_source||'public_candles' });
           }catch(e){}
         }
-        // C6 策略托管+自动回测: slug=host 的付费订单 -> 充值该 ref 的托管有效期
+        // C6 策略托管+自动回测: slug=host 的付费订单 -> 充值该 ref 的托管有效期 (带托管策略+报告格式)
         if(rec.ref && rec.slug==='host' && rec.status==='paid'){
           try{
-            await require('../lib/strategyhosting.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
+            await require('../lib/strategyhosting.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out, strategy_id: rec.strategy_id||'default', report_format: rec.report_format||'pdf' });
           }catch(e){}
         }
       }
