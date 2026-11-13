@@ -128,9 +128,22 @@
     <div class="note">服务端只生成 <b>待人工确认</b>结算单 (不自动打款); 实际链上打款需 owner 付款密钥 + 合规确认。</div>
   </div>
 
+  <!-- 9. C3 合规渠道: 付费导出专业回测报告 (PDF/CSV, 内置合规免责) -->
+  <div class="card">
+    <h3>📄 付费导出专业回测报告 <span class="tag live">NEW</span></h3>
+    <p class="d">把你的策略回测结果导出为 <b>专业 PDF/CSV 报告</b> (含指标/回撤/成交记录/数据来源标注) · <b>¥9.9 或 100 币</b></p>
+    <div class="acts">
+      <a id="rpxPayLink" class="cta" href="#">¥9.9 导出 PDF</a>
+      <button id="rpxBtn">生成报告</button>
+      <button id="rpxLedgerBtn">查我的报告</button>
+    </div>
+    <div class="stat" id="rpxStat"></div>
+    <div class="note">报告一律附「<b>非投资建议 · 历史回测不代表未来收益 · 数据来自公开行情源</b>」免责。付费后服务端解锁导出权 (¥ 走支付宝 / 币走 coinsettle 结算)。</div>
+  </div>
+
   <h2>为什么可信</h2>
   <p class="sub" style="margin-bottom:0">
-    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 7 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线)<br>
+    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 8 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告导出内置合规免责<br>
     所有指标读真实账本, 无假数据。提现需达门槛 (返现 10 元 / 币 100), 由平台结算。
   </p>
 </div>
@@ -204,6 +217,9 @@ function loadAll(){
     document.getElementById('csStat').innerHTML='你挣的币共 <b>'+total+'</b> 币'+(can?' · <span style="color:#22c55e">可结算到钱包</span>':' · 需 ≥100 币才能结算');
   });
   j('/api/recovery?ref='+encodeURIComponent(REF)).then(function(r){ var s=r.body; document.getElementById('rcStat').innerHTML='已找回 <b>'+(s.total_recovered||0)+'</b> 币 · 服务费 <b>'+(s.platform_fee||0)+'</b> ('+(s.recovered_count||0)+' 笔)'; }).catch(function(){});
+  // C3 付费导出报告: 付费链接 + 已解锁统计
+  document.getElementById('rpxPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=report&amount=9.9&report_format=pdf';
+  j('/api/reportexport?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('rpxStat').innerHTML='已解锁报告 <b>'+(s.unlocked||0)+'</b> 份 · 可下载 '+(s.can_download?'是':'否')+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币':''); }).catch(function(){});
 }
 
 function claimTask(t){
@@ -312,6 +328,35 @@ document.getElementById('csLedgerBtn').onclick = function(){
   j('/api/config').then(function(r){
     var w=(r.body.wallets||{}).owner_coinbase;
     toast('结算钱包: '+(w? w.address : '(未配置)')+' · 结算单状态=待人工确认 (不自动打款)');
+  }).catch(function(){ toast('网络错误'); });
+};
+
+// C3 付费导出专业回测报告 (PDF/CSV, 合规免责)
+document.getElementById('rpxBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  var strat = (prompt('策略 ID (你的回测策略, 如 my_mom_strategy):') || '').trim().slice(0,64);
+  if(!strat){ toast('需策略 ID'); return; }
+  var fmt = (prompt('格式 (pdf/csv, 默认 pdf):','pdf')||'pdf').trim().toLowerCase();
+  if(fmt!=='pdf'&&fmt!=='csv') fmt='pdf';
+  j('/api/reportexport?ref='+encodeURIComponent(REF), { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ ref:REF, action:'generate', strategy_id:strat, format:fmt, version:1 }) }).then(function(r){
+    var b=r.body;
+    if(b.ok){ toast('✅ 已解锁报告导出: '+b.entry.format.toUpperCase()+' · 合规免责已附'); track('report_generate'); }
+    else if(b.error==='need_payment'){
+      var pay=b.need||{};
+      toast('需付费: ¥'+(pay.yuan||9.9)+' 或 '+(pay.coin||100)+' 币。点「¥9.9 导出 PDF」完成支付。');
+      window.open((location.origin||'')+'/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=report&amount='+(pay.yuan||9.9)+'&strategy_id='+encodeURIComponent(strat)+'&report_format='+fmt,'_blank');
+      track('report_need_payment');
+    }
+    else { toast('失败: '+(b.error||b.note||'未知')); }
+    loadAll();
+  }).catch(function(){ toast('网络错误'); });
+};
+document.getElementById('rpxLedgerBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  j('/api/reportexport?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){
+    var s=r.body||{};
+    toast('已解锁报告 '+(s.unlocked||0)+' 份 · 可下载 '+(s.can_download?'是':'否'));
   }).catch(function(){ toast('网络错误'); });
 };
 

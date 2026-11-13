@@ -632,6 +632,17 @@ module.exports=async(req,res)=>{
         if(rec.ref && rec.status==='paid'){
           try{ await require('../lib/cashback.js').record(rec.ref,{out_trade_no:out,amount:q.amount,plan:rec.plan,kind:rec.kind,merchant:rec.slug||'self'}); }catch(e){}
         }
+        // C3 付费导出报告: slug=report 的付费订单 -> 解锁该 ref 的报告导出权
+        if(rec.ref && rec.slug==='report' && rec.status==='paid'){
+          try{
+            await require('../lib/reportexport.js').record(rec.ref,{
+              strategy_id: String(rec.strategy_id||rec.plan||'default').slice(0,64),
+              format: String(rec.report_format||'pdf').slice(0,4),
+              version: String(rec.report_version||1).slice(0,16),
+              paid_via: 'alipay', out_trade_no: out
+            });
+          }catch(e){}
+        }
       }
       send(200,{ok:true,paid:!!q.paid,status:q.paid?'paid':(rec.status||'unknown'),trade_status:q.trade_status,trade_no:q.trade_no,slug:rec.slug||null,plan:rec.plan||null,code:q.code,sub:q.sub,msg:q.msg});
       return;
@@ -1024,6 +1035,21 @@ module.exports=async(req,res)=>{
         return await mod.onRequest(req,res,data);
       }catch(e){
         send(500,{ok:false,error:'recovery handler error: '+e.message});
+      }
+      return;
+    }
+    // 付费导出专业回测报告 (reportexport) — C3 合规渠道: 付费(币/¥)解锁 PDF/CSV 导出, 内置合规免责
+    if(route.startsWith('/api/reportexport')){
+      try{
+        const mod = require('../lib/reportexport.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'reportexport handler error: '+e.message});
       }
       return;
     }
