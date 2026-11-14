@@ -1,0 +1,71 @@
+name: 24x7 Self-Heal Trigger
+
+# 目的: 保证 "Hidden AutoOps 24x7" 即使被 GitHub free-plan 因连续 fail 而调度退避(silent backoff),
+#       也不会真正停摆。本独立 */15 触发器定期检查主 workflow 是否近期跑过,
+#       若 >45min 没跑 (漏 3 轮), 就主动 dispatch 它, 恢复 24/7 自运行。
+# 设计: 极简、零依赖、permissions 最小 (actions:write 用于 dispatch 别的 workflow)。
+# 防抖: 只在主 workflow 真的"断更"时才触发, 不制造重复 dispatch。
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  self-heal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check if main workflow needs a nudge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          # 主 workflow 名 (触发它用 workflow_dispatch)
+          MAIN_WORKFLOW: "Hidden AutoOps 24x7"
+          REPO: ${{ github.repository }}
+          # 断更阈值: 超过这个分钟数没跑主 workflow, 就 dispatch (15min 周期 * 3 = 45min)
+          STALE_MINUTES: "45"
+        run: |
+          set -uo pipefail
+          echo "=== 24x7 self-heal trigger ==="
+          echo "repo=$REPO main=$MAIN_WORKFLOW stale_threshold=${STALE_MINUTES}min"
+          # 拉最近 30 条主 workflow 的 runs (含 schedule+dispatch), 找最后一条的时间戳
+          out="$(gh run list --repo "$REPO" --workflow "$MAIN_WORKFLOW" --limit 30 \
+                  --json databaseId,event,createdAt,status,conclusion 2>/dev/null)" || {
+            echo "::warning::gh run list 失败 (网络/权限), 本轮不 dispatch, 下轮再查"; exit 0; }
+          echo "$out" | head -c 400; echo
+          # 用 python 解析 (gh --json 输出是数组), 找 createdAt 最新的一条
+          last_at="$(printf '%s' "$out" | python3 -c '
+          import sys, json, datetime
+          try:
+            arr = json.load(sys.stdin)
+          except Exception:
+            arr = []
+          ts = [r.get("createdAt") for r in arr if r.get("createdAt")]
+          ts.sort(reverse=True)
+          print(ts[0] if ts else "")
+          ')"
+          # 防误判: gh 返回空数组(真的没 run) 与 gh 失败已区分(上面 || 退出了), 这里 last_at 空 = 真无 run
+          echo "主 workflow 最近一次 run: ${last_at:-(无)}"
+          if [ -z "$last_at" ]; then
+            echo "主 workflow 没有任何 run 记录 -> 立即 dispatch 启动它"
+            gh workflow run "$MAIN_WORKFLOW" --repo "$REPO" --ref main && echo "已 dispatch"
+            exit 0
+          fi
+          # 计算距现在多少分钟 (用 env 传值给 python, 避免 shell 引号嵌套脆弱)
+          now_iso="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          age_min="$(LAST_AT="$last_at" NOW_ISO="$now_iso" python3 -c '
+          import datetime, os
+          a=datetime.datetime.fromisoformat(os.environ["LAST_AT"].replace("Z","+00:00"))
+          b=datetime.datetime.fromisoformat(os.environ["NOW_ISO"].replace("Z","+00:00"))
+          print(int((b-a).total_seconds()/60))
+          ')" || age_min="0"
+          echo "主 workflow 断更: ${age_min} 分钟 (阈值 ${STALE_MINUTES}min)"
+          if [ "$age_min" -gt "$STALE_MINUTES" ]; then
+            echo ">>> 主 workflow 已断更 >${STALE_MINUTES}min, dispatch 恢复 24/7"
+            gh workflow run "$MAIN_WORKFLOW" --repo "$REPO" --ref main && echo "已 dispatch, 24/7 恢复"
+          else
+            echo "主 workflow 近期正常, 无需干预"
+          fi

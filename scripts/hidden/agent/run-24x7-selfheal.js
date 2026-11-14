@@ -88,6 +88,29 @@ try {
   else log('ℹ️ CN 查单响应: '+(body||'(空)').slice(0,60));
 } catch(e){ log('CN 探异常: '+e.message); }
 
+// 3.5. 探赚钱回路对账 (?a=loop: 引流->注册->试用->付费->收款->对账) — 若本地有 secret
+try {
+  const secPath2 = path.join(ROOT, 'autoops','hidden','realops.secret');
+  if (fs.existsSync(secPath2)) {
+    const sk = fs.readFileSync(secPath2,'utf8').trim();
+    const lp = sh(`curl -s -m 25 "https://tools.highkingflower.com/api/autoops.js?a=loop&k=${sk}"`);
+    let lj = null; try{ lj = JSON.parse(lp.out); }catch(e){}
+    if (lj && lj.ok && lj.loop) {
+      const f = lj.loop.funnel || {}, r = lj.loop.reconcile || {};
+      const row = { at:new Date().toISOString(), loop:{paid_orders:f.paid_orders, revenue_cny:(lj.loop.revenue||{}).cny, reconcile_consistent:r.consistent} };
+      const lf = path.join(ROOT,'autoops','hidden','local_moneyloop.jsonl');
+      fs.appendFileSync(lf, JSON.stringify(row)+'\n','utf8');
+      const lines = fs.readFileSync(lf,'utf8').split('\n').filter(Boolean);
+      fs.writeFileSync(lf, lines.slice(-100).join('\n')+'\n','utf8');
+      log(`✅ 赚钱回路: paid_orders=${f.paid_orders} revenue=${(lj.loop.revenue||{}).cny} reconcile=${r.consistent?'consistent':'MISMATCH:'+r.mismatch_count}`);
+    } else {
+      log('ℹ️ ?a=loop 无数据 (secret 不匹配或站点无 loop): '+(lp.out||'(空)').slice(0,50));
+    }
+  } else {
+    log('ℹ️ 无 realops.secret, 跳过 ?a=loop 探 (GitHub realops 会探)');
+  }
+} catch(e){ log('探 loop 异常: '+e.message); }
+
 // 4. 把 24x7 自愈记录写回 git (本地 -> GitHub, 让云端也能看到本地兜底在跑)
 try {
   const runFile = path.join(ROOT,'autoops','hidden','local_24x7_runs.jsonl');

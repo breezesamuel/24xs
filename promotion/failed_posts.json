@@ -4,15 +4,8 @@
       "file": "hn-ai-arcade.md",
       "channel": "hackernews",
       "error": "Element not found: [name=\"title\"]",
-      "at": "2026-10-31T16:02:26.327Z",
-      "attempts": 22
-    },
-    {
-      "file": "hn-ai-arcade.md",
-      "channel": "hackernews",
-      "error": "Element not found: [name=\"title\"]",
       "at": "2026-10-31T16:32:26.205Z",
-      "attempts": 21
+      "attempts": 22
     },
     {
       "file": "hn-ai-arcade.md",
@@ -139,7 +132,14 @@
       "error": "Element not found: [name=\"title\"]",
       "at": "2026-11-01T01:32:27.069Z",
       "attempts": 21
+    },
+    {
+      "file": "hn-ai-arcade.md",
+      "channel": "hackernews",
+      "error": "connect ECONNREFUSED 127.0.0.1:9223",
+      "at": "2026-11-14T04:13:39.027Z",
+      "attempts": 21
     }
   ],
-  "updated": "2026-11-01T01:32:27.073Z"
+  "updated": "2026-11-14T04:13:39.028Z"
 }

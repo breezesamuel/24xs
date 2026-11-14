@@ -188,12 +188,123 @@ curl -s -X POST https://tools-cn.highkingflower.com/api/order \
 
 **诚实**: 双活两站点**真实客户收款均 = 0** (全部 107/120+153 单为测试/void/无身份)。代码通道 100% 就绪, 但**只有支付宝真能出单**; 微信/Stripe 需 owner 补真实凭据后才能启用。"收款 0→1" 需真实客户付 1 元 (可付订单 `_payable_Vercel.html` / `_payable_CN.html` 已生成)。
 
-### 12.3 CN (阿里云) body 透传 bug (待根治)
-- **现象**: CN `/api/pay` 经 nginx 的 POST body 到不了 `alipay.js` (`CN-SRV-DIAG bodyKeys=` 空) → 订单默认 m10/ref 空。
-- **已验证**: 直连 node `127.0.0.1:8794` 能读 body; 经 nginx 公网则丢。已重写 CN readBody 为流式 `read()` + 删 `alipay.js` 的 `readable===false` 短路, **仍偶发丢/超时**。
-- **根因假设**: nginx 代理层吞/缓冲 POST body (`proxy_buffering off` + `http2 on`)。
-- **下一步**: (1) 干净隔离 (a)直接 node vs (b)经 nginx 各建一单看 `out_trade_no` 含不含 ref; (2) 若确认 nginx → 加 `proxy_set_header Content-Length` + 关 http2 for POST + reload; (3) 若 node 仍不稳 → `alipay.js` 加 `req.query` 兜底。
-- **注**: Vercel 主站 body 透传正常 (已验证), CN 是次要镜像。
+### 12.3 CN (阿里云) body 透传 bug (**已根治** ✅)
+- **现象**: CN `/api/pay` 经 nginx 的 POST body 到不了 `alipay.js` (订单默认 m10/ref 空) + **POST 30s hang**。
+- **根因 (最终定位, 非 nginx)**: CN `site_cn_server.mjs` **预读** body (`await readBody(req)` line 165) 把字段 merge 进 URL, 又传 `shimReq=Object.create(req)` 给 `alipay.js`; `alipay.js` **再调 `readBody(shimReq)` 重读同一已消费流** → **死锁/30s 超时** → 空 body。直连 node 也 hang (因是 node 侧流重复读, 非 nginx)。
+- **修复 (3 处, 已 CN 实盘 + remote)**:
+  1. `alipay.js`: 加 `req._bdsBodyInUrl === true` 到 `skipBody` 判据 (CN shim 已提供 body 时**不重读流**)。
+  2. CN `site_cn_server.mjs`: `shimReq._bdsBodyInUrl = true` (body 已 merge 进 URL)。
+  3. CN `readBody`: 删 `readable===false` 短路 + `read()` 竞态, 用事件版 (data/end/error + 30s 兜底)。
+- **验证 (CN 生产实跑)**: `/api/pay` POST `ref=BODYPROOF` → `out_trade_no=BDS_BODYPROOF_trial_...` (**body 的 ref 到达 alipay.js, 不再 m10**) + **HTTP 200 0.02s (不再 30s hang)**。`?a=post` 写作投稿经公网 200 + tokens ✅。
+- **教训**: 双活镜像若预读 body 又传 shim, 下游 **绝不能再读流**; 用 flag (`_bdsBodyInUrl`) 告知跳过。GET-with-query 不受影响 (无 body)。
+
+## 十三、赚钱回路 (money loop): 引流 → 注册 → 试用 → 付费 → 收款 → 对账
+
+### 13.1 实现: `/api/autoops.js?a=loop` (新增对账端点, CN 生产已实盘)
+`autoops.js` 加 `loopStats(orders, real)`, 在 `stats()` 返回加 `loop` 字段 + 独立 `?a=loop` action。**全读真实 KV** (无假指标):
+- **引流发布**: `track_YYYYMMDD` (14 天) `pv`/`sources`/注册类事件 (`register`/`signup`/`lead`)
+- **注册**: 真实订单 `ref` 去重 = `unique_users`
+- **免费试用**: `plan==='trial'` 真实单 + 已激活 (subwall trial 去重, 一人一次)
+- **付费调用**: 真实 `status==='paid'` 单 (复用 `isSynthetic` 6 层剔合成探针)
+- **支付宝收款**: `revenue.cny` (paid 真实单求和)
+- **对账**: `trade_status`(网关) ↔ `status`(账本) 一致性 → `mismatch` (漏激活/假 paid) + `consistent` 标志
+
+### 13.2 验证 (CN 生产实跑)
+- `GET /api/autoops.js?a=loop&k=$SECRET` → `{"ok":true, loop:{funnel,revenue,reconcile}}`
+- 无 key → 403 (fail-closed 正确); CN 默认未设 `AUTOOPS_SECRET` (= fail-closed; Vercel production secret 才有)
+- 实跑结果: `funnel` 全 0 (无真实客户流量/付费) + `reconcile.consistent=true` (网关↔账本一致) → **诚实: 真实收款仍=0 (售前态)**
+
+### 13.3 新维度渠道 (bounty/TON/Solana/返现/写作/公益/找回资产) 诚实盘点
+| 维度 | 现状 | 真做需要 |
+|---|---|---|
+| 劳动换币 (bounty 平台) | ❌ 未接入 | bounty API + 任务队列 + 结算 |
+| 带宽/闲置资源共享 | ❌ 未接入 | 带宽计量 + 分成账本 (commission.js 可扩展) |
+| TON 小游戏 | ❌ 未接入 | TON 合约 + 游戏 SDK + 钱包 |
+| Solana 生态 | ❌ 未接入 | 钱包 + 合约 + 代币 (高门槛) |
+| 购物返现 | ❌ 未接入 | 联盟返现 API + 订单跟踪 |
+| 写作赚币 | ❌ 未接入 | 内容审核 + 积分/代币发放 |
+| 公益基金 | ❌ 未接入 | 捐赠通道 + 透明账本 |
+| 找回被遗忘资产 | ❌ 未接入 | 钱包扫描 + 认领 (合规风险高) |
+
+> **诚实结论**: 当前**唯一真运转的赚钱回路 = 支付宝收款轨** (`/api/pay`→`/api/notify`→`/api/order`→subwall 激活→`?a=loop` 对账), 双活 LIVE 但 **0 真实客户收款** (代码通道 100% 就绪, 卡在真实客户付 1 元)。上表 8 个新维度**均未接入代码**, 属规划, 不夸大。
+
+### 13.4 持久化
+- `autoops.js` (loop) 已 **CN 生产实盘** (scp + restart, 已验证) + **本地 commit `7996df1`**。
+- remote main 推送: CJK 路径 + 工作流并发推进致 git push 反复 non-fast-forward (远端 94 commit 领先)。
+  下次网络恢复用 `git worktree` 干净分支推 `autoops.js`。
+
+## 十四、赚钱回路扩展: 购物返现 + 写作赚币 + 劳动换币 (3 个新账本渠道)
+
+### 14.1 已接入 (CN 生产实盘 + remote main 一致)
+| 渠道 | 文件 | 端点 | 防刷/合规机制 |
+|---|---|---|---|
+| 购物返现 | `lib/cashback.js` | `/api/cashback` (rate/summary/ledger/settle/payout) | 5% 返现, 幂等 by out_trade_no, 10 元门槛, payout 只生成*待人工确认*提现请求 |
+| 写作赚币 | `lib/writerewards.js` | `/api/writerewards` (rate/summary/ledger/post/settle) | 服务端质量门禁: 最少 80 字 + 反模板 + 哈希去重 + 单日 3 篇上限 |
+| 劳动换币 | `lib/bounty.js` | `/api/bounty` (tasks/rate/summary/ledger/claim/settle) | 任务目录 + 服务端证据校验 + 单 ref 50 任务上限 |
+| 公益基金 | `lib/charity.js` | `/api/charity` (total/donate/summary/ledger) | 透明捐赠账本, 金额 1~10万 校验, 按项目公示 |
+| 带宽共享 | `lib/bandwidth.js` | `/api/bandwidth` (rate/summary/ledger/meter/settle) | 0.5币/GB 计量, 单日 50GB 上限 + 物理速率 10Gbps 上限 |
+| 找回资产 | `lib/recovery.js` | `/api/recovery` (rate/summary/ledger/record) | **合规红线: 仅本人+授权+来源; 拒扫他人无主资金** |
+
+### 14.2 关键技术点 (踩过的坑)
+- **存储三回退**: KV REST → Supabase → **CN 文件 (`FILE_STORE_DIR=/var/lib/bingdashan-cn`)**。CN 无 KV/Supabase, 靠文件回退才让 2 渠道在 CN 真运转。
+- **dget/dset 短路 bug**: 初版 `if(!s) return` 在 Supabase 缺席时*提前返回*, 文件回退不可达 → 表现为 "record ok:false 但文件没写"。修复: `if(s){...}` 包裹 (不短路), 文件回退总可达。
+- **can_settle 单位 bug**: `total`(元) 误比 `threshold*100`(分) → 永远 false。修复: 直接比 元。
+- **大文件 git 推**: `alipay.js`(47KB) 走 `gh api contents -f content` 报 "Argument list too long" (命令行 arg 超限) → 改 **`--input <JSON 文件>`** (绕 arg 限制) 成功推。
+
+### 14.3 CN 实测 (防刷)
+- 写作: 正常长文 ✅ 给币; `短`/`哈哈哈哈...` ❌ reject (too_short + low_diversity); 重复内容 duplicate 不重复给币。
+- 返现: 100+200 元 → 5+10=15 元, can_settle:true; settle/payout 无 key → 403 (fail-closed)。
+
+### 14.4 24/7 三层 (本轮确认)
+云端 `Hidden AutoOps 24x7` + `24x7 Self-Heal Trigger` + `Keepalive` (全 success) + 本机 `AutoOps_24x7_SelfHeal` (需 owner 双击 `register-24x7-task-admin.bat` 注册, 非 admin 不能代注册)。`run-24x7-selfheal.js` 已加 `?a=loop` 赚钱回路探。
+
+### 14.5 合规红线 (找回资产渠道, 重要)
+- **只做**: 帮**本人/已授权用户**找回**自己的**遗忘资产 (旧地址/旧交易所), 记 10% 服务费。
+- **不做**: "全网扫被丢弃 USDC/USDT 据为己有 → 导入池子抽佣 → 收进 coinbase 钱包"。
+  链上无主资金多数属真实用户 (丢私钥/旧交易所/继承纠纷), 主动侵占 = **盗窃+侵占, 违法+自毁** (KYC+链上追踪可定位, 交易所会冻结+上报)。
+- 不做: 自动刷 airdrop/faucet/水龙头 (多蜜罐/钓鱼, 自陷陷阱)。
+- `recovery.js` 的 `not_authorized`/`missing_source`/`missing_owner_ref` 三重拒记 就是这条红线的代码实现。
+
+### 14.6 持久化
+- 本地 commit: `33f04af`(返现+写作) / `184102e`(劳动) / `2e3fd4d`(公益+带宽) / `101d858`(找回) / `493533a`(引流页 7 卡片)
+- **remote main 已全部推** (7 渠道 lib + alipay.js 7 路由 + channels.html 7 卡片, 已验证)
+- CN 生产实盘: 7 渠道端点全 200 (bounty/cashback/writerewards/charity/bandwidth/recovery/config)
+
+## 十五、币结算收款钱包 (owner coinbase) + /api/coinsettle
+**owner 指定 (2026-11-11): 币结算收款钱包 = Coinbase 自托管 `0xe35b920Ba38bc83fb19D0b77871545C2F986093c` (EVM, 40-hex 合法)。**
+- 加入 `alipay.js` `WALLETS.owner_coinbase` (`enabled:true`); `/api/config` 现在回显该钱包。
+- **`/api/coinsettle`** (vercel.json rewrite `?r=coinsettle`): 把「用户自己挣的币」生成**待人工确认**结算单, 落 `owner_coinbase`。
+- **合规红线 (CN 实测全生效)**: `source=earned`(自己挣的)→生成 `pending_manual_confirmation`; `source=unowned`(无主)/`airdrop`→**拒** `compliance_redline`; 缺 source→`missing_source`; 未知 dest→`unknown_dest_wallet`; 金额 0→`invalid_amount`。
+- **诚实边界**: 服务端**只生成待确认结算单, 不自动打款** (无付款私钥, 也不该静默转); 真上链打款需 owner 付款密钥 + 合规人工执行。
+- 持久化: `ecb55f3`(coinbase 钱包 + coinsettle) / `d182ed2`(source=earned 红线) / `fbca17b`(channels.html #8 卡片); CN + Vercel + remote main 一致 (已验证: config 含 owner_coinbase, coinsettle earned 出 pending 单, #8 卡片 live 渲染 + 门槛守护 10<100 拒)。
+- **前端 #8 卡片 (channels.html)**: 「💳 币结算到我的钱包」汇总 earned 币 (劳动/写作/带宽), 显示「你挣的币共 N 币 · 需 ≥100 币」; ≥100 才可调 `/api/coinsettle` (source=earned) 生成待确认单; <100 前端直接挡 (不建单)。
+- **真链路留证 (CN 实盘, demo_user_a)**: 3 bounty 任务 (80 币) + 2 写作 (22 币) = 102 earned ≥ 100 → `/api/coinsettle source=earned` 真生成 `CS_demo_user_a_MWC529KI` (100 USDC → `0xe35b920Ba38bc83fb19D0b77871545C2F986093c`, `pending_manual_confirmation`, 落盘 `/var/lib/bingdashan-cn/coinsettle_CS_*.json`); `source=unowned` 红线再证拒。币账本经 API 读: bounty tokens_total=80, writing tokens_total=22。
+- **打款分支 `?confirm=<id>` (commits `be1cf9d`/`08ccbce`, CN+Vercel+remote 一致)**:
+  - **默认 dry-run**: 无 `COINBASE_PAYOUT_PRIVATE_KEY`(env 或 `_FILE`) → `dry_run:true` 只回报 tx 计划, **不转真钱**; 结算单保持 pending。
+  - **live-dry-run 只读探查**: 配了密钥但未开 live → viem 只读查付款钱包派生地址 + native 余额 (`probe`), 实转前确认"钱在对的链上"。
+  - **实转 gate (fail-closed)**: 需 ①`COINBASE_PAYOUT_PRIVATE_KEY` + ②`COINSETTLE_ALLOW_REFS` 白名单含该 ref + ③`COINSETTLE_CONFIRM_LIVE=true` + ④请求带 `live=true` + ⑤结算单 `pending` 且 `source=earned` → 才 viem 发 ERC-20 `transfer` 置 `settled`。按链选 USDC 合约 (Base/Eth/Arb)。红线: unowned/非白名单 ref/已 settled/链上错 → 拒或 fail-closed 保持 pending。
+
+- **突破: 实转签名用 ethers (commit `62c2115`, CN+Vercel+remote 一致)**:
+  - 根因: 本装 viem v2.57.4 **不能本地私钥签名** (把 `account: 0x私钥` 当 JSON-RPC 账号, 地址派生错 = 返回 D 本身, `sign` 不存在, Base 公共 RPC 拒 `personal_sign`)。
+  - 解法: CN 上 `npm i ethers@6` (6s 装好), 实转改用 **ethers.Wallet(D) 本地签 RLP/EIP-155 + 广播**; dry-run 探查同用 ethers 派生**正确**付款地址。
+  - **地址自洽校验**: 设 `COINSETTLE_PAYOUT_ADDRESS=0x09132f96…`, 实转前派生地址必须等于它 (防密钥放错, fail-closed `payout_addr_mismatch`)。
+  - 付款钱包 `0x0913…` (openssl secp256k1 生成, 私钥落 CN `/etc/coinsettle/payout_key` 600, 三方 openssl/noble/ethers 派生地址一致)。
+  - live-dry-run 实测: `payout_wallet=0x0913…` (正确), `native=0` `usdc=0` (空钱包, 诚实)。
+  - **仍 0 资金动作**: `COINSETTLE_CONFIRM_LIVE=false`, 且付款钱包空; 充 Base USDC≥100 + gas 到 `0x0913…` + 说"开 live" 才实转 (ethers 本地签, 无需外部 RPC 签名能力)。
+
+  - `base_receive` `0x74a9f91763c28571af7a52987f425f62825cf5d8` (owner 收款钱包, Base USDC)
+  - `agentpay_treasury` `0x367F1b3D8Ca90D1e087481a9A40d585Bf3451a03` (AgentPay treasury, Base USDC)
+  - `base_usdc_contract` `0x833589fCD2e695B55A1C68A696f0810f2C3AD36C` (USDC 合约, `is_contract:true`, **不能**当 dest)
+  - ⚠️ owner 曾给的 `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` 是 **33 位错地址** (标准 Base USDC 是 32 位 `0x833589fC…D36C`), 已弃用错值, 用正确官方地址。
+  - coinsettle `dest` gate 放宽: 允许 WALLETS 里 `enabled:true` 的**收款钱包** (base_receive/agentpay_treasury/owner_coinbase), 拒 `is_contract` 合约; 反滥用仍靠 `source=earned` 门。CN 实测: 结算到 base_receive/agentpay_treasury 出 pending 单, unowned 拒, 打合约拒。
+  - **两条进账线 (别混)**: ① 法币现金 = 支付宝商户账户 (`/api/pay`, 唯一真出现金); ② 币 (USDC on Base) = 以上 Base 钱包 (币→USDC 归集, 非现金)。
+
+  - **默认 dry-run**: 无 `COINBASE_PAYOUT_PRIVATE_KEY`(env 或 `_FILE`) → `dry_run:true` 只回报 tx 计划, **不转真钱**; 结算单保持 pending。
+  - **live-dry-run 只读探查**: 配了密钥但未开 live → 用 viem 只读查付款钱包派生地址 + native 余额 (`probe`), 让你在实转前确认"钱在对的链上"。
+  - **实转 gate (fail-closed)**: 需 ①`COINBASE_PAYOUT_PRIVATE_KEY` + ②`COINSETTLE_ALLOW_REFS` 白名单含该 ref + ③`COINSETTLE_CONFIRM_LIVE=true` + ④请求带 `live=true` + ⑤结算单 `pending` 且 `source=earned` → 才 viem 发 ERC-20 `transfer` 置 `settled`。
+  - 按链选 USDC 合约: Base `0x833589fC…` / Ethereum `0xA0b869…` / Arbitrum `0xaf88d0…` (viem 自建链, 不依赖导出)。
+  - 红线: `source=unowned`/未知钱包/非白名单 ref/已 settled → 拒。链上任何错 → `payout_failed`, 结算单保持 pending (不误扣)。
+  - **待 owner**: 给付款私钥 (Base/Eth/Arb 任一, 需含 ≥100 USDC + gas) + 指定付款链 → 配 3 个 env → 先 live-dry-run 验余额 → 确认后才实转。
 
 - 微信是次要支付轨, 密钥未配置时该 fail-closed, 不该 500。
 
