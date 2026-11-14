@@ -1295,6 +1295,456 @@ module.exports=async(req,res)=>{
       }
       return;
     }
-    send(404,{ok:false,error:'not found',route:route});
+        // C13 另类数据订阅 (alternative_data) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/alternative_data')){
+
+      try{
+
+        const mod = require('../lib/alternative_data.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'alternative_data handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C14 历史回测存档 (backtest_history) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/backtest_history')){
+
+      try{
+
+        const mod = require('../lib/backtest_history.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'backtest_history handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C15 联合品牌产品 (co_brand_product) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/co_brand_product')){
+
+      try{
+
+        const mod = require('../lib/co_brand_product.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'co_brand_product handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C16 自定义指标库 (custom_indicators) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/custom_indicators')){
+
+      try{
+
+        const mod = require('../lib/custom_indicators.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'custom_indicators handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C17 定制集成开发 (custom_integration) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/custom_integration')){
+
+      try{
+
+        const mod = require('../lib/custom_integration.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'custom_integration handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C13 另类数据订阅 (alternative_data) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/alternative_data')){
+
+      try{
+
+        const mod = require('../lib/alternative_data.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'alternative_data handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C14 历史回测存档 (backtest_history) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/backtest_history')){
+
+      try{
+
+        const mod = require('../lib/backtest_history.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'backtest_history handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C15 联合品牌产品 (co_brand_product) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/co_brand_product')){
+
+      try{
+
+        const mod = require('../lib/co_brand_product.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'co_brand_product handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C16 自定义指标库 (custom_indicators) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/custom_indicators')){
+
+      try{
+
+        const mod = require('../lib/custom_indicators.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'custom_indicators handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C17 定制集成开发 (custom_integration) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/custom_integration')){
+
+      try{
+
+        const mod = require('../lib/custom_integration.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'custom_integration handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C13 另类数据订阅 (alternative_data) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/alternative_data')){
+
+      try{
+
+        const mod = require('../lib/alternative_data.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'alternative_data handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C14 历史回测存档 (backtest_history) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/backtest_history')){
+
+      try{
+
+        const mod = require('../lib/backtest_history.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'backtest_history handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C15 联合品牌产品 (co_brand_product) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/co_brand_product')){
+
+      try{
+
+        const mod = require('../lib/co_brand_product.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'co_brand_product handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C16 自定义指标库 (custom_indicators) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/custom_indicators')){
+
+      try{
+
+        const mod = require('../lib/custom_indicators.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'custom_indicators handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+    // C17 定制集成开发 (custom_integration) — 合规渠道: 按次付费, 币¥双付
+
+    if(route.startsWith('/api/custom_integration')){
+
+      try{
+
+        const mod = require('../lib/custom_integration.js');
+
+        data.path = route;
+
+        if(!data.ref){
+
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+
+          if(pid)data.ref=pid;
+
+        }
+
+        return await mod.onRequest(req,res,data);
+
+      }catch(e){
+
+        send(500,{ok:false,error:'custom_integration handler error: '+e.message});
+
+      }
+
+      return;
+
+    }
+
+send(404,{ok:false,error:'not found',route:route});
   }catch(e){send(500,{ok:false,error:e.message,stack:(e.stack||'').split('\n').slice(0,3)});}
 };

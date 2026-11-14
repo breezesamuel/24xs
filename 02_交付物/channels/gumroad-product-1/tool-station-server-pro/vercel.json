@@ -1,75 +1,299 @@
 {
   "crons": [],
   "builds": [
-    { "src": "api/alipay.js", "use": "@vercel/node" },
-    { "src": "api/arcade-extra.js", "use": "@vercel/node" },
-    { "src": "api/track.js", "use": "@vercel/node" },
-    { "src": "api/index.js", "use": "@vercel/node" },
-    { "src": "api/autoops.js", "use": "@vercel/node" },
-    { "src": "api/paypal/order.js", "use": "@vercel/node" },
-    { "src": "api/paypal/capture.js", "use": "@vercel/node" },
-    { "src": "api/paypal/status.js", "use": "@vercel/node" },
-    { "src": "api/pay/return.js", "use": "@vercel/node" },
-    { "src": "api/pay/cancel.js", "use": "@vercel/node" },
-    { "src": "**", "use": "@vercel/static" }
+    {
+      "src": "api/alipay.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/arcade-extra.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/track.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/autoops.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/paypal/order.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/paypal/capture.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/paypal/status.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/pay/return.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/pay/cancel.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "**",
+      "use": "@vercel/static"
+    }
   ],
   "rewrites": [
-    { "source": "/api/pay", "destination": "/api/alipay.js?r=pay" },
-    { "source": "/api/notify", "destination": "/api/alipay.js?r=notify" },
-    { "source": "/api/order", "destination": "/api/alipay.js?r=order" },
-    { "source": "/api/entitle", "destination": "/api/alipay.js?r=entitle" },
-    { "source": "/api/paid", "destination": "/api/alipay.js?r=paid" },
-    { "source": "/api/config", "destination": "/api/alipay.js?r=config" },
-    { "source": "/api/health", "destination": "/api/alipay.js?r=health" },
-    { "source": "/api/verify", "destination": "/api/alipay.js?r=verify" },
-    { "source": "/api/aliq", "destination": "/api/alipay.js?r=aliq" },
-    { "source": "/api/arcade", "destination": "/api/alipay.js?r=arcade" },
-    { "source": "/api/rank", "destination": "/api/arcade-extra.js" },
-    { "source": "/api/reflect", "destination": "/api/arcade-extra.js" },
-    { "source": "/api/feedback", "destination": "/api/arcade-extra.js" },
-    { "source": "/api/alert", "destination": "/api/arcade-extra.js" },
-    { "source": "/api/pending", "destination": "/api/arcade-extra.js" },
-    { "source": "/paid.html", "destination": "/paid.html" },
-    { "source": "/api/subwall", "destination": "/api/alipay.js?r=subwall" },
-    { "source": "/api/subwall/:path*", "destination": "/api/alipay.js?r=subwall&action=:path*" },
-    { "source": "/api/morning-youth", "destination": "/api/alipay.js?r=morning-youth" },
-    { "source": "/api/morning-youth/:path*", "destination": "/api/alipay.js?r=morning-youth&__path=morning-youth/:path*" },
-    { "source": "/api/commission", "destination": "/api/alipay.js?r=commission" },
-    { "source": "/api/commission/:path*", "destination": "/api/alipay.js?r=commission&action=:path*" },
-    { "source": "/api/bounty", "destination": "/api/alipay.js?r=bounty" },
-    { "source": "/api/bounty/:path*", "destination": "/api/alipay.js?r=bounty&action=:path*" },
-    { "source": "/api/cashback", "destination": "/api/alipay.js?r=cashback" },
-    { "source": "/api/cashback/:path*", "destination": "/api/alipay.js?r=cashback&action=:path*" },
-    { "source": "/api/writerewards", "destination": "/api/alipay.js?r=writerewards" },
-    { "source": "/api/writerewards/:path*", "destination": "/api/alipay.js?r=writerewards&action=:path*" },
-    { "source": "/api/charity", "destination": "/api/alipay.js?r=charity" },
-    { "source": "/api/charity/:path*", "destination": "/api/alipay.js?r=charity&action=:path*" },
-    { "source": "/api/bandwidth", "destination": "/api/alipay.js?r=bandwidth" },
-    { "source": "/api/bandwidth/:path*", "destination": "/api/alipay.js?r=bandwidth&action=:path*" },
-    { "source": "/api/recovery", "destination": "/api/alipay.js?r=recovery" },
-    { "source": "/api/recovery/:path*", "destination": "/api/alipay.js?r=recovery&action=:path*" },
-    { "source": "/channels.html", "destination": "/channels.html" },
-    { "source": "/api/reportexport", "destination": "/api/alipay.js?r=reportexport" },
-    { "source": "/api/strategyapi", "destination": "/api/alipay.js?r=strategyapi" },
-    { "source": "/api/marketdata", "destination": "/api/alipay.js?r=marketdata" },
-    { "source": "/api/strategyhosting", "destination": "/api/alipay.js?r=strategyhosting" },
-    { "source": "/api/overfitcheck", "destination": "/api/alipay.js?r=overfitcheck" },
-    { "source": "/api/whitebox", "destination": "/api/alipay.js?r=whitebox" },
-    { "source": "/api/papercombo", "destination": "/api/alipay.js?r=papercombo" },
-    { "source": "/api/quantcompute", "destination": "/api/alipay.js?r=quantcompute" },
-    { "source": "/api/quantannual", "destination": "/api/alipay.js?r=quantannual" },
-    { "source": "/api/revenue", "destination": "/api/alipay.js?r=revenue" },
-    { "source": "/api/coinsettle", "destination": "/api/alipay.js?r=coinsettle" },
-    { "source": "/api/stripe/checkout", "destination": "/api/alipay.js?r=stripe/checkout" },
-    { "source": "/api/stripe/webhook", "destination": "/api/alipay.js?r=stripe/webhook" },
-    { "source": "/api/track", "destination": "/api/track.js" },
-    { "source": "/api/wxpay/create", "destination": "/api/alipay.js?r=wxpay/create" },
-    { "source": "/api/wxpay/notify", "destination": "/api/alipay.js?r=wxpay/notify" },
-    { "source": "/api/paypal/order", "destination": "/api/paypal/order.js" },
-    { "source": "/api/paypal/capture", "destination": "/api/paypal/capture.js" },
-    { "source": "/api/paypal/status", "destination": "/api/paypal/status.js" },
-    { "source": "/pay/return", "destination": "/api/pay/return.js" },
-    { "source": "/pay/cancel", "destination": "/api/pay/cancel.js" },
-    { "source": "/dashboard", "destination": "/dashboard.html" }
+    {
+      "source": "/api/pay",
+      "destination": "/api/alipay.js?r=pay"
+    },
+    {
+      "source": "/api/notify",
+      "destination": "/api/alipay.js?r=notify"
+    },
+    {
+      "source": "/api/order",
+      "destination": "/api/alipay.js?r=order"
+    },
+    {
+      "source": "/api/entitle",
+      "destination": "/api/alipay.js?r=entitle"
+    },
+    {
+      "source": "/api/paid",
+      "destination": "/api/alipay.js?r=paid"
+    },
+    {
+      "source": "/api/config",
+      "destination": "/api/alipay.js?r=config"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/alipay.js?r=health"
+    },
+    {
+      "source": "/api/verify",
+      "destination": "/api/alipay.js?r=verify"
+    },
+    {
+      "source": "/api/aliq",
+      "destination": "/api/alipay.js?r=aliq"
+    },
+    {
+      "source": "/api/arcade",
+      "destination": "/api/alipay.js?r=arcade"
+    },
+    {
+      "source": "/api/rank",
+      "destination": "/api/arcade-extra.js"
+    },
+    {
+      "source": "/api/reflect",
+      "destination": "/api/arcade-extra.js"
+    },
+    {
+      "source": "/api/feedback",
+      "destination": "/api/arcade-extra.js"
+    },
+    {
+      "source": "/api/alert",
+      "destination": "/api/arcade-extra.js"
+    },
+    {
+      "source": "/api/pending",
+      "destination": "/api/arcade-extra.js"
+    },
+    {
+      "source": "/paid.html",
+      "destination": "/paid.html"
+    },
+    {
+      "source": "/api/subwall",
+      "destination": "/api/alipay.js?r=subwall"
+    },
+    {
+      "source": "/api/subwall/:path*",
+      "destination": "/api/alipay.js?r=subwall&action=:path*"
+    },
+    {
+      "source": "/api/morning-youth",
+      "destination": "/api/alipay.js?r=morning-youth"
+    },
+    {
+      "source": "/api/morning-youth/:path*",
+      "destination": "/api/alipay.js?r=morning-youth&__path=morning-youth/:path*"
+    },
+    {
+      "source": "/api/commission",
+      "destination": "/api/alipay.js?r=commission"
+    },
+    {
+      "source": "/api/commission/:path*",
+      "destination": "/api/alipay.js?r=commission&action=:path*"
+    },
+    {
+      "source": "/api/bounty",
+      "destination": "/api/alipay.js?r=bounty"
+    },
+    {
+      "source": "/api/bounty/:path*",
+      "destination": "/api/alipay.js?r=bounty&action=:path*"
+    },
+    {
+      "source": "/api/cashback",
+      "destination": "/api/alipay.js?r=cashback"
+    },
+    {
+      "source": "/api/cashback/:path*",
+      "destination": "/api/alipay.js?r=cashback&action=:path*"
+    },
+    {
+      "source": "/api/writerewards",
+      "destination": "/api/alipay.js?r=writerewards"
+    },
+    {
+      "source": "/api/writerewards/:path*",
+      "destination": "/api/alipay.js?r=writerewards&action=:path*"
+    },
+    {
+      "source": "/api/charity",
+      "destination": "/api/alipay.js?r=charity"
+    },
+    {
+      "source": "/api/charity/:path*",
+      "destination": "/api/alipay.js?r=charity&action=:path*"
+    },
+    {
+      "source": "/api/bandwidth",
+      "destination": "/api/alipay.js?r=bandwidth"
+    },
+    {
+      "source": "/api/bandwidth/:path*",
+      "destination": "/api/alipay.js?r=bandwidth&action=:path*"
+    },
+    {
+      "source": "/api/recovery",
+      "destination": "/api/alipay.js?r=recovery"
+    },
+    {
+      "source": "/api/recovery/:path*",
+      "destination": "/api/alipay.js?r=recovery&action=:path*"
+    },
+    {
+      "source": "/channels.html",
+      "destination": "/channels.html"
+    },
+    {
+      "source": "/api/reportexport",
+      "destination": "/api/alipay.js?r=reportexport"
+    },
+    {
+      "source": "/api/strategyapi",
+      "destination": "/api/alipay.js?r=strategyapi"
+    },
+    {
+      "source": "/api/marketdata",
+      "destination": "/api/alipay.js?r=marketdata"
+    },
+    {
+      "source": "/api/strategyhosting",
+      "destination": "/api/alipay.js?r=strategyhosting"
+    },
+    {
+      "source": "/api/overfitcheck",
+      "destination": "/api/alipay.js?r=overfitcheck"
+    },
+    {
+      "source": "/api/whitebox",
+      "destination": "/api/alipay.js?r=whitebox"
+    },
+    {
+      "source": "/api/papercombo",
+      "destination": "/api/alipay.js?r=papercombo"
+    },
+    {
+      "source": "/api/quantcompute",
+      "destination": "/api/alipay.js?r=quantcompute"
+    },
+    {
+      "source": "/api/quantannual",
+      "destination": "/api/alipay.js?r=quantannual"
+    },
+    {
+      "source": "/api/revenue",
+      "destination": "/api/alipay.js?r=revenue"
+    },
+    {
+      "source": "/api/coinsettle",
+      "destination": "/api/alipay.js?r=coinsettle"
+    },
+    {
+      "source": "/api/stripe/checkout",
+      "destination": "/api/alipay.js?r=stripe/checkout"
+    },
+    {
+      "source": "/api/stripe/webhook",
+      "destination": "/api/alipay.js?r=stripe/webhook"
+    },
+    {
+      "source": "/api/track",
+      "destination": "/api/track.js"
+    },
+    {
+      "source": "/api/wxpay/create",
+      "destination": "/api/alipay.js?r=wxpay/create"
+    },
+    {
+      "source": "/api/wxpay/notify",
+      "destination": "/api/alipay.js?r=wxpay/notify"
+    },
+    {
+      "source": "/api/paypal/order",
+      "destination": "/api/paypal/order.js"
+    },
+    {
+      "source": "/api/paypal/capture",
+      "destination": "/api/paypal/capture.js"
+    },
+    {
+      "source": "/api/paypal/status",
+      "destination": "/api/paypal/status.js"
+    },
+    {
+      "source": "/pay/return",
+      "destination": "/api/pay/return.js"
+    },
+    {
+      "source": "/pay/cancel",
+      "destination": "/api/pay/cancel.js"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard.html"
+    },
+    {
+      "source": "/api/alternative_data",
+      "destination": "/api/alipay.js?r=alternative_data"
+    },
+    {
+      "source": "/api/backtest_history",
+      "destination": "/api/alipay.js?r=backtest_history"
+    },
+    {
+      "source": "/api/co_brand_product",
+      "destination": "/api/alipay.js?r=co_brand_product"
+    },
+    {
+      "source": "/api/custom_indicators",
+      "destination": "/api/alipay.js?r=custom_indicators"
+    },
+    {
+      "source": "/api/custom_integration",
+      "destination": "/api/alipay.js?r=custom_integration"
+    }
   ]
 }
