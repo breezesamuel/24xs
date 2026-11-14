@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>量化策略回测 · 免费试 7 天 | 丙大山工具站</title>
+<meta name="description" content="把你的交易策略跑一遍真实回测:年化收益/最大回撤/Sharpe/胜率, 免费 7 天体验, 留邮箱到期自动发升级提醒。历史回测不代表未来收益, 非投资建议。">
+<meta name="keywords" content="量化回测,策略回测,量化交易,免费回测,策略托管,回测报告,丙大山">
+<meta property="og:title" content="量化策略回测 · 免费试 7 天">
+<meta property="og:description" content="年化收益/最大回撤/Sharpe/胜率, 一键跑出专业回测报告。">
+<meta property="og:type" content="website">
+<style>
+:root{--bg:#0b0f17;--card:#131a26;--bd:#1f2a3a;--tx:#e6edf7;--mut:#7d8aa0;--ok:#22c55e;--ac:#3b82f6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding:28px 18px}
+h1{font-size:26px;margin:0 0 6px}.sub{color:var(--mut);font-size:15px;margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:16px}
+.card h2{margin:0 0 6px;font-size:17px}.card p{margin:0 0 10px;font-size:14px;color:var(--mut)}
+.feats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.feat{background:#0d1420;border:1px solid var(--bd);border-radius:10px;padding:10px 12px;font-size:13px}
+.feat b{color:var(--ok)}
+input{width:100%;background:#0d1420;border:1px solid var(--bd);color:var(--tx);border-radius:10px;padding:12px;font-size:15px;margin-top:6px}
+button{margin-top:10px;width:100%;background:var(--ok);color:#04120a;border:0;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer}
+.cta{display:inline-block;background:var(--ac);color:#fff;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:600;text-decoration:none;margin:4px 8px 4px 0}
+.note{font-size:12px;color:var(--mut);margin-top:8px}
+#msg{font-size:13px;margin-top:8px;min-height:18px;color:var(--mut)}
+#msg.ok{color:var(--ok)}
+.price{font-size:13px;color:var(--mut)}
+.dis{font-size:12px;color:#8a97ad;background:#0d1420;border:1px solid var(--bd);border-radius:8px;padding:10px;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📊 量化策略回测 · 免费试 7 天</h1>
+  <p class="sub">把你的交易策略跑一遍真实回测:年化收益 / 最大回撤 / Sharpe / 胜率, 一键出专业报告。留邮箱, 到期自动提醒升级。</p>
+
+  <div class="card">
+    <h2>你能拿到什么</h2>
+    <div class="feats">
+      <div class="feat"><b>📈 真指标回测</b><br>年化/回撤/Sharpe/胜率, 基于公开 K 线真算, 不造假</div>
+      <div class="feat"><b>📄 专业报告</b><br>PDF/CSV 导出, 含指标 + 成交 + 数据来源标注</div>
+      <div class="feat"><b>🤖 策略托管</b><br>每周自动回测 + 推送报告, 不用你盯</div>
+      <div class="feat"><b>📊 行情订阅</b><br>公开 K 线/资金流向/舆情数据接入</div>
+    </div>
+    <p class="price">注册即享 <b>7 天全功能体验</b> · 升级后: 专业月度 ¥60/月 · 季度 ¥150 · 年度 ¥500 (9 折限时)</p>
+    <a class="cta" href="/subwall.html?ref=GET&plan=trial">免费开始 7 天体验 →</a>
+    <a class="cta" href="/channels.html?ref=GET" style="background:#0d1420;color:var(--tx)">看全部赚钱渠道 →</a>
+  </div>
+
+  <div class="card">
+    <h2>留个邮箱, 到期自动提醒你升级</h2>
+    <p>体验 7 天到期前, 我们会自动发升级提醒 + 限时 9 折链接 (可随时退订)。不用切回浏览器、不用等人工。</p>
+    <input id="email" type="email" placeholder="you@example.com" maxlength="120" autocomplete="email">
+    <button id="go">留邮箱 · 开启体验</button>
+    <div id="msg"></div>
+    <div class="dis">⚠️ 诚实边界: 本报告基于公开 K 线(币安)的简化指标回测, <b>非策略代码级回测</b>, 不构成投资建议。历史表现不代表未来收益。数据来自公开行情源, 用户自行承担交易风险。</div>
+  </div>
+
+  <div class="card">
+    <h2>怎么运作 (全程无感)</h2>
+    <p>① 留邮箱 → ② 免费 7 天用全部工具 → ③ 到期自动发升级邮件 → ④ 点邮件里链接付款 (支付宝) → ⑤ 自动开通订阅, 不用等人工核账。</p>
+  </div>
+</div>
+<script>
+var REF=(location.search.match(/[?&]ref=([^&]+)/)||[])[1]||'GET';
+document.getElementById('go').onclick=function(){
+  var em=document.getElementById('email').value.trim();
+  var m=document.getElementById('msg');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ m.textContent='邮箱格式不对'; m.className=''; return; }
+  m.textContent='提交中…'; m.className='';
+  fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({e:'register_email',r:REF,em:em,email:em})})
+  .then(function(r){return r.json();})
+  .then(function(b){
+    if(b.ok||b.stored){ m.textContent='✅ 已留邮箱, 体验到期会自动发升级提醒。下面开始体验 →'; m.className='ok';
+      setTimeout(function(){ location.href='/subwall.html?ref='+encodeURIComponent(REF)+'&plan=trial'; },1200);
+    } else { m.textContent='留邮箱失败('+((b.error||'未知'))+'), 可直接点下面开始体验'; m.className=''; }
+  })
+  .catch(function(){ m.textContent='网络异常, 直接点下面开始体验'; });
+};
+</script>
+</body>
+</html>
