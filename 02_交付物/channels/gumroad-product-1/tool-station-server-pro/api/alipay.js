@@ -690,6 +690,13 @@ module.exports=async(req,res)=>{
             await require('../lib/quantcompute.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
           }catch(e){}
         }
+        // C12 量化算力订阅: slug=qannual 的付费订单 -> 开通该 ref 的订阅有效期 (月/年, 看金额区分)
+        if(rec.ref && rec.slug==='qannual' && rec.status==='paid'){
+          try{
+            var isYear = (parseFloat(rec.amount||0) >= 3000); // 年付¥3990 vs 月付¥399, 按金额判 cycle
+            await require('../lib/quantannual.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out, cycle: isYear ? 'year' : 'month' });
+          }catch(e){}
+        }
       }
       send(200,{ok:true,paid:!!q.paid,status:q.paid?'paid':(rec.status||'unknown'),trade_status:q.trade_status,trade_no:q.trade_no,slug:rec.slug||null,plan:rec.plan||null,code:q.code,sub:q.sub,msg:q.msg});
       return;
@@ -1202,6 +1209,21 @@ module.exports=async(req,res)=>{
         return await mod.onRequest(req,res,data);
       }catch(e){
         send(500,{ok:false,error:'quantcompute handler error: '+e.message});
+      }
+      return;
+    }
+    // 量化算力年费/包月订阅 (quantannual) — C12 合规渠道: 锁客持续进账, 最高客单价
+    if(route.startsWith('/api/quantannual')){
+      try{
+        const mod = require('../lib/quantannual.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'quantannual handler error: '+e.message});
       }
       return;
     }

@@ -262,9 +262,22 @@
     <div class="note">算力输出基于历史数据, 附「非投资建议 · 不代表未来 · 数据来自公开源」。任务数据失败 fail-closed 不扣算力不出假数。借鉴 QuantConnect 算力节点 + Lovable 团队 credits 池模型。</div>
   </div>
 
+  <!-- 17. C12 合规渠道: 量化算力订阅 (月付/年付, 锁客持续进账, 最高客单价) -->
+  <div class="card">
+    <h3>♾️ 量化算力订阅 <span class="tag live">NEW</span></h3>
+    <p class="d"><b>算力无限订阅</b> (期内不限次回测/优化/纸面组合) · 月付 ¥399 / <b>年付 ¥3990(9折) 锁 12 月</b></p>
+    <div class="acts">
+      <a id="qaPayLink" class="cta" href="#">年付 ¥3990</a>
+      <a id="qaMonthLink" class="cta" href="#">月付 ¥399</a>
+      <button id="qaBtn">查我的订阅</button>
+    </div>
+    <div class="stat" id="qaStat"></div>
+    <div class="note">期内算力任务无限次, 到期自动停止 (不永久白嫖)。输出基于历史数据, 附「非投资建议 · 不代表未来 · 数据来自公开源」。年付锁 12 月持续进账, 最高客单价档。</div>
+  </div>
+
   <h2>为什么可信</h2>
   <p class="sub" style="margin-bottom:0">
-    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 16 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告/API/数据/托管/过拟合/白标/纸面组合/算力包 8 类付费渠道内置合规免责<br>
+    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 17 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告/API/数据/托管/过拟合/白标/纸面组合/算力包/算力订阅 9 类付费渠道内置合规免责<br>
     所有指标读真实账本, 无假数据。提现需达门槛 (返现 10 元 / 币 100), 由平台结算。
   </p>
 </div>
@@ -444,6 +457,10 @@ function loadAll(){
   // C10 量化算力包: 付费链接 + credits 池
   document.getElementById('qcPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=qc&amount=199';
   j('/api/quantcompute?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('qcStat').innerHTML='算力 credits 剩 <b>'+(s.credits_left||0)+'</b> · 已用 '+(s.credits_used||0)+' / '+(s.credits_total||0)+' · 已跑 '+(s.tasks_count||0)+' 任务'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 买 '+s.credits_per_pack+'算力':''); }).catch(function(){});
+  // C12 量化算力订阅: 年付/月付 双链接 + 订阅状态
+  document.getElementById('qaPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=qannual&amount=3990';
+  document.getElementById('qaMonthLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=qannual&amount=399';
+  j('/api/quantannual?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){ var s=r.body||{}; var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未开通)'; document.getElementById('qaStat').innerHTML='算力订阅 <b>'+(s.active?'有效':'未开通')+'</b> · 到期 <b>'+(s.active?u:'-')+'</b> · 剩 '+(s.days_left||0)+' 天 · 已付 '+(s.entries_count||0)+' 次'+(s.month_price_yuan?' · 月¥'+s.month_price_yuan+' / 年¥'+s.year_price_yuan:''); }).catch(function(){});
   // 策略/数据源/格式 变化时刷新 C4/C5/C6/C7 付费链接 (让选择即时生效)
   window.addEventListener('storage', function(){ renderStratChips(); });
 }
@@ -666,6 +683,15 @@ document.getElementById('qcBtn').onclick = function(){
       toast('需购买算力: ¥'+(p.yuan||199)+' / '+(p.coin||2000)+'币 买 '+(p.credits||20)+' credits。点「¥199 买 20 算力」。');
     } else { toast('失败: '+(b.error||'未知')); }
     loadAll();
+  }).catch(function(){ toast('网络错误'); });
+};
+// C12 量化算力订阅 (月/年, 锁客持续进账)
+document.getElementById('qaBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  j('/api/quantannual?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){
+    var s=r.body||{};
+    var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未开通)';
+    toast('算力订阅 '+(s.active?'有效':'未开通')+' · 到期 '+(s.active?u:'-')+' · 剩 '+(s.days_left||0)+' 天 · 已付 '+(s.entries_count||0)+' 次'+(s.active?' (期内算力无限次)':''));
   }).catch(function(){ toast('网络错误'); });
 };
 
