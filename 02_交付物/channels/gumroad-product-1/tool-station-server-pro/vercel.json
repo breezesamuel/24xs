@@ -294,6 +294,18 @@
     {
       "source": "/api/custom_integration",
       "destination": "/api/alipay.js?r=custom_integration"
+    },
+    {
+      "source": "/api/scan_api",
+      "destination": "/api/alipay.js?r=scan_api"
+    },
+    {
+      "source": "/api/alert_api",
+      "destination": "/api/alipay.js?r=alert_api"
+    },
+    {
+      "source": "/api/minute_klines",
+      "destination": "/api/alipay.js?r=minute_klines"
     }
   ]
 }
