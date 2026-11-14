@@ -496,3 +496,6 @@
 {"task_id":"HB1","name":"跟进 20 笔未支付订单","pri":95,"why":"漏斗:20 单 / 0 已付","ts":"2026-11-14T08:46:28.414Z","auto":true}
 {"task_id":"HB4","name":"外呼 10 个 hot 线索","pri":88,"why":"hot=36 warm=699 cold=105","ts":"2026-11-14T08:46:28.415Z","auto":true}
 {"task_id":"HB6","name":"CRM→OMS 状态机推进","pri":82,"why":"自动流转","ts":"2026-11-14T08:46:28.415Z","auto":true}
+{"task_id":"HB1","name":"跟进 20 笔未支付订单","pri":95,"why":"漏斗:20 单 / 0 已付","ts":"2026-11-14T09:49:39.700Z","auto":true}
+{"task_id":"HB4","name":"外呼 10 个 hot 线索","pri":88,"why":"hot=36 warm=699 cold=105","ts":"2026-11-14T09:49:39.700Z","auto":true}
+{"task_id":"HB6","name":"CRM→OMS 状态机推进","pri":82,"why":"自动流转","ts":"2026-11-14T09:49:39.700Z","auto":true}
