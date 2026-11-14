@@ -58,6 +58,7 @@
   <div class="reg">
     <label style="font-size:13px;color:var(--mut)">注册 (输入你的 ID / 邮箱, 用于记账与权益)</label>
     <input id="ref" placeholder="如: myname 或 you@example.com" maxlength="64" autocomplete="username">
+    <input id="regEmail" placeholder="选填: 留邮箱, 体验到期自动发升级提醒 (不收其它用途)" maxlength="120" autocomplete="email" style="margin-top:8px">
     <button id="regBtn">注册 / 登录</button>
     <div class="msg" id="regMsg"></div>
   </div>
@@ -316,8 +317,17 @@ function doReg(){
   var v = document.getElementById('ref').value.trim().slice(0,64);
   if(!v || !/^[A-Za-z0-9_.@-]{2,64}$/.test(v)){ document.getElementById('regMsg').textContent='ID 需 2-64 位 (字母/数字/._@-)'; return; }
   REF = v; localStorage.setItem('bds_ref', v);
+  // 留邮箱 (选填): 存本地 + 持久化到服务端 (体验到期自动升级邮件触达用, 只存邮箱+ref, 不存其它)
+  var em = (document.getElementById('regEmail').value || '').trim().slice(0,120);
+  var knownEm = em || (v.indexOf('@')>0 ? v : (localStorage.getItem('bds_email_'+v)||''));
+  if(knownEm){ localStorage.setItem('bds_email_'+v, knownEm); try{ localStorage.setItem('bds_email', JSON.stringify(Object.assign({}, JSON.parse(localStorage.getItem('bds_email')||'{}'), { [v]: knownEm }))); }catch(e){} }
+  // 服务端持久化 (留资 ref->email, 供体验到期自动升级邮件; 失败不阻塞注册)
+  if(knownEm){
+    fetch(BASE + '/api/contact', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ e:'register_email', r:v, email:knownEm }) }).catch(function(){});
+  }
   track('register');
-  document.getElementById('regMsg').textContent='✅ 已注册 '+v+' (用于记账/权益/返现)';
+  document.getElementById('regMsg').textContent='✅ 已注册 '+v+' (用于记账/权益/返现)'+(knownEm?' · 已留邮箱, 体验到期会自动发升级提醒':'');
   loadAll();
 }
 document.getElementById('regBtn').onclick = doReg;

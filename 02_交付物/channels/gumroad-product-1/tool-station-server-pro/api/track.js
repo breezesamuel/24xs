@@ -137,8 +137,19 @@ async function onRequest(req, res, data) {
   try {
     const method = (req && req.method) || 'GET';
     if (method === 'POST') {
-      // Vercel Node 运行时把 body 放在 req.body；Pages 风格才用第三个参数 data
       const p = Object.assign({}, data || (req && req.body) || {});
+      // /api/contact: 持久化 ref -> email (选填留资, 供体验到期自动升级邮件触达; 只存邮箱+ref, 不存其它 PII)
+      if (String(p && p.e) === 'register_email' || p && p.persist_email) {
+        const ref = String(p.r || '').slice(0, 64);
+        const email = String(p.email || '').slice(0, 120);
+        if (/^[A-Za-z0-9_.@-]{2,64}$/.test(ref) && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          const map = (await kget('contact_email_map')) || {};
+          map[ref] = email;
+          const okm = await kset('contact_email_map', map);
+          return send(200, { ok: true, stored: okm, ref, note: '留资成功 (仅存邮箱+ref, 用于体验到期升级提醒)' });
+        }
+        return send(200, { ok: false, error: 'invalid_ref_or_email' });
+      }
       const r = await record(p);
       return send(200, { ok: true, store: r.store });
     }
