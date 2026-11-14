@@ -238,9 +238,21 @@
     <div class="note">白标方对其对外展示与决策负最终责任, API 结果附「非投资建议 · 数据来自公开源」。席位服务端扣减, 防刷。</div>
   </div>
 
+  <!-- 15. C9 合规渠道: 付费纸面模拟组合 (多资产纸面持仓, 真K线真指标, 非实盘) -->
+  <div class="card">
+    <h3>🧪 纸面模拟组合 <span class="tag live">NEW</span></h3>
+    <p class="d"><b>多资产纸面持仓</b> (BTC/ETH/SOL… 均权组合, 真 K 线真算净值/回撤) · 每周推指标到邮箱 · <b>¥99 / 1000币 买 3 个组合</b></p>
+    <div class="acts">
+      <a id="pcPayLink" class="cta" href="#">¥99 买 3 组合</a>
+      <button id="pcBtn">跑一个组合</button>
+    </div>
+    <div class="stat" id="pcStat"></div>
+    <div class="note">纸面模拟, <b>非真实下单</b>, 附「非投资建议 · 历史不代表未来 · 数据来自公开源」。某腿数据获取失败 fail-closed 不出假数。可升级为 QuantDinger 真·策略级实盘。</div>
+  </div>
+
   <h2>为什么可信</h2>
   <p class="sub" style="margin-bottom:0">
-    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 14 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告/API/数据/托管/过拟合/白标 6 类付费渠道内置合规免责<br>
+    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 15 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告/API/数据/托管/过拟合/白标/纸面组合 7 类付费渠道内置合规免责<br>
     所有指标读真实账本, 无假数据。提现需达门槛 (返现 10 元 / 币 100), 由平台结算。
   </p>
 </div>
@@ -414,6 +426,9 @@ function loadAll(){
   // C8 团队/白标 API 包: 付费链接 + 席位
   document.getElementById('wbPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=wb&amount=199';
   j('/api/whitebox?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('wbStat').innerHTML='白标席位 剩 <b>'+(s.seats_left||0)+'</b> · 已用 '+(s.seats_used||0)+'/'+(s.seats_total||0)+(s.brand?' · 品牌 ['+s.brand+']':'')+(s.price_yuan?' · ¥'+s.price_yuan+'/席 · '+s.seats_per_pack+'席/包':''); }).catch(function(){});
+  // C9 纸面模拟组合: 付费链接 + 组合额度
+  document.getElementById('pcPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=paper&amount=99';
+  j('/api/papercombo?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('pcStat').innerHTML='纸面组合 剩 <b>'+(s.slots_left||0)+'</b> 个 · 已跑 '+(s.combos_count||0)+' 个'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 买 '+s.combos_per_pack+'个':''); }).catch(function(){});
   // 策略/数据源/格式 变化时刷新 C4/C5/C6/C7 付费链接 (让选择即时生效)
   window.addEventListener('storage', function(){ renderStratChips(); });
 }
@@ -600,6 +615,24 @@ document.getElementById('wbBtn').onclick = function(){
   j('/api/whitebox?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){
     var s=r.body||{};
     toast('白标席位 剩 '+(s.seats_left||0)+' · 已用 '+(s.seats_used||0)+' / '+(s.seats_total||0)+(s.brand?' · 品牌 ['+s.brand+']':''));
+  }).catch(function(){ toast('网络错误'); });
+};
+// C9 纸面模拟组合 (多资产, 真K线真指标, 非实盘)
+document.getElementById('pcBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  var legs=(prompt('组合资产 (逗号分隔, 默认 BTC,ETH,ETHUSDT 演示):','BTCUSDT,ETHUSDT')||'BTCUSDT,ETHUSDT').split(',').map(function(s){return s.trim().toUpperCase().slice(0,16);}).filter(Boolean);
+  j('/api/papercombo?ref='+encodeURIComponent(REF), { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ ref:REF, action:'create', legs:legs, interval:'1d', limit:90 }) }).then(function(r){
+    var b=r.body;
+    if(b.ok){
+      var w=b.combo.weighted||{};
+      toast('✅ 纸面组合已跑: 净值 '+w.final_value_x+'x · 收益 '+(w.total_return_pct>0?'+':'')+w.total_return_pct+'% · 最差回撤 -'+w.worst_max_dd_pct+'% (真数据, 非实盘, 非投资建议)');
+      track('paper_combo_run');
+    } else if(b.error==='need_payment'){
+      var p=b.need||{};
+      toast('需购买: ¥'+(p.yuan||99)+' / '+(p.coin||1000)+'币 买 '+(p.combos||3)+' 个组合。点「¥99 买 3 组合」。');
+    } else { toast('失败: '+(b.error||'未知')); }
+    loadAll();
   }).catch(function(){ toast('网络错误'); });
 };
 

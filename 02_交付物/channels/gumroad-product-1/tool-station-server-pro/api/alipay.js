@@ -678,6 +678,12 @@ module.exports=async(req,res)=>{
             await require('../lib/whitebox.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out, brand: String(rec.brand||'').slice(0,64) });
           }catch(e){}
         }
+        // C9 纸面模拟组合: slug=paper 的付费订单 -> 充值该 ref 的组合额度
+        if(rec.ref && rec.slug==='paper' && rec.status==='paid'){
+          try{
+            await require('../lib/papercombo.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
+          }catch(e){}
+        }
       }
       send(200,{ok:true,paid:!!q.paid,status:q.paid?'paid':(rec.status||'unknown'),trade_status:q.trade_status,trade_no:q.trade_no,slug:rec.slug||null,plan:rec.plan||null,code:q.code,sub:q.sub,msg:q.msg});
       return;
@@ -1160,6 +1166,21 @@ module.exports=async(req,res)=>{
         return await mod.onRequest(req,res,data);
       }catch(e){
         send(500,{ok:false,error:'whitebox handler error: '+e.message});
+      }
+      return;
+    }
+    // 付费纸面模拟组合 (papercombo) — C9 合规渠道: 多资产纸面持仓, 真K线真指标, 非实盘
+    if(route.startsWith('/api/papercombo')){
+      try{
+        const mod = require('../lib/papercombo.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'papercombo handler error: '+e.message});
       }
       return;
     }
