@@ -56,6 +56,7 @@
     { "source": "/api/overfitcheck", "destination": "/api/alipay.js?r=overfitcheck" },
     { "source": "/api/whitebox", "destination": "/api/alipay.js?r=whitebox" },
     { "source": "/api/papercombo", "destination": "/api/alipay.js?r=papercombo" },
+    { "source": "/api/quantcompute", "destination": "/api/alipay.js?r=quantcompute" },
     { "source": "/api/coinsettle", "destination": "/api/alipay.js?r=coinsettle" },
     { "source": "/api/stripe/checkout", "destination": "/api/alipay.js?r=stripe/checkout" },
     { "source": "/api/stripe/webhook", "destination": "/api/alipay.js?r=stripe/webhook" },

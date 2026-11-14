@@ -250,9 +250,21 @@
     <div class="note">纸面模拟, <b>非真实下单</b>, 附「非投资建议 · 历史不代表未来 · 数据来自公开源」。某腿数据获取失败 fail-closed 不出假数。可升级为 QuantDinger 真·策略级实盘。</div>
   </div>
 
+  <!-- 16. C10 合规渠道: 量化算力包 (按 credits 团队共享池, 高客单价) -->
+  <div class="card">
+    <h3>⚡ 量化算力包 <span class="tag live">NEW</span></h3>
+    <p class="d"><b>算力 credits 团队共享池</b> (回测批次/参数优化/纸面组合, 按任务扣算力) · <b>¥199 / 2000币 买 20 credits</b></p>
+    <div class="acts">
+      <a id="qcPayLink" class="cta" href="#">¥199 买 20 算力</a>
+      <button id="qcBtn">跑一次回测</button>
+    </div>
+    <div class="stat" id="qcStat"></div>
+    <div class="note">算力输出基于历史数据, 附「非投资建议 · 不代表未来 · 数据来自公开源」。任务数据失败 fail-closed 不扣算力不出假数。借鉴 QuantConnect 算力节点 + Lovable 团队 credits 池模型。</div>
+  </div>
+
   <h2>为什么可信</h2>
   <p class="sub" style="margin-bottom:0">
-    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 15 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告/API/数据/托管/过拟合/白标/纸面组合 7 类付费渠道内置合规免责<br>
+    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 16 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告/API/数据/托管/过拟合/白标/纸面组合/算力包 8 类付费渠道内置合规免责<br>
     所有指标读真实账本, 无假数据。提现需达门槛 (返现 10 元 / 币 100), 由平台结算。
   </p>
 </div>
@@ -429,6 +441,9 @@ function loadAll(){
   // C9 纸面模拟组合: 付费链接 + 组合额度
   document.getElementById('pcPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=paper&amount=99';
   j('/api/papercombo?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('pcStat').innerHTML='纸面组合 剩 <b>'+(s.slots_left||0)+'</b> 个 · 已跑 '+(s.combos_count||0)+' 个'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 买 '+s.combos_per_pack+'个':''); }).catch(function(){});
+  // C10 量化算力包: 付费链接 + credits 池
+  document.getElementById('qcPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=qc&amount=199';
+  j('/api/quantcompute?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('qcStat').innerHTML='算力 credits 剩 <b>'+(s.credits_left||0)+'</b> · 已用 '+(s.credits_used||0)+' / '+(s.credits_total||0)+' · 已跑 '+(s.tasks_count||0)+' 任务'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 买 '+s.credits_per_pack+'算力':''); }).catch(function(){});
   // 策略/数据源/格式 变化时刷新 C4/C5/C6/C7 付费链接 (让选择即时生效)
   window.addEventListener('storage', function(){ renderStratChips(); });
 }
@@ -631,6 +646,24 @@ document.getElementById('pcBtn').onclick = function(){
     } else if(b.error==='need_payment'){
       var p=b.need||{};
       toast('需购买: ¥'+(p.yuan||99)+' / '+(p.coin||1000)+'币 买 '+(p.combos||3)+' 个组合。点「¥99 买 3 组合」。');
+    } else { toast('失败: '+(b.error||'未知')); }
+    loadAll();
+  }).catch(function(){ toast('网络错误'); });
+};
+// C10 量化算力包 (按 credits 团队池, 高客单价)
+document.getElementById('qcBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  var sym=(prompt('回测标的 (默认 BTCUSDT):','BTCUSDT')||'BTCUSDT').trim().toUpperCase().slice(0,16);
+  j('/api/quantcompute?ref='+encodeURIComponent(REF), { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ ref:REF, action:'run', task:'backtest', symbol:sym, interval:'1d', limit:180 }) }).then(function(r){
+    var b=r.body;
+    if(b.ok){
+      var m=b.results[0]&&b.results[0].metrics||{};
+      toast('✅ 算力回测 '+sym+': 收益 '+(m.total_return_pct>0?'+':'')+m.total_return_pct+'% · 夏普 '+m.sharpe+' · 扣算力 '+b.credits_used+' · 剩 '+b.credits_left+' (真数据, 非投资建议)');
+      track('quantcompute_run');
+    } else if(b.error==='need_payment'){
+      var p=b.need||{};
+      toast('需购买算力: ¥'+(p.yuan||199)+' / '+(p.coin||2000)+'币 买 '+(p.credits||20)+' credits。点「¥199 买 20 算力」。');
     } else { toast('失败: '+(b.error||'未知')); }
     loadAll();
   }).catch(function(){ toast('网络错误'); });

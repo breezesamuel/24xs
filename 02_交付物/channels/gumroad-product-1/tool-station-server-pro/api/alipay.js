@@ -684,6 +684,12 @@ module.exports=async(req,res)=>{
             await require('../lib/papercombo.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
           }catch(e){}
         }
+        // C10 量化算力包: slug=qc 的付费订单 -> 充值该 ref 的算力 credits 池
+        if(rec.ref && rec.slug==='qc' && rec.status==='paid'){
+          try{
+            await require('../lib/quantcompute.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
+          }catch(e){}
+        }
       }
       send(200,{ok:true,paid:!!q.paid,status:q.paid?'paid':(rec.status||'unknown'),trade_status:q.trade_status,trade_no:q.trade_no,slug:rec.slug||null,plan:rec.plan||null,code:q.code,sub:q.sub,msg:q.msg});
       return;
@@ -1181,6 +1187,21 @@ module.exports=async(req,res)=>{
         return await mod.onRequest(req,res,data);
       }catch(e){
         send(500,{ok:false,error:'papercombo handler error: '+e.message});
+      }
+      return;
+    }
+    // 量化算力包 (quantcompute) — C10 合规渠道: 按 credits 团队共享池, 高客单价
+    if(route.startsWith('/api/quantcompute')){
+      try{
+        const mod = require('../lib/quantcompute.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'quantcompute handler error: '+e.message});
       }
       return;
     }
