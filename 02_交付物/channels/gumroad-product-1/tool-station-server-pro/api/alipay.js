@@ -666,6 +666,18 @@ module.exports=async(req,res)=>{
             await require('../lib/strategyhosting.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out, strategy_id: rec.strategy_id||'default', report_format: rec.report_format||'pdf' });
           }catch(e){}
         }
+        // C7 过拟合检测: slug=ofit 的付费订单 -> 充值该 ref 的检测次数额度
+        if(rec.ref && rec.slug==='ofit' && rec.status==='paid'){
+          try{
+            await require('../lib/overfitcheck.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out });
+          }catch(e){}
+        }
+        // C8 团队/白标 API 包: slug=wb 的付费订单 -> 充值该 ref 的席位额度 (带白标 brand)
+        if(rec.ref && rec.slug==='wb' && rec.status==='paid'){
+          try{
+            await require('../lib/whitebox.js').purchase(rec.ref,{ paid_via:'alipay', out_trade_no:out, brand: String(rec.brand||'').slice(0,64) });
+          }catch(e){}
+        }
       }
       send(200,{ok:true,paid:!!q.paid,status:q.paid?'paid':(rec.status||'unknown'),trade_status:q.trade_status,trade_no:q.trade_no,slug:rec.slug||null,plan:rec.plan||null,code:q.code,sub:q.sub,msg:q.msg});
       return;
@@ -1118,6 +1130,36 @@ module.exports=async(req,res)=>{
         return await mod.onRequest(req,res,data);
       }catch(e){
         send(500,{ok:false,error:'strategyhosting handler error: '+e.message});
+      }
+      return;
+    }
+    // 过拟合检测 API (overfitcheck) — C7 合规渠道: 付费检测, 币/¥双付, 统计辅助非投资建议
+    if(route.startsWith('/api/overfitcheck')){
+      try{
+        const mod = require('../lib/overfitcheck.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'overfitcheck handler error: '+e.message});
+      }
+      return;
+    }
+    // 团队/白标 API 包 (whitebox) — C8 合规渠道: 按席位/白标授权, B端高客单价
+    if(route.startsWith('/api/whitebox')){
+      try{
+        const mod = require('../lib/whitebox.js');
+        data.path = route;
+        if(!data.ref){
+          const pid = String((req.headers['x-ref']||req.headers['x-user-ref']||'')||'').slice(0,64);
+          if(pid)data.ref=pid;
+        }
+        return await mod.onRequest(req,res,data);
+      }catch(e){
+        send(500,{ok:false,error:'whitebox handler error: '+e.message});
       }
       return;
     }

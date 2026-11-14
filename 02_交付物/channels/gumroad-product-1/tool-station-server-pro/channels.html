@@ -214,9 +214,33 @@
     <div class="note">托管仅按你的参数执行回测, 附「非投资建议 · 不代客决策 · 数据来自公开源」。只托管本人已注册策略。</div>
   </div>
 
+  <!-- 13. C7 合规渠道: 过拟合检测 API (量化最值钱痛点: 回测好但实盘崩) -->
+  <div class="card">
+    <h3>🔬 过拟合检测 API <span class="tag live">NEW</span></h3>
+    <p class="d">检测你的策略回测是否<b>过拟合</b> (夏普虚高/参数敏感/走查衰减) · 量化最痛 <b>¥39 / 400币 买 5 次</b></p>
+    <div class="acts">
+      <a id="ofcPayLink" class="cta" href="#">¥39 买 5 次</a>
+      <button id="ofcBtn">查我的额度</button>
+    </div>
+    <div class="stat" id="ofcStat"></div>
+    <div class="note">基于真实 K 线做走查/夏普衰减/参数敏感性统计, 附「统计辅助 · 非投资建议 · 不保证实盘」。数据获取失败 fail-closed 不造假。</div>
+  </div>
+
+  <!-- 14. C8 合规渠道: 团队/白标 API 包 (B端高客单价, 按席位) -->
+  <div class="card">
+    <h3>🏢 团队/白标 API 包 <span class="tag live">NEW</span></h3>
+    <p class="d">团队/合作方 <b>白标 API 授权</b> (按席位, 带你的 brand 标识) · <b>¥199/席 / 2000币 买 3 席</b></p>
+    <div class="acts">
+      <a id="wbPayLink" class="cta" href="#">¥199 买 3 席</a>
+      <button id="wbBtn">查我的席位</button>
+    </div>
+    <div class="stat" id="wbStat"></div>
+    <div class="note">白标方对其对外展示与决策负最终责任, API 结果附「非投资建议 · 数据来自公开源」。席位服务端扣减, 防刷。</div>
+  </div>
+
   <h2>为什么可信</h2>
   <p class="sub" style="margin-bottom:0">
-    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 11 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告/API/数据/托管 4 类付费渠道内置合规免责<br>
+    ✅ 支付宝网关验签 (RSA2) · ✅ 收款自动开通 · ✅ 账实分离对账 · ✅ 14 条账本渠道防刷 (哈希去重 + 上限 + 质量门禁 + 合规红线) · ✅ 报告/API/数据/托管/过拟合/白标 6 类付费渠道内置合规免责<br>
     所有指标读真实账本, 无假数据。提现需达门槛 (返现 10 元 / 币 100), 由平台结算。
   </p>
 </div>
@@ -384,7 +408,13 @@ function loadAll(){
   // C6 策略托管+自动回测: 付费链接 + 托管状态 (带托管策略)
   document.getElementById('shPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=host&amount=79&strategy_id='+encodeURIComponent(selectedStrategy()||'default')+'&report_format='+encodeURIComponent(fmtSel());
   j('/api/strategyhosting?ref='+encodeURIComponent(REF)+'&action=status').then(function(r){ var s=r.body||{}; var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未托管)'; document.getElementById('shStat').innerHTML='策略托管 <b>'+(s.active?'有效':'已到期')+'</b> · 到期 <b>'+(s.active?u:'-')+'</b> · 已出 '+(s.reports||0)+' 份 · 策略 ['+(selectedStrategy()||'未选')+']'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 每 '+s.host_weeks+'周':''); }).catch(function(){});
-  // 策略/数据源/格式 变化时刷新 C4/C5/C6 付费链接 (让选择即时生效)
+  // C7 过拟合检测: 付费链接 + 额度 (带选中策略)
+  document.getElementById('ofcPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=ofit&amount=39&strategy_id='+encodeURIComponent(selectedStrategy()||'default');
+  j('/api/overfitcheck?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('ofcStat').innerHTML='剩余检测 <b>'+(s.quota_left||0)+'</b> 次 · 已跑 '+(s.total_runs||0)+' 次 · 策略 ['+(selectedStrategy()||'未选')+']'+(s.price_yuan?' · ¥'+s.price_yuan+' / '+s.price_coin+'币 买 '+s.runs_per_pack+'次':''); }).catch(function(){});
+  // C8 团队/白标 API 包: 付费链接 + 席位
+  document.getElementById('wbPayLink').href = '/api/pay?plan=trial&ref='+encodeURIComponent(REF)+'&slug=wb&amount=199';
+  j('/api/whitebox?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){ var s=r.body||{}; document.getElementById('wbStat').innerHTML='白标席位 剩 <b>'+(s.seats_left||0)+'</b> · 已用 '+(s.seats_used||0)+'/'+(s.seats_total||0)+(s.brand?' · 品牌 ['+s.brand+']':'')+(s.price_yuan?' · ¥'+s.price_yuan+'/席 · '+s.seats_per_pack+'席/包':''); }).catch(function(){});
+  // 策略/数据源/格式 变化时刷新 C4/C5/C6/C7 付费链接 (让选择即时生效)
   window.addEventListener('storage', function(){ renderStratChips(); });
 }
 
@@ -554,6 +584,22 @@ document.getElementById('shBtn').onclick = function(){
     var u=s.active_until? new Date(s.active_until).toLocaleDateString('zh-CN'):'(未托管)';
     toast('策略托管 '+(s.active?'有效':'已到期')+' · 到期 '+(s.active?u:'-')+' · 已出 '+(s.reports||0)+' 份 · 托管策略 ['+(strat||'未选')+']');
     if(!strat){ document.getElementById('pickCard').scrollIntoView({behavior:'smooth'}); }
+  }).catch(function(){ toast('网络错误'); });
+};
+// C7 过拟合检测 (按次, 统计辅助非投资建议)
+document.getElementById('ofcBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  j('/api/overfitcheck?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){
+    var s=r.body||{};
+    toast('过拟合检测剩余 '+(s.quota_left||0)+' 次 · 已跑 '+(s.total_runs||0)+' 次 · 策略 ['+(selectedStrategy()||'未选')+']'+(s.can_run?'':' · 需购买'));
+  }).catch(function(){ toast('网络错误'); });
+};
+// C8 团队/白标 API 包 (按席位, B端)
+document.getElementById('wbBtn').onclick = function(){
+  if(!REF){ toast('先注册 ID'); return; }
+  j('/api/whitebox?ref='+encodeURIComponent(REF)+'&action=summary').then(function(r){
+    var s=r.body||{};
+    toast('白标席位 剩 '+(s.seats_left||0)+' · 已用 '+(s.seats_used||0)+' / '+(s.seats_total||0)+(s.brand?' · 品牌 ['+s.brand+']':''));
   }).catch(function(){ toast('网络错误'); });
 };
 
