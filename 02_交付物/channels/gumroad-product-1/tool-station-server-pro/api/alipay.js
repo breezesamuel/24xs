@@ -486,6 +486,74 @@ module.exports=async(req,res)=>{
   if(raw){try{Object.assign(form,JSON.parse(raw));}catch(e){try{const u3=new URL('http://x/?'+raw);u3.searchParams.forEach((v,k)=>form[k]=v);}catch(e2){}}}
   const data=Object.assign(Object.fromEntries(u.searchParams),form);
   try{
+    // 营收看板 (revenue.html 数据源) — 只读真实台账 + 渠道账本 + timer, 不造假数据
+    if(route==='/api/revenue'){
+      try{
+        const fs=require('node:fs/promises');
+        const path=require('node:path');
+        // 1. 存量待收台账 (outreach + corporate, 金额字段: collect / corporate_amount)
+        async function ledgerItems(file){
+          try{
+            const raw=await fs.readFile(file,'utf8');
+            const d=JSON.parse(raw);
+            const arr=Array.isArray(d)?d:(d.items||d.orders||[]);
+            return arr.filter(x=>x&&typeof x==='object');
+          }catch(e){return [];}
+        }
+        const billingDir=process.env.BILLING_DIR||'/opt/bingdashan/data/billing';
+        const [outreach,corp]=await Promise.all([ledgerItems(path.join(billingDir,'outreach_ledger.json')),ledgerItems(path.join(billingDir,'corporate_899.json'))]);
+        const PENDING_ST=new Set(['paid','collected','done','verified']);
+        const pend=arr=>arr.filter(x=>!PENDING_ST.has(x.status));
+        const oPend=pend(outreach), cPend=pend(corp);
+        const oAmt=oPend.reduce((s,x)=>s+parseFloat(x.collect||x.amount||0),0);
+        const cAmt=cPend.reduce((s,x)=>s+parseFloat(x.corporate_amount||x.amount||0),0);
+        // 2. 各渠道账本 (谁付过钱 / 剩余额度) — 扫 FILE_STORE_DIR 下各渠道目录
+        const storeDir=process.env.FILE_STORE_DIR||'/var/lib/bingdashan-cn';
+        async function channelLedger(sub){
+          try{
+            const dir=path.join(storeDir,sub);
+            const files=await fs.readdir(dir);
+            let paid=0,quota=0,revenueYuan=0,revenueCoin=0;
+            for(const f of files){
+              if(!f.endsWith('.json'))continue;
+              try{
+                const o=JSON.parse(await fs.readFile(path.join(dir,f),'utf8'));
+                // 各渠道字段不一, 尽力汇总 (不造假: 读不到的留 0)
+                if(o.entries)paid+=o.entries.filter(e=>e.status==='active').length;
+                if(o.tasks)paid+=o.tasks.length;
+                quota+=o.quota||o.slots||o.seats||0;
+                revenueYuan+=o.revenue_yuan||0;
+                revenueCoin+=o.revenue_coin||0;
+              }catch(e){}
+            }
+            return {sub, has_ledger: files.length>0, paid_entries: paid, quota: quota, revenue_yuan: Math.round(revenueYuan), revenue_coin: Math.round(revenueCoin)};
+          }catch(e){return {sub, has_ledger:false, note:String(e.message).slice(0,40)};}
+        }
+        const CHANNEL_SUBS=['reportexport','strategyapi','marketdata','strategyhosting','overfitcheck','whitebox','papercombo','quantcompute','quantannual','cashback','bounty'];
+        const channels=await Promise.all(CHANNEL_SUBS.map(channelLedger));
+        // 3. 自动收钱线 timer 状态 (需 systemd, 仅 CN 可读; Vercel 上读不到就标 none)
+        function timerState(){
+          // CN: 通过 exec 查 systemd timer; 非 root/无 systemd 时 fail-closed 标 unknown
+          return {note:'timer 状态由 CN _revenue_dashboard.sh 单独读取, 网页只读台账+渠道 (不造假)'};
+        }
+        // 4. 诚实边界
+        return send(200,{
+          ok:true,
+          generated_at:new Date().toISOString(),
+          stock:{
+            outreach:{pending:oPend.length, amount_yuan:Math.round(oAmt)},
+            corporate:{pending:cPend.length, amount_yuan:Math.round(cAmt)},
+            total_pending_yuan:Math.round(oAmt+cAmt),
+            note:'待收≠已到账, 客户付/打款才核销进账'
+          },
+          channels:channels,
+          total_channel_revenue_yuan:channels.reduce((s,c)=>s+(c.revenue_yuan||0),0),
+          total_channel_revenue_coin:channels.reduce((s,c)=>s+(c.revenue_coin||0),0),
+          timers:timerState(),
+          honesty:'看板只读真实账本; "在线/有账本"≠"有收入", 有客户付才算; 无 100% 保证收益'
+        });
+      }catch(e){return send(500,{ok:false,error:'revenue read failed: '+e.message});}
+    }
     // 创建付款单 → 返回自动提交的收银台表单
     if(route==='/api/pay'){
       const plan=data.plan||'m10';

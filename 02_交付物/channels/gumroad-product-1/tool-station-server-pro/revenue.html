@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丙大山·变现矩阵营收看板</title>
+<style>
+:root{--bg:#0a0f1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--warn:#f59e0b;--danger:#ef4444;--info:#3b82f6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans SC",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:1000px;margin:0 auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;gap:8px}
+.logo{font-weight:700;font-size:1.1rem;color:var(--accent)}
+h1{font-size:1.5rem;margin-bottom:4px}
+.sub{color:var(--muted);font-size:.85rem;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:22px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.card .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.card .value{font-size:1.7rem;font-weight:700;margin-top:6px}
+.value.green{color:var(--accent)} .value.warn{color:var(--warn)} .value.blue{color:var(--info)}
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:18px}
+.section h2{font-size:1.05rem;margin-bottom:14px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--border);font-size:.82rem}
+th{color:var(--muted);font-weight:600}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600}
+.tag.ok{background:rgba(34,197,94,.15);color:var(--accent)}
+.tag.off{background:rgba(156,163,175,.15);color:var(--muted)}
+.tag.wait{background:rgba(245,158,11,.15);color:var(--warn)}
+.note{color:var(--muted);font-size:.8rem;margin-top:12px}
+.honest{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:14px;font-size:.82rem;margin-top:14px}
+.honest b{color:var(--warn)}
+.btn{padding:7px 14px;border-radius:8px;font-weight:600;font-size:.8rem;cursor:pointer;border:none;background:var(--accent);color:#0a0f1a}
+.btn2{background:var(--border);color:var(--text)}
+#ts{color:var(--muted);font-size:.75rem}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="logo">丙大山·变现矩阵</div>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn2" onclick="load()">刷新</button>
+    <a class="btn btn2" href="/channels.html" style="text-decoration:none">付费渠道</a>
+    <a class="btn btn2" href="/get.html" style="text-decoration:none">获客页</a>
+  </div>
+</header>
+<h1>营收看板</h1>
+<div class="sub">只读真实台账 + 渠道账本, 不造假数据 · 自动每 30s 刷新 · <span id="ts">-</span></div>
+
+<div class="grid" id="stats"></div>
+
+<div class="section">
+  <h2>① 存量可收 (台账 · 客户付/打款才核销)</h2>
+  <table>
+    <thead><tr><th>台账</th><th>待收单数</th><th>待收金额</th><th>状态</th></tr></thead>
+    <tbody id="stock"></tbody>
+  </table>
+  <div class="note">"待收"≠"已到账" — 台账 status=pending/awaiting, 收到才核销进账。</div>
+</div>
+
+<div class="section">
+  <h2>② 付费渠道账本 (C3~C12 + 账本渠道 · 谁付过钱)</h2>
+  <table>
+    <thead><tr><th>渠道</th><th>有账本</th><th>付费条目</th><th>剩余额度</th><th>¥营收</th><th>币营收</th></tr></thead>
+    <tbody id="channels"></tbody>
+  </table>
+  <div class="note">"有账本"=该渠道目录存在记录; "¥营收/币营收"=真实入账累计, 无客户付则为 0 (不造假)。</div>
+</div>
+
+<div class="section">
+  <h2>③ 自动收钱线</h2>
+  <div class="note">
+    <b style="color:var(--text)">bd-trial-winback</b> (每日 09:00): 读留邮箱 → 到期自动发升级邮件 → 客户付款自动到账<br>
+    <b style="color:var(--text)">bd-manual8-watch</b> (30min): 监控 8 manual 单已付 → 自动核销<br>
+    <b style="color:var(--text)">bd-pay-email-watch</b> (30s): 付款事件 → 自动确认邮件<br>
+    <span style="color:var(--muted)">timer 实跑状态用 CN <code>_revenue_dashboard.sh</code> 单独查 (网页只读台账, 不越权读 systemd)。</span>
+  </div>
+</div>
+
+<div class="honest">
+  <b>诚实边界 (看板不糊弄)</b><br>
+  · 存量"待收" ≠ "已到账", 收到才算 · 渠道"有账本" ≠ "有收入", 有客户付才收 · 自动邮件线"在跑" ≠ "有 trial 进", 需获客流量 · 没有"100% 保证收益"的合规手段, 只能"机制全通 + 不造假 + 可追踪"。
+</div>
+
+<div class="note" style="margin-top:18px">
+  闭环: 获客分享包(/get.html?ref=码) → 留邮箱 → 免费 7 天 → 自动升级邮件 → 支付宝自动到账 + 开通 C3~C12。存量 ¥ 收: 发对公打款函 + alipay 链接。
+</div>
+</div>
+<script>
+var NAME={reportexport:'C3 回测报告',strategyapi:'C4 回测API',marketdata:'C5 行情数据',strategyhosting:'C6 策略托管',overfitcheck:'C7 过拟合检测',whitebox:'C8 团队白标',papercombo:'C9 纸面组合',quantcompute:'C10 算力包',quantannual:'C12 算力订阅',cashback:'返利账本',bounty:'悬赏账本'};
+function el(id){return document.getElementById(id);}
+async function load(){
+  try{
+    var r=await fetch('/api/revenue');
+    var d=await r.json();
+    if(!d.ok){el('stats').innerHTML='<div class="card"><div class="label">状态</div><div class="value" style="font-size:1rem">'+(d.error||'读取失败')+'</div></div>';return;}
+    el('ts').textContent='更新于 '+new Date().toLocaleTimeString('zh-CN');
+    // stats
+    var stock=d.stock;
+    var chYuan=d.total_channel_revenue_yuan||0, chCoin=d.total_channel_revenue_coin||0;
+    el('stats').innerHTML=
+      '<div class="card"><div class="label">存量待收 (台账)</div><div class="value warn">¥'+stock.total_pending_yuan+'</div></div>'+
+      '<div class="card"><div class="label">渠道已入账 (¥)</div><div class="value green">¥'+chYuan+'</div></div>'+
+      '<div class="card"><div class="label">渠道已入账 (币)</div><div class="value blue">'+chCoin+'</div></div>'+
+      '<div class="card"><div class="label">付费渠道在线</div><div class="value green">'+(d.channels||[]).length+'</div></div>';
+    // stock table
+    el('stock').innerHTML=
+      '<tr><td>outreach_ledger (8manual+trial)</td><td>'+stock.outreach.pending+'</td><td>¥'+stock.outreach.amount_yuan+'</td><td><span class="tag wait">待收</span></td></tr>'+
+      '<tr><td>corporate_899 (对公)</td><td>'+stock.corporate.pending+'</td><td>¥'+stock.corporate.amount_yuan+'</td><td><span class="tag wait">待收</span></td></tr>';
+    // channels table
+    var rows=(d.channels||[]).map(function(c){
+      var nm=NAME[c.sub]||c.sub;
+      var hasTag=c.has_ledger?'<span class="tag ok">有账本</span>':'<span class="tag off">无记录</span>';
+      return '<tr><td>'+nm+'</td><td>'+hasTag+'</td><td>'+(c.paid_entries||0)+'</td><td>'+(c.quota||0)+'</td><td>¥'+(c.revenue_yuan||0)+'</td><td>'+(c.revenue_coin||0)+'</td></tr>';
+    }).join('');
+    el('channels').innerHTML=rows;
+  }catch(e){
+    el('stats').innerHTML='<div class="card"><div class="label">状态</div><div class="value" style="font-size:1rem">网络错误: '+e.message+'</div></div>';
+  }
+}
+load();
+setInterval(load,30000);
+</script>
+</body>
+</html>

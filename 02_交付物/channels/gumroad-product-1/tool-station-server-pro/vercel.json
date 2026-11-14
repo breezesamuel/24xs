@@ -58,6 +58,7 @@
     { "source": "/api/papercombo", "destination": "/api/alipay.js?r=papercombo" },
     { "source": "/api/quantcompute", "destination": "/api/alipay.js?r=quantcompute" },
     { "source": "/api/quantannual", "destination": "/api/alipay.js?r=quantannual" },
+    { "source": "/api/revenue", "destination": "/api/alipay.js?r=revenue" },
     { "source": "/api/coinsettle", "destination": "/api/alipay.js?r=coinsettle" },
     { "source": "/api/stripe/checkout", "destination": "/api/alipay.js?r=stripe/checkout" },
     { "source": "/api/stripe/webhook", "destination": "/api/alipay.js?r=stripe/webhook" },
