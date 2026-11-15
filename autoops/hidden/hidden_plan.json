@@ -1,5 +1,5 @@
 {
-  "ts": "2026-11-15T00:45:48.309Z",
+  "ts": "2026-11-15T05:47:09.747Z",
   "mode": "full_autonomous_hidden",
   "focus": "跟进 20 笔未支付订单",
   "tasks": [
@@ -14,7 +14,7 @@
       "id": "HB4",
       "name": "外呼 10 个 hot 线索",
       "pri": 88,
-      "why": "hot=34 warm=699 cold=106",
+      "why": "hot=34 warm=697 cold=106",
       "auto": true
     },
     {
@@ -48,7 +48,7 @@
     },
     "leads": {
       "hot": 34,
-      "warm": 699,
+      "warm": 697,
       "cold": 106,
       "none": 0
     },
