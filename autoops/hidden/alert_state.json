@@ -21,9 +21,9 @@
     "recovered_at": "2026-10-12T11:32:51.466Z"
   },
   "smtp_broken": {
-    "count": 1,
+    "count": 2,
     "active": true,
-    "last_fail_at": "2026-11-19T10:02:10.422Z",
+    "last_fail_at": "2026-11-19T10:28:43.265Z",
     "last_escalated_at": null
   },
   "stale_heartbeat": {
@@ -41,9 +41,9 @@
     "recovered_at": "2026-11-09T11:25:22.013Z"
   },
   "storefront_unready": {
-    "count": 1,
+    "count": 2,
     "active": true,
-    "last_fail_at": "2026-11-19T10:02:10.422Z",
+    "last_fail_at": "2026-11-19T10:28:43.265Z",
     "last_escalated_at": null
   }
 }
