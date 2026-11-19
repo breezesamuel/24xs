@@ -1,7 +1,7 @@
 {
-  "at": "2026-11-19T02:16:32.140Z",
-  "overall": "healthy",
-  "exit_code": 0,
+  "at": "2026-11-19T10:02:10.422Z",
+  "overall": "critical",
+  "exit_code": 1,
   "checks": {
     "heartbeat": {
       "ok": true,
@@ -9,14 +9,8 @@
       "note": null
     },
     "storefront": {
-      "ok": true,
-      "env": {
-        "app": true,
-        "priv": true,
-        "pub": true,
-        "supabase": false,
-        "kv": true
-      },
+      "ok": false,
+      "env": {},
       "http": null,
       "error": null
     },
@@ -38,12 +32,19 @@
       "missing": []
     },
     "alert_channel": {
-      "ok": true,
-      "channel": "smtp",
+      "ok": false,
+      "channel": "unknown",
       "error": null
     }
   },
-  "critical": [],
-  "degraded": [],
-  "active_failures": []
+  "critical": [
+    "storefront_unhealthy_or_unready"
+  ],
+  "degraded": [
+    "alert_channel:unknown"
+  ],
+  "active_failures": [
+    "storefront_unready",
+    "smtp_broken"
+  ]
 }
