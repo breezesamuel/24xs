@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-20T17:21:39.651Z",
+  "at": "2026-11-20T17:33:49.038Z",
   "overall": "critical",
   "exit_code": 1,
   "checks": {
@@ -44,7 +44,7 @@
     "alert_channel:unknown"
   ],
   "active_failures": [
-    "smtp_broken",
-    "storefront_unready"
+    "storefront_unready",
+    "smtp_broken"
   ]
 }
