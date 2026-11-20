@@ -21,9 +21,9 @@
     "recovered_at": "2026-10-12T11:32:51.466Z"
   },
   "smtp_broken": {
-    "count": 11,
+    "count": 12,
     "active": true,
-    "last_fail_at": "2026-11-20T23:19:34.085Z",
+    "last_fail_at": "2026-11-20T23:23:04.632Z",
     "last_escalated_at": "2026-11-20T23:19:34.200Z"
   },
   "stale_heartbeat": {
@@ -41,9 +41,9 @@
     "recovered_at": "2026-11-09T11:25:22.013Z"
   },
   "storefront_unready": {
-    "count": 11,
+    "count": 12,
     "active": true,
-    "last_fail_at": "2026-11-20T23:19:33.980Z",
+    "last_fail_at": "2026-11-20T23:23:04.632Z",
     "last_escalated_at": "2026-11-20T23:19:34.085Z"
   }
 }
